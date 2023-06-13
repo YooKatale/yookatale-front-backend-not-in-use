@@ -1,0 +1,82 @@
+@font-face {
+  font-family: raleway;
+  src: url(../public/assets/fonts/Raleway/static/Raleway-Regular.ttf);
+}
+@font-face {
+  font-family: ralewayMed;
+  src: url(../public/assets/fonts/Raleway/static/Raleway-Medium.ttf);
+}
+@font-face {
+  font-family: ralewayBold;
+  src: url(../public/assets/fonts/Raleway/static/Raleway-Bold.ttf);
+}
+@font-face {
+  font-family: ralewayExtraBold;
+  src: url(../public/assets/fonts/Raleway/static/Raleway-Black.ttf);
+}
+@font-face {
+  font-family: ralewayLight;
+  src: url(../public/assets/fonts/Raleway/static/Raleway-Light.ttf);
+}
+
+@font-face {
+  font-family: cabin;
+  src: url(../public/assets/fonts/Cabin/static/Cabin-Regular.ttf);
+}
+@font-face {
+  font-family: cabinMed;
+  src: url(../public/assets/fonts/Cabin/static/Cabin-Medium.ttf);
+}
+@font-face {
+  font-family: cabinBold;
+  src: url(../public/assets/fonts/Cabin/static/Cabin-SemiBold.ttf);
+}
+@font-face {
+  font-family: cabinExtraBold;
+  src: url(../public/assets/fonts/Cabin/static/Cabin-Bold.ttf);
+}
+
+.secondary-font {
+  font-family: raleway;
+}
+.secondary-med-font {
+  font-family: ralewayMed;
+}
+.secondary-bold-font {
+  font-family: ralewayBold;
+}
+.secondary-extra-bold-font {
+  font-family: ralewayExtraBold;
+}
+.secondary-light-font {
+  font-family: ralewayLight;
+}
+
+.primary-font {
+  font-family: cabin;
+}
+.primary-med-font {
+  font-family: cabinMed;
+}
+.primary-bold-font {
+  font-family: cabinBold;
+}
+.primary-extra-bold-font {
+  font-family: cabinExtraBold;
+}
+
+* {
+  font-family: cabin;
+  /* font-size: 1rem; */
+  /* padding: 0;
+  margin: 0; */
+  box-sizing: border-box;
+}
+
+body {
+  background: #fcfafa;
+}
+
+.text {
+  color: #09a538;
+}
