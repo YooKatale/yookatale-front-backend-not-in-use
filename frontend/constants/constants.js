@@ -20,3 +20,5 @@ export const Images = {
   img3,
   img4,
 };
+
+export const DisplayImages = [img, img1, img2, img3, img4];

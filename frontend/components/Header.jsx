@@ -24,8 +24,22 @@ import {
 import { AiOutlineShoppingCart, AiTwotoneShopping } from "react-icons/ai";
 
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@slices/authSlice";
 
 const Header = () => {
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+
+  const logoutHandler = async () => {
+    try {
+      dispatch(logout());
+    } catch (err) {
+      console.log({ err });
+    }
+  };
+
   return (
     <>
       <Box padding={"2rem 0"}>
@@ -120,7 +134,7 @@ const Header = () => {
           <Box padding={"0 1rem"}>
             <Flex>
               <Box padding={"0.3rem 0.5rem"}>
-                <Link href={"/profile"}>
+                <Link href={"/cart"}>
                   <Flex position={"relative"}>
                     <FaShoppingBasket
                       size={35}
@@ -136,8 +150,8 @@ const Header = () => {
                   </Flex>
                 </Link>
               </Box>
-              <Box padding={" 0.3rem 0.5rem"}>
-                <Link href={"/signin"}>
+              {userInfo ? (
+                <Box padding={" 0.3rem 0.5rem"}>
                   <Button
                     color={ThemeColors.lightColor}
                     background={ThemeColors.darkColor}
@@ -148,15 +162,37 @@ const Header = () => {
                       border: "none",
                     }}
                   >
-                    <FaSignInAlt
+                    <FaSignOutAlt
                       size={20}
                       color={ThemeColors.lightColor}
                       style={{ margin: "0 0.3rem" }}
                     />{" "}
-                    Sign In
+                    Logout
                   </Button>
-                </Link>
-              </Box>
+                </Box>
+              ) : (
+                <Box padding={" 0.3rem 0.5rem"}>
+                  <Link href={"/signin"}>
+                    <Button
+                      color={ThemeColors.lightColor}
+                      background={ThemeColors.darkColor}
+                      border={"1.7px solid " + ThemeColors.darkColor}
+                      borderRadius={"0.3rem"}
+                      padding={"0.5rem 1rem"}
+                      _hover={{
+                        border: "none",
+                      }}
+                    >
+                      <FaSignInAlt
+                        size={20}
+                        color={ThemeColors.lightColor}
+                        style={{ margin: "0 0.3rem" }}
+                      />{" "}
+                      Sign In
+                    </Button>
+                  </Link>
+                </Box>
+              )}
             </Flex>
           </Box>
         </Flex>
