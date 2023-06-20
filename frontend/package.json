@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.11.0",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",
+    "currency.js": "^2.0.4",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
     "framer-motion": "^10.12.16",
