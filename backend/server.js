@@ -47,8 +47,8 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
-// app.use(env === "production" ? cors(corsOptions) : cors());
-app.use(cors());
+app.use(env === "production" ? cors(corsOptions) : cors());
+// app.use(cors());
 app.use("/api", router);
 
 app.use(NotFound);
