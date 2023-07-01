@@ -13,6 +13,8 @@ const userSchema = Schema(
       type: String,
       unique: true,
     },
+    gender: String,
+    vegan: Boolean,
     phone: {
       type: String,
     },

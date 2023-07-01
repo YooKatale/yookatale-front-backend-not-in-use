@@ -10,21 +10,152 @@ import {
   Heading,
   Input,
   Text,
+  useToast,
+  Image,
+  Spinner,
 } from "@chakra-ui/react";
 import { Images, ThemeColors } from "@constants/constants";
 import * as FA from "react-icons/fa";
 import * as HI from "react-icons/hi";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  useCartCreateMutation,
+  useProductsFilterGetMutation,
+  useProductsGetMutation,
+} from "@slices/usersApiSlice";
+import { useRouter } from "next/navigation";
+import currency from "currency.js";
 
 const Products = () => {
   const CategoriesJson = [
-    "sit amet consectetur",
-    "adipisicing elit",
-    "Mollitia molestias deserunt",
-    "amet sint, molestiae sunt",
-    "non. Cumque culpa",
+    "Starchy Food",
+    "Fruits and Vegetables",
+    "Dairy",
+    "Protein",
+    "Fat",
   ];
+
+  const [ProductsTitle, setProductsTitle] = useState("All Products");
+  const [Products, setProducts] = useState([]);
+  // const [productsFilter, setProductsFilter] = useState([]);
+
+  const UGX = (value) =>
+    currency(value, { symbol: "UGX", precision: 0, separator: "," });
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [fetchProducts] = useProductsGetMutation();
+  const [fetchProductsFilter] = useProductsFilterGetMutation();
+
+  const [addCartApi, { isLoading }] = useCartCreateMutation();
+
+  const { push } = useRouter();
+
+  const chakraToast = useToast();
+
+  const handleDataFetch = async () => {
+    const res = await fetchProducts().unwrap();
+
+    if (res?.status && res?.status == "Success") {
+      setProducts(res?.data);
+      setProductsTitle("All Products");
+    }
+  };
+
+  // fetch product categories
+  useEffect(() => {
+    handleDataFetch();
+  }, []);
+
+  // function to handle adding product to cart
+  const handleAddCart = async (ID) => {
+    // check if user has not logged in
+    if (!userInfo) {
+      chakraToast({
+        title: "Sign In is required",
+        description: `You need to sign in to add to cart`,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
+      push("/signin");
+      return;
+    }
+
+    try {
+      const res = await addCartApi({ productId: ID, userId: userInfo?._id });
+
+      if (res.data?.message) {
+        chakraToast({
+          title: "Success",
+          description: res.data?.message,
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+      }
+
+      if (res.error) {
+        chakraToast({
+          title: "Error",
+          description: res.error.data?.message,
+          status: "error",
+          duration: 5000,
+          isClosable: false,
+        });
+      }
+    } catch (err) {
+      chakraToast({
+        title: "Error",
+        description: err.message.error || err.error,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
+    }
+  };
+
+  // filter functions
+  const handleFilterFetch = async (param) => {
+    try {
+      const res = await fetchProductsFilter(param).unwrap();
+
+      if (res?.status && res?.status == "Success") {
+        setProducts(res?.data?.Products ? res?.data?.Products : res?.data);
+        setProductsTitle(
+          res?.data?.title ? res?.data?.title : "Filter results"
+        );
+      }
+    } catch (err) {
+      chakraToast({
+        title: "Error",
+        description: err?.message?.error || err?.error,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
+    }
+  };
+
+  const handleFilterApply = () => {
+    // productsFilter.push(filter);
+    const CheckedBoxesValues = [];
+
+    const Checkboxes = [
+      ...document.querySelectorAll("input.chakra-checkbox__input"),
+    ];
+
+    for (const checkbox of Checkboxes) {
+      if (checkbox.checked) {
+        CheckedBoxesValues.push(checkbox.value);
+      }
+    }
+
+    handleFilterFetch(JSON.stringify(CheckedBoxesValues));
+  };
 
   return (
     <>
@@ -53,6 +184,9 @@ const Products = () => {
                         name="filterByLowPrice"
                         id="filterByLowPrice"
                         width={"100%"}
+                        value={"lowest"}
+                        onChange={(e) => handleFilterApply(e.target.value)}
+                        className="filter-input"
                       />
                     </Box>
                     <FormLabel
@@ -76,6 +210,8 @@ const Products = () => {
                         name="filterByHighPrice"
                         id="filterByHighPrice"
                         width={"100%"}
+                        value="highest"
+                        onChange={(e) => handleFilterApply(e.target.value)}
                       />
                     </Box>
                     <FormLabel
@@ -83,7 +219,7 @@ const Products = () => {
                       display={"flex"}
                       htmlFor="filterByHighPrice"
                     >
-                      <FA.FaArrowDown style={{ margin: "0 0.3rem" }} />{" "}
+                      <FA.FaArrowUp style={{ margin: "0 0.3rem" }} />{" "}
                       <Text
                         fontSize={"md"}
                         marginBottom={"0.5rem"}
@@ -109,6 +245,8 @@ const Products = () => {
                           name="category"
                           id="category"
                           width={"100%"}
+                          value={category.toString().toLowerCase()}
+                          onChange={(e) => handleFilterApply(e.target.value)}
                         />
                       </Box>
                       <FormLabel
@@ -127,222 +265,102 @@ const Products = () => {
             <Box width={"75%"} padding={"0 0.5rem 1rem 0.5rem"}>
               <Box padding={"0 1rem 0.5rem 1rem"}>
                 <Heading as={"h2"} size={"md"} className="secondary-extra-bold">
-                  All Products
+                  {ProductsTitle}
                 </Heading>
               </Box>
-              <Grid
-                gridTemplateColumns={{
-                  base: "repeat(1, 1fr)",
-                  md: "repeat(2, 1fr)",
-                  xl: "repeat(4, 1fr)",
-                }}
-                gridGap={"1rem"}
-              >
-                <Box
-                  padding={"1rem"}
-                  borderRadius={"md"}
-                  _hover={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+              {Products.length > 0 ? (
+                <Grid
+                  gridTemplateColumns={{
+                    base: "repeat(1, 1fr)",
+                    md: "repeat(2, 1fr)",
+                    xl: "repeat(4, 1fr)",
                   }}
+                  gridGap={"1rem"}
                 >
-                  <Box height={"150px"} padding="0.5rem">
-                    <Link href="/product">
-                      <Flex
-                        alignContent={"center"}
-                        justifyContent={"center"}
-                        height={"100%"}
-                      >
-                        <Image
-                          src={Images.img4}
-                          style={{
-                            width: "auto",
-                            height: "100%",
-                            margin: "auto",
-                          }}
-                        />
-                      </Flex>
-                    </Link>
-                  </Box>
-                  <Box>
-                    <Text
-                      textAlign={"center"}
-                      className="secondary-light-font"
-                      fontSize={"2xl"}
+                  {Products.map((product, index) => (
+                    <Box
+                      padding={"1rem"}
+                      borderRadius={"md"}
+                      _hover={{
+                        boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+                      }}
+                      key={index}
                     >
-                      Strawberries
-                    </Text>
-                    <Heading
-                      as={"h3"}
-                      margin={"0.5rem 0"}
-                      textAlign={"center"}
-                      className="secondary-extra-bold"
-                      fontSize={"lg"}
-                      color={ThemeColors.darkColor}
-                    >
-                      UGX 44,300
-                    </Heading>
-                    <Box padding={"0.5rem 0"}>
-                      <Flex justifyContent={"center"}>
-                        <Button
-                          color={ThemeColors.lightColor}
-                          background={ThemeColors.darkColor}
-                          border={"1.7px solid " + ThemeColors.darkColor}
-                          borderRadius={"0.3rem"}
-                          padding={"1rem"}
+                      <Box height={"150px"} padding="0.5rem">
+                        <Link href={`/product?id=${product._id}`}>
+                          <Flex
+                            alignContent={"center"}
+                            justifyContent={"center"}
+                            height={"100%"}
+                          >
+                            <Image
+                              src={product.images}
+                              style={{
+                                width: "auto",
+                                height: "100%",
+                                margin: "auto",
+                              }}
+                            />
+                          </Flex>
+                        </Link>
+                      </Box>
+                      <Box>
+                        <Text
+                          textAlign={"center"}
                           className="secondary-light-font"
-                          fontSize={"md"}
-                          _hover={{
-                            border: "1.7px solid " + ThemeColors.lightColor,
-                          }}
+                          fontSize={"2xl"}
                         >
-                          <FA.FaCartPlus
-                            size={20}
-                            style={{ margin: "0 0.5rem 0 0" }}
-                            color={ThemeColors.lightColor}
-                          />
-                          Add To cart
-                        </Button>
-                      </Flex>
+                          {product.name}
+                        </Text>
+                        <Heading
+                          as={"h3"}
+                          margin={"0.5rem 0"}
+                          textAlign={"center"}
+                          className="secondary-extra-bold"
+                          fontSize={"lg"}
+                          color={ThemeColors.darkColor}
+                        >
+                          {UGX(product.price).format()}
+                        </Heading>
+                        <Box padding={"0.5rem 0"}>
+                          <Flex justifyContent={"center"}>
+                            <Button
+                              color={ThemeColors.lightColor}
+                              background={ThemeColors.darkColor}
+                              border={"1.7px solid " + ThemeColors.darkColor}
+                              borderRadius={"0.3rem"}
+                              padding={"1rem"}
+                              className="secondary-light-font"
+                              fontSize={"md"}
+                              _hover={{
+                                border: "1.7px solid " + ThemeColors.lightColor,
+                              }}
+                              onClick={() => handleAddCart(product._id)}
+                            >
+                              {isLoading ? (
+                                <Spinner />
+                              ) : (
+                                <FA.FaCartPlus
+                                  size={26}
+                                  style={{ margin: "0 0.5rem 0 0" }}
+                                  color={ThemeColors.lightColor}
+                                />
+                              )}
+                              Add To cart
+                            </Button>
+                          </Flex>
+                        </Box>
+                      </Box>
                     </Box>
+                  ))}
+                </Grid>
+              ) : (
+                <Box>
+                  <Box padding={"3rem 0"}>
+                    <Text fontSize={"3xl"}>No products currently</Text>
                   </Box>
                 </Box>
-                <Box
-                  padding={"1rem"}
-                  borderRadius={"md"}
-                  _hover={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                >
-                  <Box height={"150px"} padding="0.5rem">
-                    <Link href="/product">
-                      <Flex
-                        alignContent={"center"}
-                        justifyContent={"center"}
-                        height={"100%"}
-                      >
-                        <Image
-                          src={Images.img2}
-                          style={{
-                            width: "auto",
-                            height: "100%",
-                            margin: "auto",
-                          }}
-                        />
-                      </Flex>
-                    </Link>
-                  </Box>
-                  <Box>
-                    <Text
-                      textAlign={"center"}
-                      className="secondary-light-font"
-                      fontSize={"2xl"}
-                    >
-                      Green Apples
-                    </Text>
-                    <Heading
-                      as={"h3"}
-                      margin={"0.5rem 0"}
-                      textAlign={"center"}
-                      className="secondary-extra-bold"
-                      fontSize={"lg"}
-                      color={ThemeColors.darkColor}
-                    >
-                      UGX 34,000
-                    </Heading>
-                    <Box padding={"0.5rem 0"}>
-                      <Flex justifyContent={"center"}>
-                        <Button
-                          color={ThemeColors.lightColor}
-                          background={ThemeColors.darkColor}
-                          border={"1.7px solid " + ThemeColors.darkColor}
-                          borderRadius={"0.3rem"}
-                          padding={"1rem"}
-                          className="secondary-light-font"
-                          fontSize={"md"}
-                          _hover={{
-                            border: "1.7px solid " + ThemeColors.lightColor,
-                          }}
-                        >
-                          <FA.FaCartPlus
-                            size={20}
-                            style={{ margin: "0 0.5rem 0 0" }}
-                            color={ThemeColors.lightColor}
-                          />
-                          Add To cart
-                        </Button>
-                      </Flex>
-                    </Box>
-                  </Box>
-                </Box>
-                <Box
-                  padding={"1rem"}
-                  borderRadius={"md"}
-                  _hover={{
-                    boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                  }}
-                >
-                  <Box height={"150px"} padding="0.5rem">
-                    <Link href="/product">
-                      <Flex
-                        alignContent={"center"}
-                        justifyContent={"center"}
-                        height={"100%"}
-                      >
-                        <Image
-                          src={Images.img3}
-                          style={{
-                            width: "auto",
-                            height: "100%",
-                            margin: "auto",
-                          }}
-                        />
-                      </Flex>
-                    </Link>
-                  </Box>
-                  <Box>
-                    <Text
-                      textAlign={"center"}
-                      className="secondary-light-font"
-                      fontSize={"2xl"}
-                    >
-                      Fruit Cocktail
-                    </Text>
-                    <Heading
-                      as={"h3"}
-                      margin={"0.5rem 0"}
-                      textAlign={"center"}
-                      className="secondary-extra-bold"
-                      fontSize={"lg"}
-                      color={ThemeColors.darkColor}
-                    >
-                      UGX 14,500
-                    </Heading>
-                    <Box padding={"0.5rem 0"}>
-                      <Flex justifyContent={"center"}>
-                        <Button
-                          color={ThemeColors.lightColor}
-                          background={ThemeColors.darkColor}
-                          border={"1.7px solid " + ThemeColors.darkColor}
-                          borderRadius={"0.3rem"}
-                          padding={"1rem"}
-                          className="secondary-light-font"
-                          fontSize={"md"}
-                          _hover={{
-                            border: "1.7px solid " + ThemeColors.lightColor,
-                          }}
-                        >
-                          <FA.FaCartPlus
-                            size={20}
-                            style={{ margin: "0 0.5rem 0 0" }}
-                            color={ThemeColors.lightColor}
-                          />
-                          Add To cart
-                        </Button>
-                      </Flex>
-                    </Box>
-                  </Box>
-                </Box>
-              </Grid>
+              )}
             </Box>
           </Flex>
         </Box>

@@ -3,9 +3,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  userInfo: localStorage.getItem("tatli-app")
-    ? JSON.parse(localStorage.getItem("tatli-app"))
-    : null,
+  userInfo:
+    typeof window !== "undefined"
+      ? localStorage?.getItem("yookatale-app")
+        ? JSON.parse(localStorage?.getItem("yookatale-app"))
+        : null
+      : {},
 };
 
 const authSlice = createSlice({
@@ -14,11 +17,15 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action) => {
       state.userInfo = action.payload;
-      localStorage.setItem("tatli-app", JSON.stringify(action.payload));
+      typeof window !== "undefined"
+        ? localStorage?.setItem("yookatale-app", JSON.stringify(action.payload))
+        : (localStorage = null);
     },
     logout: (state, action) => {
       state.userInfo = null;
-      localStorage.removeItem("tatli-app");
+      typeof window !== "undefined"
+        ? localStorage?.removeItem("yookatale-app")
+        : (localStorage = null);
     },
   },
 });

@@ -18,15 +18,16 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "@slices/usersApiSlice";
 import { setCredentials } from "@slices/authSlice";
-import { toast } from "react-toastify";
 import { useToast } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const chakraToast = useToast();
+
+  const { refresh, push } = useRouter();
 
   // const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,28 +37,23 @@ const SignIn = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (userInfo) return redirect("/");
+    if (userInfo) return push("/");
   }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    console.log({ e });
-
     try {
       const res = await login({ email, password }).unwrap();
-      console.log({ res });
       dispatch(setCredentials({ ...res }));
       chakraToast({
         title: "Logged In",
-        description: `Successfully logged in as ${
-          res?.firstname + " " + res?.lastname
-        }`,
+        description: `Successfully logged in as ${res?.lastname}`,
         status: "success",
         duration: 5000,
         isClosable: false,
       });
-      redirect("/");
+      push("/");
     } catch (err) {
       chakraToast({
         title: "Error has occured",

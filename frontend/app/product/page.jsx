@@ -1,13 +1,114 @@
 "use client";
 
-import { Box, Button, Flex, Grid, Heading, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Heading,
+  Text,
+  Image,
+  useToast,
+} from "@chakra-ui/react";
 import { DisplayImages, Images, ThemeColors } from "@constants/constants";
-import React from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
+// import Image from "next/image";
 import { FaCartPlus, FaMinus, FaPlus } from "react-icons/fa";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import {
+  useCartCreateMutation,
+  useProductGetMutation,
+} from "@slices/usersApiSlice";
+import { redirect, useSearchParams, useRouter } from "next/navigation";
+import currency from "currency.js";
+import { useSelector } from "react-redux";
 
-const page = () => {
+const UGX = (value) =>
+  currency(value, { symbol: "UGX", precision: 0, separator: "," });
+
+const Product = () => {
+  // get user information stored in the localstorage
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const chakraToast = useToast();
+
+  const { push } = useRouter();
+
+  // use the useSearchParam hooks from next/navigation to get url params
+  const searchParam = useSearchParams();
+
+  const param = searchParam.get("id");
+
+  // create state to hold fetched Product information
+  const [Product, setProduct] = useState({});
+
+  // initialize mutation function to fetch product data from database
+  const [fetchProduct] = useProductGetMutation();
+
+  const [addCartApi] = useCartCreateMutation();
+
+  // function handle fetching data
+  const handleDataFetch = async () => {
+    const res = await fetchProduct(param);
+
+    if (res.data?.status && res.data?.status == "Success") {
+      setProduct({ ...res.data?.data });
+    }
+  };
+
+  // fetch product categories
+  useEffect(() => {
+    handleDataFetch();
+  }, []);
+
+  // function to handle adding product to cart
+  const handleAddCart = async (ID) => {
+    // check if user has not logged in
+    if (!userInfo) {
+      chakraToast({
+        title: "Sign In is required",
+        description: `You need to sign in to add to cart`,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
+      push("/signin");
+      return;
+    }
+
+    try {
+      const res = await addCartApi({ productId: ID, userId: userInfo?._id });
+
+      if (res.data?.message) {
+        chakraToast({
+          title: "Success",
+          description: res.data?.message,
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+      }
+
+      if (res.error) {
+        chakraToast({
+          title: "Error",
+          description: res.error.data?.message,
+          status: "error",
+          duration: 5000,
+          isClosable: false,
+        });
+      }
+    } catch (err) {
+      chakraToast({
+        title: "Error",
+        description: err.message.error || err.error,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
+    }
+  };
+
   return (
     <>
       <Box>
@@ -16,7 +117,7 @@ const page = () => {
             <Heading as={"h2"} size={"sm"} display={"flex"}>
               Home/product/
               <Heading as={"h2"} size={"sm"} color={ThemeColors.darkColor}>
-                product plant
+                {Product?.category ? Product?.category : "category"}
               </Heading>
             </Heading>
           </Box>
@@ -30,7 +131,7 @@ const page = () => {
                     height={"100%"}
                   >
                     <Image
-                      src={Images.img2}
+                      src={Product?.images ? `${Product?.images[0]}` : ""}
                       style={{
                         width: "auto",
                         height: "100%",
@@ -53,25 +154,27 @@ const page = () => {
                       }}
                       gridGap={"1rem"}
                     >
-                      {DisplayImages.map((image, index) => (
-                        <Flex
-                          alignContent={"center"}
-                          justifyContent={"center"}
-                          height={"100%"}
-                          key={index}
-                          borderRadius={"0.3rem"}
-                          border={"1.7px solid " + ThemeColors.lightColor}
-                        >
-                          <Image
-                            src={image}
-                            style={{
-                              height: "auto",
-                              width: "100%",
-                              margin: "auto",
-                            }}
-                          />
-                        </Flex>
-                      ))}
+                      {Product?.images
+                        ? Product?.images.map((image, index) => (
+                            <Flex
+                              alignContent={"center"}
+                              justifyContent={"center"}
+                              height={"100%"}
+                              key={index}
+                              borderRadius={"0.3rem"}
+                              border={"1.7px solid " + ThemeColors.lightColor}
+                            >
+                              <Image
+                                src={image}
+                                style={{
+                                  height: "auto",
+                                  width: "100%",
+                                  margin: "auto",
+                                }}
+                              />
+                            </Flex>
+                          ))
+                        : ""}
                     </Grid>
                   </Box>
                 </Box>
@@ -79,14 +182,14 @@ const page = () => {
               <Box width={"55%"} padding={"2rem"}>
                 <Box padding={"1rem 0"}>
                   <Heading as={"h2"} size={"2xl"}>
-                    Green Apples
+                    {Product?.name ? Product?.name : "__"}
                   </Heading>
                   <Text
                     margin={"1rem 0 0.5rem 0"}
                     color={ThemeColors.secondaryColor}
                     fontSize={"2xl"}
                   >
-                    UGX 13,500
+                    {UGX(Product?.price ? Product?.price : 0).format()}
                   </Text>
                   <Text
                     margin={"0.5rem 0"}
@@ -94,23 +197,17 @@ const page = () => {
                     color={ThemeColors.darkColor}
                     fontSize={"lg"}
                   >
-                    Fresh produce
+                    {Product?.category ? Product?.category : "__"}
                   </Text>
                 </Box>
                 <Box padding={"1rem 0"}>
                   <Text>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Aliquid quisquam iusto accusamus voluptates ipsum fuga, quam
-                    error. Minima dicta ipsum pariatur sed maiores adipisci
-                    magni impedit, in veritatis quos velit eveniet perferendis
-                    architecto provident fuga. A possimus, accusantium totam
-                    harum quam, odio ab voluptatibus optio laborum nobis
-                    laudantium deleniti fugiat.
+                    {Product?.description ? Product?.description : "__"}
                   </Text>
                 </Box>
                 <Box padding={"0.5rem 0"}>
                   <Flex>
-                    <Box paddingRight="1rem">
+                    {/* <Box paddingRight="1rem">
                       <Flex
                         borderRadius={"0.3rem"}
                         border={"1.7px solid " + ThemeColors.darkColor}
@@ -139,7 +236,7 @@ const page = () => {
                           <AiOutlineMinus size={25} />
                         </Button>
                       </Flex>
-                    </Box>
+                    </Box> */}
                     <Box padding={"0.3rem 1rem"}>
                       <Button
                         color={ThemeColors.lightColor}
@@ -152,6 +249,9 @@ const page = () => {
                         _hover={{
                           border: "1.7px solid " + ThemeColors.lightColor,
                         }}
+                        onClick={() =>
+                          handleAddCart(Product?._id ? Product?._id : "")
+                        }
                       >
                         <FaCartPlus
                           size={20}
@@ -214,4 +314,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Product;

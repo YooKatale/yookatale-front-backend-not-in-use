@@ -16,7 +16,7 @@ const newID = v4();
 const fsPromises = fs.promises;
 
 export const Protect = TryCatch(async (req, res, next) => {
-  let token = req.cookies.jwttatli;
+  let token = req.cookies.jwtYookatale;
 
   if (!token) throw new Error("Not authorized. No token found");
 
