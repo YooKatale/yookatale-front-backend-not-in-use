@@ -121,9 +121,12 @@ const Product = () => {
               </Heading>
             </Heading>
           </Box>
-          <Box padding={"1rem 2rem"}>
-            <Flex borderTop={"1.7px solid " + ThemeColors.lightColor}>
-              <Box width={"45%"}>
+          <Box padding={{ base: "1rem 0", md: "1rem 0", xl: "1rem 2rem" }}>
+            <Flex
+              borderTop={"1.7px solid " + ThemeColors.lightColor}
+              direction={{ base: "column", md: "column", xl: "row" }}
+            >
+              <Box width={{ base: "100%", md: "90%", xl: "45%" }}>
                 <Box id="main-product-image" position={"relative"}>
                   <Flex
                     alignContent={"center"}
@@ -141,17 +144,13 @@ const Product = () => {
                   </Flex>
                   <Box padding={"1rem 0"}>
                     <Grid
-                      gridTemplateColumns={{
-                        base: "repeat(1, 1fr)",
-                        md: "repeat(2, 1fr)",
-                        xl: `repeat(${
-                          parseInt(DisplayImages.length)
-                            ? parseInt(DisplayImages.length) > 5
-                              ? 5
-                              : parseInt(DisplayImages.length)
-                            : 5
-                        }, 1fr)`,
-                      }}
+                      gridTemplateColumns={`repeat(${
+                        parseInt(DisplayImages.length)
+                          ? parseInt(DisplayImages.length) > 5
+                            ? 5
+                            : parseInt(DisplayImages.length)
+                          : 5
+                      }, 1fr)`}
                       gridGap={"1rem"}
                     >
                       {Product?.images
@@ -179,7 +178,10 @@ const Product = () => {
                   </Box>
                 </Box>
               </Box>
-              <Box width={"55%"} padding={"2rem"}>
+              <Box
+                width={{ base: "100%", md: "90%", xl: "55%" }}
+                padding={{ base: "2rem 0", md: "2rem 0", xl: "2rem" }}
+              >
                 <Box padding={"1rem 0"}>
                   <Heading as={"h2"} size={"2xl"}>
                     {Product?.name ? Product?.name : "__"}

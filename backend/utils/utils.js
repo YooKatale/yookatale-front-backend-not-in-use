@@ -39,7 +39,7 @@ export const generateToken = (res, userId) => {
   res.cookie("jwtYookatale", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development" ? true : false,
-    sameSite: "strict",
+    sameSite: "none",
     maxAge: 3 * 24 * 60 * 60 * 1000,
   });
 };
