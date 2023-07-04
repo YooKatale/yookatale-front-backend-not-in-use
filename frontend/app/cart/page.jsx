@@ -254,140 +254,170 @@ const Cart = () => {
   return (
     <>
       <Box>
-        <Box padding={"1rem 2rem"}>
+        <Box
+          padding={{
+            base: "1rem 2rem 5rem 2rem",
+            md: "1rem 2rem 5rem 2rem",
+            xl: "1rem 2rem",
+          }}
+        >
           <Box>
             <Heading as={"h2"} size={"lg"}>
               Your Cart
             </Heading>
           </Box>
-          <Box padding={"1rem 3rem"}>
-            <Box padding={"0.5rem 0"}>
-              <Flex>
-                <Box width={"15%"} padding={"0.5rem 1rem"}>
-                  <Heading as={"h2"} size={"md"}>
-                    Image
-                  </Heading>
-                </Box>
-                <Box width={"25%"} padding={"0.5rem 1rem"}>
-                  <Heading as={"h2"} size={"md"}>
-                    Name
-                  </Heading>
-                </Box>
-                <Box width={"15%"} padding={"0.5rem 1rem"}>
-                  <Heading as={"h2"} size={"md"}>
-                    Quantity
-                  </Heading>
-                </Box>
-                <Box width={"15%"} padding={"0.5rem 1rem"}>
-                  <Heading as={"h2"} size={"md"}>
-                    Unit Price
-                  </Heading>
-                </Box>
-                <Box width={"20%"} padding={"0.5rem 1rem"}>
-                  <Heading as={"h2"} size={"md"}>
-                    Total
-                  </Heading>
-                </Box>
-                <Box width={"10%"}></Box>
-              </Flex>
-            </Box>
-            <Box
-              padding={"0.5rem 0"}
-              borderBottom={"1.7px solid " + ThemeColors.lightColor}
-            >
-              {Cart.length > 0 ? (
-                Cart.map((cart, index) => (
-                  <Flex key={cart?.cartId ? cart?.cartId : index}>
-                    <Box width={"15%"} padding={"0 2rem"}>
-                      <Flex
-                        alignContent={"center"}
-                        justifyContent={"center"}
-                        height={"100%"}
-                      >
-                        <Image
-                          alt=""
-                          src={`${cart?.images ? cart.images : ""}`}
-                          style={{
-                            height: "auto",
-                            width: "100%",
-                            margin: "auto",
-                          }}
-                        />
-                      </Flex>
-                    </Box>
-                    <Box width={"25%"} padding={"1rem"}>
-                      <Text fontSize={"2xl"}>
-                        {cart?.name ? cart?.name : ""}
-                      </Text>
-                    </Box>
-                    <Box width={"15%"} padding={"1rem"}>
-                      <Flex
-                        borderRadius={"0.3rem"}
-                        border={"1.7px solid " + ThemeColors.darkColor}
-                        padding={"0.2rem"}
-                      >
-                        <Button
-                          background={"none"}
-                          padding={"0.2rem"}
-                          margin={"0 0.2rem"}
-                          onClick={() =>
-                            IncreaseProductQuantity(
-                              cart?.cartId ? cart?.cartId : index
-                            )
-                          }
+          <Box
+            padding={{
+              base: "1rem 0 3rem 0",
+              md: "1rem 0 3rem 0",
+              xl: "1rem 3rem",
+            }}
+            overflowX={"auto"}
+          >
+            <Box width={{ base: "300%", md: "250%", xl: "100%" }}>
+              <Box padding={"0.5rem 0"}>
+                <Flex flexShrink={0} width={"100%"}>
+                  <Box width={"15%"} padding={"0.5rem 1rem"}>
+                    <Heading as={"h2"} size={"md"}>
+                      Image
+                    </Heading>
+                  </Box>
+                  <Box
+                    width={{ base: "20%", md: "20%", xl: "25%" }}
+                    padding={"0.5rem 1rem"}
+                  >
+                    <Heading as={"h2"} size={"md"}>
+                      Name
+                    </Heading>
+                  </Box>
+                  <Box
+                    width={{ base: "20%", md: "20%", xl: "15%" }}
+                    padding={"0.5rem 1rem"}
+                  >
+                    <Heading as={"h2"} size={"md"}>
+                      Quantity
+                    </Heading>
+                  </Box>
+                  <Box width={"15%"} padding={"0.5rem 1rem"}>
+                    <Heading as={"h2"} size={"md"}>
+                      Unit Price
+                    </Heading>
+                  </Box>
+                  <Box width={"20%"} padding={"0.5rem 1rem"}>
+                    <Heading as={"h2"} size={"md"}>
+                      Total
+                    </Heading>
+                  </Box>
+                  <Box width={"10%"}></Box>
+                </Flex>
+              </Box>
+              <Box
+                padding={"0.5rem 0"}
+                borderBottom={"1.7px solid " + ThemeColors.lightColor}
+              >
+                {Cart.length > 0 ? (
+                  Cart.map((cart, index) => (
+                    <Flex
+                      key={cart?.cartId ? cart?.cartId : index}
+                      flexShrink={1}
+                    >
+                      <Box width={"15%"} padding={"0 2rem"}>
+                        <Flex
+                          alignContent={"center"}
+                          justifyContent={"center"}
+                          height={"100%"}
                         >
-                          <AiOutlinePlus size={21} />
-                        </Button>
-                        <Box
-                          padding={"0.2rem"}
+                          <Image
+                            alt=""
+                            src={`${cart?.images ? cart.images : ""}`}
+                            style={{
+                              height: "auto",
+                              width: "100%",
+                              margin: "auto",
+                            }}
+                          />
+                        </Flex>
+                      </Box>
+                      <Box
+                        width={{ base: "20%", md: "20%", xl: "25%" }}
+                        padding={"1rem"}
+                      >
+                        <Text fontSize={{ base: "lg", md: "lg", xl: "2xl" }}>
+                          {cart?.name ? cart?.name : ""}
+                        </Text>
+                      </Box>
+                      <Box
+                        width={{ base: "20%", md: "20%", xl: "15%" }}
+                        padding={"1rem"}
+                      >
+                        <Flex
                           borderRadius={"0.3rem"}
                           border={"1.7px solid " + ThemeColors.darkColor}
-                          width={"3rem"}
-                        >
-                          <Text fontSize={"md"}>
-                            {cart?.quantity ? cart?.quantity : 1}
-                          </Text>
-                        </Box>
-                        <Button
-                          background={"none"}
                           padding={"0.2rem"}
-                          margin={"0 0.2rem"}
-                          onClick={() =>
-                            ReduceProductQuantity(
-                              cart?.cartId ? cart?.cartId : index
-                            )
-                          }
                         >
-                          <AiOutlineMinus size={21} />
-                        </Button>
-                      </Flex>
-                    </Box>
-                    <Box width={"15%"} padding={"1rem"}>
-                      <Text fontSize={"2xl"}>
-                        {UGX(cart?.price ? cart?.price : 0).format()}
-                      </Text>
-                    </Box>
-                    <Box width={"20%"} padding={"1rem"}>
-                      <Text fontSize={"2xl"}>
-                        {cart?.total
-                          ? UGX(cart?.total ? cart?.total : 0).format()
-                          : 0}
-                      </Text>
-                    </Box>
-                    <Box width={"10%"} padding={"1rem"}>
-                      <FaTrashAlt
-                        size={30}
-                        onClick={() => handleDeleteCartItem(cart?.cartId)}
-                        style={{ cursor: "pointer" }}
-                      />
-                    </Box>
-                  </Flex>
-                ))
-              ) : (
-                <Box padding={"3rem 0"}>
-                  <Text fontSize={"3xl"}>Your cart is empty</Text>
-                </Box>
-              )}
+                          <Button
+                            background={"none"}
+                            padding={"0.2rem"}
+                            margin={"0 0.2rem"}
+                            onClick={() =>
+                              IncreaseProductQuantity(
+                                cart?.cartId ? cart?.cartId : index
+                              )
+                            }
+                          >
+                            <AiOutlinePlus size={21} />
+                          </Button>
+                          <Box
+                            padding={"0.2rem"}
+                            borderRadius={"0.3rem"}
+                            border={"1.7px solid " + ThemeColors.darkColor}
+                            width={"3rem"}
+                          >
+                            <Text fontSize={"md"}>
+                              {cart?.quantity ? cart?.quantity : 1}
+                            </Text>
+                          </Box>
+                          <Button
+                            background={"none"}
+                            padding={"0.2rem"}
+                            margin={"0 0.2rem"}
+                            onClick={() =>
+                              ReduceProductQuantity(
+                                cart?.cartId ? cart?.cartId : index
+                              )
+                            }
+                          >
+                            <AiOutlineMinus size={21} />
+                          </Button>
+                        </Flex>
+                      </Box>
+                      <Box width={"15%"} padding={"1rem"}>
+                        <Text fontSize={{ base: "lg", md: "lg", xl: "2xl" }}>
+                          {UGX(cart?.price ? cart?.price : 0).format()}
+                        </Text>
+                      </Box>
+                      <Box width={"20%"} padding={"1rem"}>
+                        <Text fontSize={{ base: "lg", md: "lg", xl: "2xl" }}>
+                          {cart?.total
+                            ? UGX(cart?.total ? cart?.total : 0).format()
+                            : 0}
+                        </Text>
+                      </Box>
+                      <Box width={"10%"} padding={"1rem"}>
+                        <FaTrashAlt
+                          size={30}
+                          onClick={() => handleDeleteCartItem(cart?.cartId)}
+                          style={{ cursor: "pointer" }}
+                        />
+                      </Box>
+                    </Flex>
+                  ))
+                ) : (
+                  <Box padding={"3rem 0"}>
+                    <Text fontSize={"3xl"}>Your cart is empty</Text>
+                  </Box>
+                )}
+              </Box>
             </Box>
           </Box>
           {Cart.length > 0 ? (

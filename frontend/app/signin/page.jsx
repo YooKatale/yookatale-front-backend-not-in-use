@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   const chakraToast = useToast();
 
@@ -32,7 +33,7 @@ const SignIn = () => {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -44,8 +45,13 @@ const SignIn = () => {
     e.preventDefault();
 
     try {
+      // set loading to be true
+      setLoading((prevState) => (prevState ? false : true));
+
       const res = await login({ email, password }).unwrap();
+
       dispatch(setCredentials({ ...res }));
+
       chakraToast({
         title: "Logged In",
         description: `Successfully logged in as ${res?.lastname}`,
@@ -53,8 +59,12 @@ const SignIn = () => {
         duration: 5000,
         isClosable: false,
       });
+
       push("/");
     } catch (err) {
+      // set loading to be false
+      setLoading((prevState) => (prevState ? false : true));
+
       chakraToast({
         title: "Error has occured",
         description: err.data?.message
@@ -88,7 +98,15 @@ const SignIn = () => {
             </Flex>
           </Box>
           <Flex>
-            <Box margin={"auto"} width={"50%"} padding={"1rem"}>
+            <Box
+              margin={"auto"}
+              width={{ base: "90%", md: "80%", xl: "50%" }}
+              padding={{
+                base: "1rem 0 3rem 0",
+                md: "1rem 0 3rem 0",
+                xl: "1rem",
+              }}
+            >
               <form onSubmit={submitHandler}>
                 <FormControl>
                   <FormLabel htmlFor="email">Email</FormLabel>
@@ -112,7 +130,6 @@ const SignIn = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </FormControl>
-                {isLoading && <Spinner size={"lg"} />}
                 <Box padding="1rem 0">
                   <Text display="flex">
                     Create new account{" "}
@@ -142,7 +159,7 @@ const SignIn = () => {
                       color: ThemeColors.darkColor,
                     }}
                   >
-                    Sign In
+                    {isLoading ? <Spinner /> : "Sign In"}
                   </Button>
                 </Box>
               </form>

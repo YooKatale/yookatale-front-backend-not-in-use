@@ -38,17 +38,19 @@ const whitelist = [
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Access denied"));
-    }
+    if (!origin) return callback(null, true);
+
+    if (whitelist.indexOf(origin) === -1)
+      return callback(new Error("Access denied"));
+
+    return callback(null, true);
   },
   optionSuccessStatus: 200,
+  credentials: true,
 };
 
-app.use(env === "production" ? cors(corsOptions) : cors());
-// app.use(cors());
+// app.use(env === "production" ? cors(corsOptions) : cors());
+app.use(cors(corsOptions));
 app.use("/api", router);
 
 app.use(NotFound);

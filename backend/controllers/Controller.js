@@ -8,6 +8,7 @@ import Order from "../models/Order.model.js";
 import dotenv from "dotenv";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uniqueString } from "uuid";
+import Comment from "../models/Comments.model.js";
 
 dotenv.config();
 
@@ -92,7 +93,7 @@ export const registerUserPost = TryCatch(async (req, res) => {
 
 // public route to logout user and remove token
 export const logoutUserPost = TryCatch(async (req, res) => {
-  res.cookie("jwt", "", {
+  res.cookie("jwtYookatale", "", {
     httpOnly: true,
     expires: new Date(0),
   });
@@ -137,7 +138,7 @@ export const createNewProductPost = TryCatch(async (req, res) => {
     name,
     category,
     description,
-    subCategory: "",
+    subCategory,
     images,
     price,
   });
@@ -179,21 +180,28 @@ export const fetchProductGet = TryCatch(async (req, res) => {
 
 // public function to fetch all products
 export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
-  const data = req.params.data;
+  // categories passed shall be an array
+  const data = req.params.data ? JSON.parse(req.params.data) : [];
 
-  // fetch by category. If products exists return them else fetch by subCategory
-  let ProductsCategory = await Product.find({ category: data });
+  // loop through the categories passed and fetch products for each category and store them in the ProductsCategory object
+  let ProductsCategory = [];
 
-  if (env === "production") {
-    for (const product of ProductsCategory) {
-      product.images = await fetchImageUrl(product.images[0]);
+  for (const param of data) {
+    let productsFetched = await Product.find({ category: param });
+
+    // check if products were found in category attribute, if not check in the subCategory attribute
+    if (!productsFetched || productsFetched.length < 1) {
+      productsFetched = await Product.find({ subCategory: param });
     }
+
+    if (env === "production") {
+      for (const product of productsFetched) {
+        product.images = await fetchImageUrl(product.images[0]);
+      }
+    }
+
+    ProductsCategory.push({ [param]: productsFetched });
   }
-
-  if (ProductsCategory && ProductsCategory.length > 0)
-    return res.status(200).json({ status: "Success", data: ProductsCategory });
-
-  ProductsCategory = await Product.find({ subCategory: data });
 
   res.status(200).json({ status: "Success", data: ProductsCategory });
 });
@@ -486,6 +494,7 @@ export const createNewOrderPost = TryCatch(async (req, res) => {
   res.status(200).json({ status: "Success" });
 });
 
+// private function to fetch orders
 export const fetchOrdersGet = TryCatch(async (req, res) => {
   const param = req.params.data;
 
@@ -502,3 +511,11 @@ export const fetchOrdersGet = TryCatch(async (req, res) => {
     .status(200)
     .json({ status: "Success", data: { CompletedOrders, AllOrders } });
 });
+
+// public function to add comments
+export const fetchCommentsGet = TryCatch(async (req, res) => {
+  const Comments = await Comment.find();
+
+  res.status(200).json({ status: "Success", data: Comments });
+});
+// public function to fetch comments

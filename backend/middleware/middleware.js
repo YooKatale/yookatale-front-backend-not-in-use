@@ -46,7 +46,8 @@ export const ErrorHandler = (err, req, res, next) => {
     message = "Database error. Resource not found";
   }
 
-  console.log("\n" + chalk.redBright(message) + "\n");
+  process.env.NODE_ENV === "development" &&
+    console.log("\n" + chalk.redBright(message) + "\n");
 
   res.status(statusCode).json({
     message,

@@ -12,6 +12,7 @@ import {
   Grid,
   Select,
   Checkbox,
+  Spinner,
 } from "@chakra-ui/react";
 import { ThemeColors } from "@constants/constants";
 import Link from "next/link";
@@ -31,6 +32,7 @@ const SignUp = () => {
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
   const [vegan, setVegan] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const { push } = useRouter();
 
@@ -38,7 +40,7 @@ const SignUp = () => {
 
   const dispatch = useDispatch();
 
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -50,6 +52,9 @@ const SignUp = () => {
     e.preventDefault();
 
     try {
+      // set loading to be true
+      setLoading((prevState) => (prevState ? false : true));
+
       const res = await register({
         firstname,
         lastname,
@@ -69,8 +74,12 @@ const SignUp = () => {
         duration: 5000,
         isClosable: false,
       });
+
       push("/");
     } catch (err) {
+      // set loading to be false
+      setLoading((prevState) => (prevState ? false : true));
+
       chakraToast({
         title: "Error",
         description: err.data?.message
@@ -104,7 +113,11 @@ const SignUp = () => {
             </Flex>
           </Box>
           <Flex>
-            <Box margin={"auto"} width={"60%"} padding={"1rem"}>
+            <Box
+              margin={"auto"}
+              width={{ base: "90%", md: "80%", xl: "60%" }}
+              padding={"1rem"}
+            >
               <form onSubmit={handleSubmit}>
                 <Grid
                   gridTemplateColumns={{
@@ -242,7 +255,7 @@ const SignUp = () => {
                       color: ThemeColors.darkColor,
                     }}
                   >
-                    Sign Up
+                    {isLoading ? <Spinner /> : "Sign Up"}
                   </Button>
                 </Box>
               </form>

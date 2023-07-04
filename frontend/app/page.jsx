@@ -30,6 +30,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import {
   useCartCreateMutation,
+  useCommentsGetMutation,
   useProductsCategoryGetMutation,
 } from "@slices/usersApiSlice";
 import currency from "currency.js";
@@ -37,63 +38,49 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
+import ProductCard from "@components/ProductCard";
+import SpecialProducts from "@components/SpecialProducts";
 
 const UGX = (value) =>
   currency(value, { symbol: "UGX", precision: 0, separator: "," });
 
 const Home = () => {
-  const [Products, setProducts] = useState([]);
+  const [Products, setProducts] = useState({ recommended: [], popular: [] });
+  const [Comments, setComments] = useState([]);
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [fetchProducts] = useProductsCategoryGetMutation();
-  const [addCartApi, { isLoading }] = useCartCreateMutation();
+  const [fetchProducts, { isLoading }] = useProductsCategoryGetMutation();
+
+  const [fetchComments] = useCommentsGetMutation();
 
   const { push } = useRouter();
+
   const chakraToast = useToast();
 
-  const handleDataFetch = async () => {
-    const res = await fetchProducts("featured");
+  const handleFetchCommentsData = async () => {
+    const res = await fetchComments().unwrap();
+
+    if (res?.status && res?.status == "Success") {
+      setComments(res?.data);
+    }
+  };
+
+  const handleFetchProductsData = async () => {
+    const res = await fetchProducts(JSON.stringify(["recommended", "popular"]));
 
     if (res.data?.status && res.data?.status == "Success") {
-      setProducts(res.data?.data);
+      setProducts({ ...res.data?.data[0] });
     }
   };
 
   // comment section slider navigation
   const [currSliderIndex, setCurrSliderIndex] = useState(0);
 
-  // const CommentsArr = [
-  //   {
-  //     name: "John Doe",
-  //     message:
-  //       "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iure amet ad animi quidem beatae in dicta eius, et eos repellendus!",
-  //   },
-  //   {
-  //     name: "Peter Doe",
-  //     message:
-  //       "Iure amet ad animi quidem beatae in dicta eius, et eos repellendus!",
-  //   },
-  //   {
-  //     name: "Carry Underwood",
-  //     message:
-  //       "Iure amet ad animi quidem beatae in dicta eius, et eos repellendus! Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
-  //   },
-  //   {
-  //     name: "Mary Doe",
-  //     message:
-  //       "Mollitia nisi ducimus soluta obcaecati cumque. Tempore incidunt, qui magni eius facilis illo quas officiis officia enim vel adipisci? Iure amet ad animi quidem beatae in dicta eius.",
-  //   },
-  // ];
-
-  const CommentsArr = [];
-
   const increaseSliderIndex = () => {
-    if (currSliderIndex > CommentsArr.length) {
-      console.log("Out of bound");
+    if (currSliderIndex === CommentsArr.length - 1) {
       setCurrSliderIndex((prev) => 0);
     } else {
-      console.log("In Bound");
       setCurrSliderIndex((prev) => prev + 1);
     }
   };
@@ -106,60 +93,11 @@ const Home = () => {
     }
   };
 
-  console.log({ currSliderIndex });
-
   // fetch product categories
   useEffect(() => {
-    handleDataFetch();
+    handleFetchCommentsData();
+    handleFetchProductsData();
   }, []);
-
-  // function to handle adding product to cart
-  const handleAddCart = async (ID) => {
-    // check if user has not logged in
-    if (!userInfo) {
-      chakraToast({
-        title: "Sign In is required",
-        description: `You need to sign in to add to cart`,
-        status: "error",
-        duration: 5000,
-        isClosable: false,
-      });
-      push("/signin");
-      return;
-    }
-
-    try {
-      const res = await addCartApi({ productId: ID, userId: userInfo?._id });
-
-      if (res.data?.message) {
-        chakraToast({
-          title: "Success",
-          description: res.data?.message,
-          status: "success",
-          duration: 5000,
-          isClosable: false,
-        });
-      }
-
-      if (res.error) {
-        chakraToast({
-          title: "Error",
-          description: res.error.data?.message,
-          status: "error",
-          duration: 5000,
-          isClosable: false,
-        });
-      }
-    } catch (err) {
-      chakraToast({
-        title: "Error",
-        description: err.message.error || err.error,
-        status: "error",
-        duration: 5000,
-        isClosable: false,
-      });
-    }
-  };
 
   return (
     <>
@@ -170,9 +108,9 @@ const Home = () => {
       {/* section one */}
       <Box padding={"3rem 0"}>
         <Flex>
-          <Box margin={"auto"} width={"70%"}>
-            <Flex>
-              <Box width={"50%"}>
+          <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "70%" }}>
+            <Flex direction={{ base: "column", md: "column", xl: "row" }}>
+              <Box width={{ base: "100%", md: "100%", xl: "50%" }}>
                 <Flex padding={"0 1rem"}>
                   <Box padding={"1rem "}>
                     <FaTruckLoading size={80} color={ThemeColors.darkColor} />
@@ -197,7 +135,7 @@ const Home = () => {
                   </Box>
                 </Flex>
               </Box>
-              <Box width={"50%"}>
+              <Box width={{ base: "100%", md: "100%", xl: "50%" }}>
                 <Flex padding={"0 1rem"}>
                   <Box padding={"1rem "}>
                     <FaMoneyCheck size={80} color={ThemeColors.darkColor} />
@@ -227,7 +165,7 @@ const Home = () => {
         </Flex>
       </Box>
       {/* section two */}
-      {Products.length > 0 ? (
+      {Products?.recommended?.length > 0 ? (
         <Box
           padding={"3rem 0"}
           borderBottom={"1.7px solid " + ThemeColors.lightColor}
@@ -236,7 +174,7 @@ const Home = () => {
             <Box margin={"auto"} width={"90%"}>
               <Box padding={"2rem 0"}>
                 <Heading as={"h2"} fontSize={"3xl"} textAlign={"center"}>
-                  Featured Products
+                  Recommended Products
                 </Heading>
                 <Flex>
                   <Box
@@ -247,105 +185,56 @@ const Home = () => {
                   ></Box>
                 </Flex>
               </Box>
-              <Grid
-                gridTemplateColumns={{
-                  base: "repeat(1, 1fr)",
-                  md: "repeat(2, 1fr)",
-                  xl: "repeat(4, 1fr)",
-                }}
-                gridGap={"1rem"}
-              >
-                {Products.map((product, index) => (
-                  <Box
-                    padding={"1rem"}
-                    background={"#fff"}
-                    borderRadius={"md"}
-                    _hover={{
-                      boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                    }}
-                    key={index}
-                  >
-                    <Box height={"200px"} padding="0.5rem">
-                      <Link href={`/product?id=${product._id}`}>
-                        <Flex
-                          alignContent={"center"}
-                          justifyContent={"center"}
-                          height={"100%"}
-                        >
-                          <Image
-                            src={`${product.images}`}
-                            width={"auto"}
-                            style={{
-                              width: "auto",
-                              height: "100%",
-                              margin: "auto",
-                            }}
-                          />
-                        </Flex>
-                      </Link>
-                    </Box>
-                    <Box padding={"0.5rem 0"}>
-                      <Text
-                        textAlign={"center"}
-                        className="secondary-light-font"
-                        fontSize={"2xl"}
-                      >
-                        {product.name}
-                      </Text>
-                      <Heading
-                        as={"h3"}
-                        margin={"0.5rem 0"}
-                        textAlign={"center"}
-                        className="secondary-extra-bold"
-                        fontSize={"2xl"}
-                        color={ThemeColors.darkColor}
-                      >
-                        {UGX(product.price).format()}
-                      </Heading>
-                      <Box padding={"1rem 0"}>
-                        <Flex justifyContent={"center"}>
-                          <Button
-                            color={ThemeColors.lightColor}
-                            background={ThemeColors.darkColor}
-                            border={"1.7px solid " + ThemeColors.darkColor}
-                            borderRadius={"0.3rem"}
-                            padding={"1.5rem"}
-                            className="secondary-light-font"
-                            fontSize={"lg"}
-                            _hover={{
-                              border: "1.7px solid " + ThemeColors.lightColor,
-                            }}
-                            onClick={() => handleAddCart(product._id)}
-                          >
-                            {isLoading ? (
-                              <Spinner />
-                            ) : (
-                              <FaCartPlus
-                                size={26}
-                                style={{ margin: "0 0.5rem 0 0" }}
-                                color={ThemeColors.lightColor}
-                              />
-                            )}
-                            Add To cart
-                          </Button>
-                        </Flex>
-                      </Box>
-                    </Box>
-                  </Box>
-                ))}
-              </Grid>
+              <SpecialProducts
+                Products={Products?.recommended}
+                UGX={UGX}
+                userInfo={userInfo}
+              />
             </Box>
           </Flex>
         </Box>
       ) : (
         ""
       )}
-      {/* Section three */}
+      {/* section three */}
+      {Products?.popular?.length > 0 ? (
+        <Box
+          padding={"3rem 0"}
+          borderBottom={"1.7px solid " + ThemeColors.lightColor}
+        >
+          <Flex>
+            <Box margin={"auto"} width={"90%"}>
+              <Box padding={"2rem 0"}>
+                <Heading as={"h2"} fontSize={"3xl"} textAlign={"center"}>
+                  Popular Products
+                </Heading>
+                <Flex>
+                  <Box
+                    height={"0.2rem"}
+                    width={"10rem"}
+                    margin={"1rem auto"}
+                    background={ThemeColors.primaryColor}
+                  ></Box>
+                </Flex>
+              </Box>
+              <SpecialProducts
+                Products={Products?.popular}
+                UGX={UGX}
+                userInfo={userInfo}
+              />
+            </Box>
+          </Flex>
+        </Box>
+      ) : (
+        ""
+      )}
+      {/* Section four */}
       <Box>
-        {CommentsArr.length > 0 ? (
+        {Comments.length > 0 ? (
           <Box
             padding={"2rem 0 3rem 0"}
             borderBottom={"1.7px solid " + ThemeColors.lightColor}
+            position={"relative"}
           >
             <Box padding={"2rem 0"}>
               <Heading as={"h2"} fontSize={"3xl"} textAlign={"center"}>
@@ -360,12 +249,12 @@ const Home = () => {
                 ></Box>
               </Flex>
             </Box>
-            <Box position={"relative"}>
+            <Box>
               <Box
                 cursor={"pointer"}
                 position={"absolute"}
-                top={"45%"}
-                left={"15%"}
+                top={"50%"}
+                left={{ base: "5%", md: "10%", xl: "15%" }}
               >
                 <AI.AiOutlineArrowLeft
                   size={35}
@@ -375,8 +264,8 @@ const Home = () => {
               <Box
                 cursor={"pointer"}
                 position={"absolute"}
-                top={"45%"}
-                right={"15%"}
+                top={"50%"}
+                right={{ base: "5%", md: "10%", xl: "15%" }}
               >
                 <AI.AiOutlineArrowRight
                   size={35}
@@ -385,9 +274,12 @@ const Home = () => {
               </Box>
             </Box>
             <Flex>
-              <Box margin={"auto"} width={"40%"}>
+              <Box
+                margin={"auto"}
+                width={{ base: "80%", md: "60%", xl: "40%" }}
+              >
                 <Flex justifyContent={"center"}>
-                  {CommentsArr.map((comment, index) =>
+                  {Comments.map((comment, index) =>
                     index === currSliderIndex ? (
                       <Box key={index}>
                         <Heading as={"h3"} size={"md"} textAlign={"center"}>
@@ -419,10 +311,24 @@ const Home = () => {
       <Box>
         <Box padding={"3rem 0"}>
           <Flex>
-            <Box margin={"auto"} width={"70%"}>
-              <Flex>
-                <Box width={"50%"}>
-                  <Flex padding={"0 1rem"}>
+            <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "70%" }}>
+              <Flex
+                direction={{ base: "column", md: "column", xl: "row" }}
+                justifyContent={{
+                  base: "center",
+                  md: "center",
+                  xl: "space-between",
+                }}
+              >
+                <Box width={{ base: "100%", md: "90%", xl: "50%" }}>
+                  <Flex
+                    padding={"0 1rem"}
+                    justifyContent={{
+                      base: "center",
+                      md: "center",
+                      xl: "none",
+                    }}
+                  >
                     <Box padding={"1rem "}>
                       {/* <FaPhone size={40} color={ThemeColors.darkColor} /> */}
                       <HI.HiOutlinePhoneOutgoing
@@ -450,8 +356,15 @@ const Home = () => {
                     </Box>
                   </Flex>
                 </Box>
-                <Box width={"50%"}>
-                  <Flex padding={"0 1rem"}>
+                <Box width={{ base: "100%", md: "90%", xl: "50%" }}>
+                  <Flex
+                    padding={"0 1rem"}
+                    justifyContent={{
+                      base: "center",
+                      md: "center",
+                      xl: "none",
+                    }}
+                  >
                     <Box padding={"1rem "}>
                       {/* <FaEnvelope size={40} color={ThemeColors.darkColor} /> */}
                       <HI.HiOutlineMail
@@ -473,7 +386,7 @@ const Home = () => {
                         className="secondary-light-font"
                         style={{ fontSize: "1.1rem" }}
                       >
-                        contact@tatli.com
+                        info@yookatale.com
                       </Text>
                     </Box>
                   </Flex>

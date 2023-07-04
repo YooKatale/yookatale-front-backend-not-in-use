@@ -13,9 +13,12 @@ const Hero = () => {
         borderBottom={"1.7px solid " + ThemeColors.lightColor}
       >
         <Flex>
-          <Box margin={"auto"} width={"80%"}>
-            <Flex>
-              <Box width={"60%"} padding={"1rem"}>
+          <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "80%" }}>
+            <Flex direction={{ base: "column", md: "column", xl: "row" }}>
+              <Box
+                width={{ base: "100%", md: "100%", xl: "60%" }}
+                padding={"1rem"}
+              >
                 <Heading
                   as={"h3"}
                   textAlign={"center"}
@@ -63,7 +66,10 @@ const Hero = () => {
                   </Flex>
                 </Box>
               </Box>
-              <Box width={"40%"}>
+              <Box
+                width={"40%"}
+                display={{ base: "none", md: "none", xl: "block" }}
+              >
                 <Image src={Images.img} style={{ width: "100%" }} />
               </Box>
             </Flex>

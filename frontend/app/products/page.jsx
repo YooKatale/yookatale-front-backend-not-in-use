@@ -161,9 +161,9 @@ const Products = () => {
     <>
       <Box>
         <Box padding={"2rem"}>
-          <Flex>
+          <Flex direction={{ base: "column", md: "column", xl: "row" }}>
             <Box
-              width={"25%"}
+              width={{ base: "100%", md: "100%", xl: "25%" }}
               borderRight={"1.7px solid " + ThemeColors.lightColor}
               padding={"0 1rem"}
             >
@@ -262,8 +262,21 @@ const Products = () => {
                 </Box>
               </Box>
             </Box>
-            <Box width={"75%"} padding={"0 0.5rem 1rem 0.5rem"}>
-              <Box padding={"0 1rem 0.5rem 1rem"}>
+            <Box
+              width={{ base: "100%", md: "100%", xl: "75%" }}
+              padding={{
+                base: "2rem 0.5rem 1rem 0.5rem",
+                md: "2rem 0.5rem 1rem 0.5rem",
+                xl: "0 0.5rem 1rem 0.5rem",
+              }}
+            >
+              <Box
+                padding={{
+                  base: "1rem 0",
+                  md: "1rem 0",
+                  xl: "0 1rem 0.5rem 1rem",
+                }}
+              >
                 <Heading as={"h2"} size={"md"} className="secondary-extra-bold">
                   {ProductsTitle}
                 </Heading>
@@ -271,8 +284,8 @@ const Products = () => {
               {Products.length > 0 ? (
                 <Grid
                   gridTemplateColumns={{
-                    base: "repeat(1, 1fr)",
-                    md: "repeat(2, 1fr)",
+                    base: "repeat(2, 1fr)",
+                    md: "repeat(3, 1fr)",
                     xl: "repeat(4, 1fr)",
                   }}
                   gridGap={"1rem"}
@@ -357,7 +370,7 @@ const Products = () => {
               ) : (
                 <Box>
                   <Box padding={"3rem 0"}>
-                    <Text fontSize={"3xl"}>No products currently</Text>
+                    <Text fontSize={"2xl"}>No products currently</Text>
                   </Box>
                 </Box>
               )}

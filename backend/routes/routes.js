@@ -6,6 +6,7 @@ import {
   createNewProductPost,
   deleteCart,
   fetchCartGet,
+  fetchCommentsGet,
   fetchOrdersGet,
   fetchProductGet,
   fetchProductsCategoryGet,
@@ -21,6 +22,7 @@ import { dirname } from "path";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { Protect } from "../middleware/middleware.js";
 
 dotenv.config();
 
@@ -53,10 +55,14 @@ router.get("/products", fetchProductsGet);
 router.get("/product/:data", fetchProductGet);
 router.get("/products/:data", fetchProductsCategoryGet);
 router.get("/products/filter/:data", fetchProductsFilterGet);
-router.route("/product/cart").post(createCartPost);
-router.route("/product/cart/:data").get(fetchCartGet).delete(deleteCart);
+router.route("/product/cart").post(Protect, createCartPost);
+router
+  .route("/product/cart/:data", Protect)
+  .get(fetchCartGet)
+  .delete(deleteCart);
 router.get("/products/search/:data", productSearchGet);
-router.post("/products/order", createNewOrderPost);
-router.get("/products/order/:data", fetchOrdersGet);
+router.post("/products/order", Protect, createNewOrderPost);
+router.get("/products/order/:data", Protect, fetchOrdersGet);
+router.get("/users/comments", fetchCommentsGet);
 
 export default router;
