@@ -1,6 +1,11 @@
 import validator from "validator";
 import User from "../models/User.model.js";
-import { TryCatch, fetchImageUrl, generateToken } from "../utils/utils.js";
+import {
+  TryCatch,
+  fetchImageUrl,
+  generateToken,
+  sanitizePhoneNumber,
+} from "../utils/utils.js";
 import Product from "../models/Product.model.js";
 import Cart from "../models/Cart.model.js";
 import { calcCartTotal, createFilterObjects } from "../custom/Custom.js";
@@ -9,6 +14,8 @@ import dotenv from "dotenv";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uniqueString } from "uuid";
 import Comment from "../models/Comments.model.js";
+import SubscriptionCard from "../models/SubscriptionCard.model.js";
+import Flutterwave from "flutterwave-node-v3";
 
 dotenv.config();
 
@@ -19,6 +26,10 @@ const awsAccessKey = process.env.AWS_ACCESS_KEY;
 const awsSecretKey = process.env.AWS_SECRET_KEY;
 const jwtSign = process.env.JWT_SECRET_SIGN;
 const env = process.env.NODE_ENV;
+const flwPublicKey = process.env.FLW_PUBLIC_KEY;
+const flwSecretKey = process.env.FLW_SECRET_KEY;
+
+const FLW = new Flutterwave(flwPublicKey, flwSecretKey);
 
 const S3 = new S3Client({
   credentials: {
@@ -180,6 +191,7 @@ export const fetchProductGet = TryCatch(async (req, res) => {
 
 // public function to fetch all products
 export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
+  console.log("called here");
   // categories passed shall be an array
   const data = req.params.data ? JSON.parse(req.params.data) : [];
 
@@ -414,7 +426,9 @@ export const createCartPost = TryCatch(async (req, res) => {
 export const deleteCart = TryCatch(async (req, res) => {
   const data = req.params.data;
 
-  await Cart.findOneAndRemove({ _id: data });
+  const cart = await Cart.findOneAndRemove({ _id: data });
+
+  if (!cart) throw Error("Operation failed");
 
   res.status(200).json({ status: "Success" });
 });
@@ -422,6 +436,8 @@ export const deleteCart = TryCatch(async (req, res) => {
 // public function to retrieve search params
 export const productSearchGet = TryCatch(async (req, res) => {
   const data = req.params.data;
+
+  console.log({ data });
 
   const ProductsFetch = await Product.find();
 
@@ -519,3 +535,78 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
   res.status(200).json({ status: "Success", data: Comments });
 });
 // public function to fetch comments
+// public function to create subscription cards
+export const createSubscriptionCard = TryCatch(async (req, res) => {
+  const { type, price, name, renewed, details, previousPrice } = req.body;
+
+  const NewSubscriptionCard = new SubscriptionCard({
+    type,
+    price,
+    name,
+    renewed,
+    details,
+    previousPrice,
+  });
+
+  await NewSubscriptionCard.save();
+
+  res.status(200).json({ status: "Success" });
+});
+
+// public function to fetch subscription card plans
+export const fetchSubscriptionCards = TryCatch(async (req, res) => {
+  const Cards = await SubscriptionCard.find();
+
+  res.status(200).json({ status: "Success", data: Cards });
+});
+
+// public function to create subscription
+export const createSubscriptionPost = TryCatch(async (req, res) => {
+  const { data } = req.body;
+
+  if (!data) throw new Error("Unexpected error occured. Please try again");
+
+  if (!data.paymentMethod) throw new Error("Payment method required");
+
+  let payload = {
+    phone_number: "",
+    network: "",
+    amount: 0,
+    currency: "UGX",
+    email: "",
+    tx_ref: "",
+  };
+
+  if (
+    data.paymentMethod == "mobile money" ||
+    data.paymentMethod == "mobileMoney"
+  ) {
+    // sanitize and validate data
+    const phone = sanitizePhoneNumber(data?.personalInfo?.phone);
+
+    if (phone.error) throw Error(phone.error);
+
+    payload = {
+      phone_number: phone.phone,
+      network: phone.network,
+      amount: data?.total,
+      currency: "UGX",
+      email: `${data?.personalInfo?.email}`,
+      tx_ref: uniqueString(),
+    };
+  }
+
+  const response = await FLW.MobileMoney.uganda(payload);
+
+  if (response.status == "success")
+    return res.status(200).json({
+      status: "Success",
+      data: { redirectURL: response.meta.authorization },
+    });
+
+  console.log({ response });
+});
+
+export const paymentWebhookGet = TryCatch(async (req, res) => {
+  console.log(req);
+});

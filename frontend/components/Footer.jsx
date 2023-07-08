@@ -27,12 +27,19 @@ const Footer = () => {
               >
                 yookatale
               </Text>{" "}
-              All rights reserved
+              <span style={{ margin: "0.1rem 0 0 0" }}>
+                All rights reserved
+              </span>
             </Text>
           </Box>
           <Spacer display={{ base: "none", md: "none", xl: "block" }} />
           <Box padding={{ base: "0", md: "0", xl: "1rem 0" }}>
             <Flex justifyContent={{ base: "center", md: "center", xl: "none" }}>
+              <Link href={"/faqs"}>
+                <Box padding={"1rem"}>
+                  <Text fontSize={"md"}>Faqs</Text>
+                </Box>
+              </Link>
               <Link href={"/privacy"}>
                 <Box padding={"1rem"}>
                   <Text fontSize={"md"}>Privacy Policy</Text>

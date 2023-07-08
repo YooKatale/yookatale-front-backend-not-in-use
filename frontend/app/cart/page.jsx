@@ -67,34 +67,45 @@ const Cart = () => {
   const handleDataFetch = async () => {
     const res = await fetchCart(userInfo?._id).unwrap();
 
-    if (res.status && res.status == "Success") {
-      // combine the data of each cart item with its products information into one single object
-      // variables to hold data for cart items and product items
-      let CartItems = res?.data.CartItems ? res?.data.CartItems : [];
-      let CartProductsItems = res?.data.CartProductsItems
-        ? res?.data.CartProductsItems
-        : [];
+    try {
+      if (res.status && res.status == "Success") {
+        // combine the data of each cart item with its products information into one single object
+        // variables to hold data for cart items and product items
+        let CartItems = res?.data.CartItems ? res?.data.CartItems : [];
+        let CartProductsItems = res?.data.CartProductsItems
+          ? res?.data.CartProductsItems
+          : [];
 
-      // loop through the arrays and combine the data
-      if (CartItems?.length > 0 && CartProductsItems?.length > 0) {
-        for (let i = 0; i < CartItems.length; i++) {
-          for (let x = 0; x < CartProductsItems.length; x++) {
-            if (CartItems[i].productId == CartProductsItems[x]._id) {
-              CartProductsItems[x] = {
-                ...CartProductsItems[x],
-                cartId: CartItems[i]._id,
-                user: CartItems[i].user,
-                quantity: 1,
-                total: CartProductsItems[x]?.price,
-              };
-            }
+        const TempCart = [];
+
+        // loop through the arrays and combine the data
+        if (CartItems?.length > 0 && CartProductsItems?.length > 0) {
+          for (let cart of CartItems) {
+            TempCart.push({
+              ...cart,
+              cartId: cart._id,
+              ...CartProductsItems.filter(
+                (product) => product._id === cart.productId
+              )[0],
+            });
           }
         }
+
+        // set value of total for each cart item
+        for (const cart of TempCart) {
+          cart.quantity = 1;
+          cart.total = cart?.price * cart?.quantity;
+          // cart.cartId = cart._id;
+        }
+
+        setCart([...TempCart]);
       } else {
         CartProductsItems = [];
       }
 
-      setCart(CartProductsItems);
+      // setCart(CartProductsItems);
+    } catch (error) {
+      console.log(error);
     }
   };
 

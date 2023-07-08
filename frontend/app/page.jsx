@@ -10,6 +10,10 @@ import {
   Text,
   Image,
   Spinner,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import Hero from "@components/Hero";
 import { Images, ThemeColors } from "@constants/constants";
@@ -40,6 +44,7 @@ import { useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import ProductCard from "@components/ProductCard";
 import SpecialProducts from "@components/SpecialProducts";
+import ButtonComponent from "@components/Button";
 
 const UGX = (value) =>
   currency(value, { symbol: "UGX", precision: 0, separator: "," });
@@ -47,16 +52,24 @@ const UGX = (value) =>
 const Home = () => {
   const [Products, setProducts] = useState({ recommended: [], popular: [] });
   const [Comments, setComments] = useState([]);
+  const [ActiveModal, setActiveModal] = useState("");
+
+  const { onOpen, onClose, isOpen } = useDisclosure();
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [fetchProducts, { isLoading }] = useProductsCategoryGetMutation();
+  const [fetchProducts] = useProductsCategoryGetMutation();
 
   const [fetchComments] = useCommentsGetMutation();
 
   const { push } = useRouter();
 
   const chakraToast = useToast();
+
+  // const handleModalFormClick = (form) => {
+  //   setActiveModal(form);
+  //   onOpen();
+  // };
 
   const handleFetchCommentsData = async () => {
     const res = await fetchComments().unwrap();
@@ -78,7 +91,7 @@ const Home = () => {
   const [currSliderIndex, setCurrSliderIndex] = useState(0);
 
   const increaseSliderIndex = () => {
-    if (currSliderIndex === CommentsArr.length - 1) {
+    if (currSliderIndex === Comments.length - 1) {
       setCurrSliderIndex((prev) => 0);
     } else {
       setCurrSliderIndex((prev) => prev + 1);
@@ -89,7 +102,7 @@ const Home = () => {
     if (currSliderIndex > 0) {
       setCurrSliderIndex((prev) => prev - 1);
     } else {
-      setCurrSliderIndex((prev) => CommentsArr.length - 1);
+      setCurrSliderIndex((prev) => Comments.length - 1);
     }
   };
 
@@ -129,8 +142,7 @@ const Home = () => {
                       className="secondary-light-font"
                       style={{ fontSize: "1.1rem" }}
                     >
-                      All purchases over UGX 200,000 are eligible for free
-                      shipping via UPS first class mail
+                      Fast, timely and affordable delivery any where in the city
                     </Text>
                   </Box>
                 </Flex>
@@ -229,6 +241,38 @@ const Home = () => {
         ""
       )}
       {/* Section four */}
+      <Box padding={"3rem 0"}>
+        <Flex>
+          <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "60%" }}>
+            <Box padding={{ base: "2rem", md: "2rem 1rem", xl: "2rem 0" }}>
+              <Text
+                textAlign={"center"}
+                fontSize={{ base: "4xl", md: "4xl", xl: "4xl" }}
+                className="secondary-light-font"
+              >
+                Enjoy Monthly Unlimited access to all Foods with your friends
+                and family{" "}
+                <span
+                  style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
+                  className="secondary-font"
+                >
+                  YooCard
+                </span>
+              </Text>
+              <Flex justifyContent={"center"} padding={"1rem 0"}>
+                <Link href={"/subscription"}>
+                  <ButtonComponent
+                    type={"button"}
+                    text={"Register"}
+                    pd={"1.3rem 2rem"}
+                  />
+                </Link>
+              </Flex>
+            </Box>
+          </Box>
+        </Flex>
+      </Box>
+      {/* section five */}
       <Box>
         {Comments.length > 0 ? (
           <Box
@@ -396,6 +440,15 @@ const Home = () => {
           </Flex>
         </Box>
       </Box>
+
+      {/* // modal form container -------------------------- */}
+      <Modal isOpen={isOpen} onClose={onClose} size={"4xl"} padding={"1rem 0"}>
+        {/* <ModalOverlay /> */}
+        <ModalContent padding={"2rem 3rem"}>
+          <ModalCloseButton size={"lg"} color={ThemeColors.darkColor} />
+          <Box padding={"1rem 0"}>Modal</Box>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

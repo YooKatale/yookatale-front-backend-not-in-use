@@ -19,16 +19,42 @@ const Hero = () => {
                 width={{ base: "100%", md: "100%", xl: "60%" }}
                 padding={"1rem"}
               >
-                <Heading
-                  as={"h3"}
+                <Text
                   textAlign={"center"}
-                  className="secondary-font"
+                  className="secondary-light-font"
                   fontSize={"4xl"}
                   margin={"0.3rem 0"}
                 >
-                  We Deliver
-                </Heading>
-                <Heading
+                  <span
+                    style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
+                    className="secondary-font"
+                  >
+                    Welcome
+                  </span>{" "}
+                  to your{" "}
+                  <span
+                    style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
+                    className="secondary-font"
+                  >
+                    Reliable
+                  </span>{" "}
+                  market partner that{" "}
+                  <span
+                    style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
+                    className="secondary-font"
+                  >
+                    Conveniently
+                  </span>{" "}
+                  delivers 24/7 with{" "}
+                  <span
+                    style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
+                    className="secondary-font"
+                  >
+                    Quality
+                  </span>{" "}
+                  assured.
+                </Text>
+                {/* <Heading
                   as={"h3"}
                   className="secondary-font"
                   fontSize={"5xl"}
@@ -43,7 +69,7 @@ const Hero = () => {
                   fontSize={"2xl"}
                 >
                   Fresh food always. Delivered 24/7
-                </Text>
+                </Text> */}
                 <Box padding={"2rem 0"}>
                   <Flex justifyContent={"center"}>
                     <Link href={"/products"}>
@@ -52,7 +78,7 @@ const Hero = () => {
                         background={ThemeColors.darkColor}
                         border={"1.7px solid " + ThemeColors.darkColor}
                         borderRadius={"0.3rem"}
-                        padding={"2rem"}
+                        padding={"2rem 1.5rem"}
                         className="secondary-light-font"
                         fontSize={"lg"}
                         _hover={{

@@ -3,7 +3,7 @@
 import { Button } from "@chakra-ui/react";
 import { ThemeColors } from "@constants/constants";
 
-const ButtonComponent = ({ text, type }) => {
+const ButtonComponent = ({ text, type, pd }) => {
   return (
     <>
       <Button
@@ -12,7 +12,7 @@ const ButtonComponent = ({ text, type }) => {
         background={ThemeColors.darkColor}
         border={"1.7px solid " + ThemeColors.darkColor}
         borderRadius={"0.3rem"}
-        padding={"1rem"}
+        padding={pd ? pd : "1rem"}
         className="secondary-light-font"
         fontSize={"md"}
         _hover={{
