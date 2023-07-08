@@ -70,7 +70,7 @@ router.get("/products/order/:data", Protect, fetchOrdersGet);
 router.get("/users/comments", fetchCommentsGet);
 router.get("/subscription", fetchSubscriptionCards);
 router.post("/subscription/card", createSubscriptionCard);
-router.post("/subscription", createSubscriptionPost);
-router.get("/payment/webhook", paymentWebhookGet);
+// router.post("/subscription", createSubscriptionPost);
+// router.get("/payment/webhook", paymentWebhookGet);
 
 export default router;

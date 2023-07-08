@@ -26,10 +26,10 @@ const awsAccessKey = process.env.AWS_ACCESS_KEY;
 const awsSecretKey = process.env.AWS_SECRET_KEY;
 const jwtSign = process.env.JWT_SECRET_SIGN;
 const env = process.env.NODE_ENV;
-const flwPublicKey = process.env.FLW_PUBLIC_KEY;
-const flwSecretKey = process.env.FLW_SECRET_KEY;
+// const flwPublicKey = process.env.FLW_PUBLIC_KEY;
+// const flwSecretKey = process.env.FLW_SECRET_KEY;
 
-const FLW = new Flutterwave(flwPublicKey, flwSecretKey);
+// const FLW = new Flutterwave(flwPublicKey, flwSecretKey);
 
 const S3 = new S3Client({
   credentials: {
@@ -536,77 +536,77 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
 });
 // public function to fetch comments
 // public function to create subscription cards
-export const createSubscriptionCard = TryCatch(async (req, res) => {
-  const { type, price, name, renewed, details, previousPrice } = req.body;
+// export const createSubscriptionCard = TryCatch(async (req, res) => {
+//   const { type, price, name, renewed, details, previousPrice } = req.body;
 
-  const NewSubscriptionCard = new SubscriptionCard({
-    type,
-    price,
-    name,
-    renewed,
-    details,
-    previousPrice,
-  });
+//   const NewSubscriptionCard = new SubscriptionCard({
+//     type,
+//     price,
+//     name,
+//     renewed,
+//     details,
+//     previousPrice,
+//   });
 
-  await NewSubscriptionCard.save();
+//   await NewSubscriptionCard.save();
 
-  res.status(200).json({ status: "Success" });
-});
+//   res.status(200).json({ status: "Success" });
+// });
 
-// public function to fetch subscription card plans
-export const fetchSubscriptionCards = TryCatch(async (req, res) => {
-  const Cards = await SubscriptionCard.find();
+// // public function to fetch subscription card plans
+// export const fetchSubscriptionCards = TryCatch(async (req, res) => {
+//   const Cards = await SubscriptionCard.find();
 
-  res.status(200).json({ status: "Success", data: Cards });
-});
+//   res.status(200).json({ status: "Success", data: Cards });
+// });
 
-// public function to create subscription
-export const createSubscriptionPost = TryCatch(async (req, res) => {
-  const { data } = req.body;
+// // public function to create subscription
+// export const createSubscriptionPost = TryCatch(async (req, res) => {
+//   const { data } = req.body;
 
-  if (!data) throw new Error("Unexpected error occured. Please try again");
+//   if (!data) throw new Error("Unexpected error occured. Please try again");
 
-  if (!data.paymentMethod) throw new Error("Payment method required");
+//   if (!data.paymentMethod) throw new Error("Payment method required");
 
-  let payload = {
-    phone_number: "",
-    network: "",
-    amount: 0,
-    currency: "UGX",
-    email: "",
-    tx_ref: "",
-  };
+//   let payload = {
+//     phone_number: "",
+//     network: "",
+//     amount: 0,
+//     currency: "UGX",
+//     email: "",
+//     tx_ref: "",
+//   };
 
-  if (
-    data.paymentMethod == "mobile money" ||
-    data.paymentMethod == "mobileMoney"
-  ) {
-    // sanitize and validate data
-    const phone = sanitizePhoneNumber(data?.personalInfo?.phone);
+//   if (
+//     data.paymentMethod == "mobile money" ||
+//     data.paymentMethod == "mobileMoney"
+//   ) {
+//     // sanitize and validate data
+//     const phone = sanitizePhoneNumber(data?.personalInfo?.phone);
 
-    if (phone.error) throw Error(phone.error);
+//     if (phone.error) throw Error(phone.error);
 
-    payload = {
-      phone_number: phone.phone,
-      network: phone.network,
-      amount: data?.total,
-      currency: "UGX",
-      email: `${data?.personalInfo?.email}`,
-      tx_ref: uniqueString(),
-    };
-  }
+//     payload = {
+//       phone_number: phone.phone,
+//       network: phone.network,
+//       amount: data?.total,
+//       currency: "UGX",
+//       email: `${data?.personalInfo?.email}`,
+//       tx_ref: uniqueString(),
+//     };
+//   }
 
-  const response = await FLW.MobileMoney.uganda(payload);
+//   const response = await FLW.MobileMoney.uganda(payload);
 
-  if (response.status == "success")
-    return res.status(200).json({
-      status: "Success",
-      data: { redirectURL: response.meta.authorization },
-    });
+//   if (response.status == "success")
+//     return res.status(200).json({
+//       status: "Success",
+//       data: { redirectURL: response.meta.authorization },
+//     });
 
-  console.log({ response });
-});
+//   console.log({ response });
+// });
 
-export const paymentWebhookGet = TryCatch(async (req, res) => {
-  console.log(req);
-});
+// export const paymentWebhookGet = TryCatch(async (req, res) => {
+//   console.log(req);
+// });
