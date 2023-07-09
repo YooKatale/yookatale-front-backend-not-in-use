@@ -16,7 +16,6 @@ import {
   fetchProductsGet,
   fetchSubscriptionCards,
   logoutUserPost,
-  paymentWebhookGet,
   productSearchGet,
   registerUserPost,
 } from "../controllers/Controller.js";
@@ -70,7 +69,7 @@ router.get("/products/order/:data", Protect, fetchOrdersGet);
 router.get("/users/comments", fetchCommentsGet);
 router.get("/subscription", fetchSubscriptionCards);
 router.post("/subscription/card", createSubscriptionCard);
-// router.post("/subscription", createSubscriptionPost);
+router.post("/subscription", createSubscriptionPost);
 // router.get("/payment/webhook", paymentWebhookGet);
 
 export default router;

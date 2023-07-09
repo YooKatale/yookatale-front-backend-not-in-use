@@ -16,6 +16,8 @@ import { v4 as uniqueString } from "uuid";
 import Comment from "../models/Comments.model.js";
 import SubscriptionCard from "../models/SubscriptionCard.model.js";
 import Flutterwave from "flutterwave-node-v3";
+import Subscription from "../models/Subscription.model.js";
+import { addDays } from "date-fns";
 
 dotenv.config();
 
@@ -191,7 +193,6 @@ export const fetchProductGet = TryCatch(async (req, res) => {
 
 // public function to fetch all products
 export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
-  console.log("called here");
   // categories passed shall be an array
   const data = req.params.data ? JSON.parse(req.params.data) : [];
 
@@ -437,8 +438,6 @@ export const deleteCart = TryCatch(async (req, res) => {
 export const productSearchGet = TryCatch(async (req, res) => {
   const data = req.params.data;
 
-  console.log({ data });
-
   const ProductsFetch = await Product.find();
 
   if (env === "production") {
@@ -536,76 +535,144 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
 });
 // public function to fetch comments
 // public function to create subscription cards
-// export const createSubscriptionCard = TryCatch(async (req, res) => {
-//   const { type, price, name, renewed, details, previousPrice } = req.body;
+export const createSubscriptionCard = TryCatch(async (req, res) => {
+  const { type, price, name, renewed, details, previousPrice } = req.body;
 
-//   const NewSubscriptionCard = new SubscriptionCard({
-//     type,
-//     price,
-//     name,
-//     renewed,
-//     details,
-//     previousPrice,
-//   });
+  const NewSubscriptionCard = new SubscriptionCard({
+    type,
+    price,
+    name,
+    renewed,
+    details,
+    previousPrice,
+  });
 
-//   await NewSubscriptionCard.save();
+  await NewSubscriptionCard.save();
 
-//   res.status(200).json({ status: "Success" });
-// });
+  res.status(200).json({ status: "Success" });
+});
 
-// // public function to fetch subscription card plans
-// export const fetchSubscriptionCards = TryCatch(async (req, res) => {
-//   const Cards = await SubscriptionCard.find();
+// public function to fetch subscription card plans
+export const fetchSubscriptionCards = TryCatch(async (req, res) => {
+  const Cards = await SubscriptionCard.find();
 
-//   res.status(200).json({ status: "Success", data: Cards });
-// });
+  res.status(200).json({ status: "Success", data: Cards });
+});
 
-// // public function to create subscription
-// export const createSubscriptionPost = TryCatch(async (req, res) => {
-//   const { data } = req.body;
+// public function to create subscription
+export const createSubscriptionPost = TryCatch(async (req, res) => {
+  const { data } = req.body;
 
-//   if (!data) throw new Error("Unexpected error occured. Please try again");
+  if (!data) throw new Error("Unexpected error occured. Please try again");
 
-//   if (!data.paymentMethod) throw new Error("Payment method required");
+  // if user has purchased only one card
+  if (data?.quantity == 1) {
+    let NewCardNo = new Array(14)
+      .fill(0)
+      .map(() => Math.floor(Math.random() * 10).toString())
+      .join("");
 
-//   let payload = {
-//     phone_number: "",
-//     network: "",
-//     amount: 0,
-//     currency: "UGX",
-//     email: "",
-//     tx_ref: "",
-//   };
+    const NewSubscription = new Subscription({
+      userId: data?.personalInfo?._id ? data?.personalInfo?._id : "",
+      user: {
+        firstname: data?.personalInfo?.firstname,
+        lastname: data?.personalInfo?.lastname,
+        email: data?.personalInfo?.email,
+        phone: data?.personalInfo?.phone,
+        gender: data?.personalInfo?.gender,
+      },
+      cards: [
+        {
+          cardNumber: NewCardNo,
+          card: data?.selectedSubscriptionCard?._id,
+        },
+      ],
+      status: "active",
+      expiresOn: addDays(new Date(), 30),
+    });
 
-//   if (
-//     data.paymentMethod == "mobile money" ||
-//     data.paymentMethod == "mobileMoney"
-//   ) {
-//     // sanitize and validate data
-//     const phone = sanitizePhoneNumber(data?.personalInfo?.phone);
+    await NewSubscription.save();
 
-//     if (phone.error) throw Error(phone.error);
+    const NewOrder = new Order({
+      user: data?.personalInfo?._id
+        ? data?.personalInfo?._id
+        : `${data?.personalInfo?.firstname} ${data?.personalInfo?.lastname}`,
+      products: [
+        {
+          card: data?.selectedSubscriptionCard?._id,
+        },
+      ],
+      total: data?.total,
+      productItems: data?.quantity,
+      paymentMethod: data?.paymentMethod,
+      deliveryAddress: data?.deliveryAddress,
+      specialRequest: {},
+      status: "pending",
+    });
 
-//     payload = {
-//       phone_number: phone.phone,
-//       network: phone.network,
-//       amount: data?.total,
-//       currency: "UGX",
-//       email: `${data?.personalInfo?.email}`,
-//       tx_ref: uniqueString(),
-//     };
-//   }
+    await NewOrder.save();
 
-//   const response = await FLW.MobileMoney.uganda(payload);
+    res.status(200).json({
+      status: "Success",
+      data: { message: "Order successfully placed" },
+    });
 
-//   if (response.status == "success")
-//     return res.status(200).json({
-//       status: "Success",
-//       data: { redirectURL: response.meta.authorization },
-//     });
+    return;
+  }
 
-//   console.log({ response });
-// });
+  // if user has purchased more than one card
+  for (let i = 0; i < parseInt(data?.quantity); i++) {
+    let NewCardNo = new Array(14)
+      .fill(0)
+      .map(() => Math.floor(Math.random() * 10).toString())
+      .join("");
+
+    const NewSubscription = new Subscription({
+      userId: data?.personalInfo?._id ? data?.personalInfo?._id : "",
+      user: {
+        firstname: data?.personalInfo?.firstname,
+        lastname: data?.personalInfo?.lastname,
+        email: data?.personalInfo?.email,
+        phone: data?.personalInfo?.phone,
+        gender: data?.personalInfo?.gender,
+      },
+      cards: [
+        {
+          cardNumber: NewCardNo,
+          card: data?.selectedSubscriptionCard?._id,
+        },
+      ],
+      status: "active",
+      expiresOn: addDays(new Date(), 30),
+    });
+
+    await NewSubscription.save();
+  }
+
+  const NewOrder = new Order({
+    user: data?.personalInfo?._id
+      ? data?.personalInfo?._id
+      : `${data?.personalInfo?.firstname} ${data?.personalInfo?.lastname}`,
+    products: [
+      {
+        card: data?.selectedSubscriptionCard?._id,
+      },
+    ],
+    total: data?.total,
+    productItems: data?.quantity,
+    paymentMethod: data?.paymentMethod,
+    deliveryAddress: data?.deliveryAddress,
+    specialRequest: {},
+    status: "pending",
+  });
+
+  await NewOrder.save();
+
+  res.status(200).json({
+    status: "Success",
+    data: { message: "Order successfully placed" },
+  });
+});
 
 // export const paymentWebhookGet = TryCatch(async (req, res) => {
 //   console.log(req);
