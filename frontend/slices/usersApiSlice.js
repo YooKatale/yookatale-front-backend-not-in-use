@@ -3,9 +3,9 @@
 import axios from "axios";
 import { apiSlice } from "./apiSlice";
 
-const USERS_URL = "https://yookatale-server-app.onrender.com/api";
+// const USERS_URL = "https://yookatale-server-app.onrender.com/api";
 
-// const USERS_URL = "http://localhost:8000/api";
+const USERS_URL = "http://localhost:8000/api";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -33,6 +33,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${USERS_URL}/products`,
         method: "GET",
+      }),
+    }),
+    productCreate: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/product/new`,
+        method: "POST",
+        body: data,
       }),
     }),
     productGet: builder.mutation({
@@ -130,4 +137,5 @@ export const {
   useCommentsGetMutation,
   useSubscriptionCardGetMutation,
   useSubscriptionCardPostMutation,
+  useProductCreateMutation,
 } = usersApiSlice;

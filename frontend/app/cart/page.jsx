@@ -222,41 +222,6 @@ const Cart = () => {
     setCount(count + 1);
   };
 
-  // function to checkout user. Function will combine all data and call the payment function and store checkout information in data base
-  const handleCheckout = async (paymentMethod) => {
-    try {
-      // if payment method is cash on delivery
-      if (paymentMethod == "cash") {
-        const res = await placeOrder({
-          Carts: Cart,
-          Orders: { ...tabOneData, paymentMethod },
-          userId: userInfo._id,
-        }).unwrap();
-
-        if (res?.status == "Success") {
-          chakraToast({
-            title: "Success",
-            description: `Successfully placed order`,
-            status: "success",
-            duration: 5000,
-            isClosable: false,
-          });
-          push("/");
-        }
-      }
-    } catch (err) {
-      chakraToast({
-        title: "Error",
-        description: err.data?.message
-          ? err.data?.message
-          : err.data || err.error,
-        status: "error",
-        duration: 5000,
-        isClosable: false,
-      });
-    }
-  };
-
   function fn() {
     calcEachProductTotal();
     calcCartTotal();
@@ -535,7 +500,11 @@ const Cart = () => {
               ) : (
                 <TabThree
                   updateTabIndex={setTabIndex}
-                  completeOrder={handleCheckout}
+                  data={{
+                    Carts: Cart,
+                    Orders: { ...tabOneData },
+                    personalInfo: userInfo,
+                  }}
                 />
               )}
             </Box>

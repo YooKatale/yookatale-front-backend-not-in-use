@@ -267,7 +267,7 @@ const Product = () => {
                 </Box>
               </Box>
             </Flex>
-            <Box padding={"1rem 0"}>
+            <Box padding={"1rem 0"} hidden>
               <Box>
                 <Heading as={"h2"} size={"md"}>
                   Product Description
@@ -288,7 +288,7 @@ const Product = () => {
                 </Text>
               </Box>
             </Box>
-            <Box padding={"1rem 0"}>
+            <Box padding={"1rem 0"} hidden>
               <Box>
                 <Heading as={"h2"} size={"md"}>
                   Shipping Details

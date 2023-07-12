@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import dotenv from "dotenv";
+import SibApiV3Sdk from "sib-api-v3-sdk";
+import { Resend } from "resend";
+import { htmlEmails } from "../constants/constant.js";
 
 dotenv.config();
 
@@ -10,6 +13,8 @@ const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const awsAccessKey = process.env.AWS_ACCESS_KEY;
 const awsSecretKey = process.env.AWS_SECRET_KEY;
+const sinbKey = process.env.SINB_KEY;
+const resendKey = process.env.RESEND_KEY;
 
 const s3 = new S3Client({
   credentials: {
@@ -130,6 +135,83 @@ export const sanitizePhoneNumber = (phone) => {
 
   if (response.network == "" || response.phone == "")
     return (error = "Only Airtel and Mtn networks are supported");
+
+  return response;
+};
+
+export const sendEmail = (param) => {
+  let defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+  // Configure API key authorization: api-key
+  let apiKey = defaultClient.authentications["api-key"];
+  apiKey.apiKey = sinbKey;
+
+  let partnerKey = defaultClient.authentications["partner-key"];
+  partnerKey.apiKey = sinbKey;
+
+  let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+  let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+
+  sendSmtpEmail = {
+    to: [
+      {
+        email: param?.user?.email,
+        name: `${param?.user?.firstname} ${param?.user?.lastname}`,
+      },
+    ],
+    templateId: 1,
+    params: {
+      ORDER_ID: "1234567890",
+      EMAIL: param?.user?.email,
+    },
+    headers: {
+      "X-Mailin-custom":
+        "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
+    },
+  };
+
+  return apiInstance.sendTransacEmail(sendSmtpEmail).then(
+    function (data) {
+      console.log({ data });
+      return "success";
+    },
+    function (error) {
+      console.log({ error });
+      return error;
+    }
+  );
+};
+
+export const resendEmail = async (params) => {
+  console.log({ params });
+  const resend = new Resend(resendKey);
+  let response = "";
+
+  if (!params) return (response = "error");
+
+  try {
+    const res = await resend.emails.send({
+      from: "info@yookatale.com",
+      to: params?.email,
+      subject: params?.subject,
+      html:
+        params?.template == "order"
+          ? htmlEmails.orderTemplate({
+              orderID: params?.orderID,
+              orderFor: params?.orderFor,
+              orderTotal: `UGX ${params?.orderTotal}`,
+              deliveryAddress: params?.deliveryAddress,
+            })
+          : htmlEmails.welcomeTemplate(params?.name),
+    });
+
+    if (res?.id) {
+      response = "success";
+    }
+  } catch (error) {
+    response = "Error occured";
+  }
 
   return response;
 };

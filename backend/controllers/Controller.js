@@ -4,7 +4,9 @@ import {
   TryCatch,
   fetchImageUrl,
   generateToken,
+  resendEmail,
   sanitizePhoneNumber,
+  sendEmail,
 } from "../utils/utils.js";
 import Product from "../models/Product.model.js";
 import Cart from "../models/Cart.model.js";
@@ -21,13 +23,14 @@ import { addDays } from "date-fns";
 
 dotenv.config();
 
-// env variables
+// env letiables
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const awsAccessKey = process.env.AWS_ACCESS_KEY;
 const awsSecretKey = process.env.AWS_SECRET_KEY;
 const jwtSign = process.env.JWT_SECRET_SIGN;
 const env = process.env.NODE_ENV;
+
 // const flwPublicKey = process.env.FLW_PUBLIC_KEY;
 // const flwSecretKey = process.env.FLW_SECRET_KEY;
 
@@ -61,6 +64,7 @@ export const authUserPost = TryCatch(async (req, res) => {
     gender: user.gender,
     vegan: user.vegan,
     phone: user.phone,
+    expires: addDays(new Date(), 3),
   });
 });
 
@@ -93,6 +97,11 @@ export const registerUserPost = TryCatch(async (req, res) => {
 
   generateToken(res, user._id);
 
+  const response = await resendEmail({
+    template: "welcome",
+    name: user.firstname,
+  });
+
   res.status(200).json({
     _id: user._id,
     firstname: user.firstname,
@@ -101,6 +110,7 @@ export const registerUserPost = TryCatch(async (req, res) => {
     gender: user.gender,
     vegan: user.vegan,
     phone: user.phone,
+    expires: addDays(new Date(), 3),
   });
 });
 
@@ -464,7 +474,9 @@ export const productSearchGet = TryCatch(async (req, res) => {
 
 // public function to save orders
 export const createNewOrderPost = TryCatch(async (req, res) => {
-  const { Carts, Orders, userId } = req.body;
+  const { Carts, Orders, payment, personalInfo } = req.body;
+
+  console.log(req.body);
 
   if (!Carts || Carts == "" || Carts == {})
     throw new Error("Unexpected error occured");
@@ -472,7 +484,10 @@ export const createNewOrderPost = TryCatch(async (req, res) => {
   if (!Orders || Orders == "" || Orders == {})
     throw new Error("Unexpected error occured");
 
-  if (!userId || userId == "" || userId == {})
+  if (!personalInfo || personalInfo == "" || personalInfo == {})
+    throw new Error("Unexpected error occured");
+
+  if (!payment || payment == "" || payment == {})
     throw new Error("Unexpected error occured");
 
   const Products = [];
@@ -490,14 +505,14 @@ export const createNewOrderPost = TryCatch(async (req, res) => {
   }
 
   const NewOrder = new Order({
-    user: userId,
+    user: personalInfo?._id,
     products: Products,
     total: await calcCartTotal(Carts),
     productItems: `${Carts?.length} items`,
-    paymentMethod: Orders?.paymentMethod,
+    payment,
     deliveryAddress: Orders?.deliveryAddress,
     specialRequest: Orders?.specialRequest,
-    status: Orders?.paymentMethod == "cash" ? "pending" : "payed",
+    status: payment?.paymentMethod == "cash" ? "pending" : "payed",
   });
 
   await NewOrder.save();
@@ -506,7 +521,22 @@ export const createNewOrderPost = TryCatch(async (req, res) => {
     await Cart.findOneAndUpdate({ _id: cart.cartId }, { status: "checkedout" });
   }
 
-  res.status(200).json({ status: "Success" });
+  const response = await resendEmail({
+    template: "order",
+    email: personalInfo?.email,
+    subject: "Order Successful",
+    orderID: NewOrder?._id,
+    orderTotal: NewOrder?.total,
+    orderFor: `Food stufss`,
+    deliveryAddress: {
+      address1: Orders.deliveryAddress?.address1,
+      address2: Orders.deliveryAddress?.address2,
+    },
+  });
+
+  if (response === "success") {
+    res.status(200).json({ status: "Success" });
+  }
 });
 
 // private function to fetch orders
@@ -593,13 +623,14 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
 
     await NewSubscription.save();
 
-    const NewOrder = new Order({
+    const NewOrder = await Order.create({
       user: data?.personalInfo?._id
         ? data?.personalInfo?._id
         : `${data?.personalInfo?.firstname} ${data?.personalInfo?.lastname}`,
       products: [
         {
-          card: data?.selectedSubscriptionCard?._id,
+          id: data?.selectedSubscriptionCard?._id,
+          name: `YooCard ${data?.selectedSubscriptionCard?.type}`,
         },
       ],
       total: data?.total,
@@ -610,12 +641,25 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
       status: "pending",
     });
 
-    await NewOrder.save();
-
-    res.status(200).json({
-      status: "Success",
-      data: { message: "Order successfully placed" },
+    const response = await resendEmail({
+      template: "order",
+      email: data?.personalInfo?.email,
+      subject: "Order Successful",
+      orderID: NewOrder?._id,
+      orderTotal: NewOrder?.total,
+      orderFor: `YooCard ${data?.selectedSubscriptionCard?.type}`,
+      deliveryAddress: {
+        address1: data?.deliveryAddress?.address1,
+        address2: data?.deliveryAddress?.address2,
+      },
     });
+
+    if (response === "success") {
+      res.status(200).json({
+        status: "Success",
+        data: { message: "Order successfully placed" },
+      });
+    }
 
     return;
   }
@@ -649,13 +693,14 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
     await NewSubscription.save();
   }
 
-  const NewOrder = new Order({
+  const NewOrder = await Order.create({
     user: data?.personalInfo?._id
       ? data?.personalInfo?._id
       : `${data?.personalInfo?.firstname} ${data?.personalInfo?.lastname}`,
     products: [
       {
-        card: data?.selectedSubscriptionCard?._id,
+        id: data?.selectedSubscriptionCard?._id,
+        name: `YooCard ${data?.selectedSubscriptionCard?.type}`,
       },
     ],
     total: data?.total,
@@ -666,12 +711,35 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
     status: "pending",
   });
 
-  await NewOrder.save();
-
-  res.status(200).json({
-    status: "Success",
-    data: { message: "Order successfully placed" },
+  const response = await resendEmail({
+    template: "order",
+    email: data?.personalInfo?.email,
+    subject: "Order Successful",
+    orderID: NewOrder?._id,
+    orderTotal: NewOrder?.total,
+    orderFor: `YooCard ${data?.selectedSubscriptionCard?.type}`,
+    deliveryAddress: {
+      address1: data?.deliveryAddress?.address1,
+      address2: data?.deliveryAddress?.address2,
+    },
   });
+
+  if (response === "success") {
+    res.status(200).json({
+      status: "Success",
+      data: { message: "Order successfully placed" },
+    });
+  }
+});
+
+export const testEmailFeature = TryCatch(async (req, res) => {
+  const { message } = req.body;
+
+  const response = await resendEmail();
+
+  // console.log({ response });
+
+  res.status(200).json({ response });
 });
 
 // export const paymentWebhookGet = TryCatch(async (req, res) => {

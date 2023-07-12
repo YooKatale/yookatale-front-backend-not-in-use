@@ -18,6 +18,7 @@ import {
   logoutUserPost,
   productSearchGet,
   registerUserPost,
+  testEmailFeature,
 } from "../controllers/Controller.js";
 import multer from "multer";
 import { v4 as uniqueString } from "uuid";
@@ -70,6 +71,7 @@ router.get("/users/comments", fetchCommentsGet);
 router.get("/subscription", fetchSubscriptionCards);
 router.post("/subscription/card", createSubscriptionCard);
 router.post("/subscription", createSubscriptionPost);
+router.post("/test/email", testEmailFeature);
 // router.get("/payment/webhook", paymentWebhookGet);
 
 export default router;

@@ -39,12 +39,15 @@ import { logout } from "@slices/authSlice";
 import { useLogoutMutation } from "@slices/usersApiSlice";
 import { redirect, useRouter } from "next/navigation";
 import { useToast } from "@chakra-ui/react";
+import { IsAccountValid } from "@middleware/middleware";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [searchParam, setSearchParam] = useState("");
   const [isLoading, setLoading] = useState({ operation: "", status: false });
+
+  IsAccountValid();
 
   const { push } = useRouter();
 
