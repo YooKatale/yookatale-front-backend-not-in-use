@@ -184,32 +184,47 @@ export const sendEmail = (param) => {
 };
 
 export const resendEmail = async (params) => {
-  console.log({ params });
   const resend = new Resend(resendKey);
   let response = "";
 
   if (!params) return (response = "error");
 
+  let htmlTemplate = "";
+
+  if (params?.template == "order") {
+    htmlTemplate = htmlEmails.orderTemplate({
+      orderID: params?.orderID,
+      orderFor: params?.orderFor,
+      orderTotal: `UGX ${params?.orderTotal}`,
+      deliveryAddress: params?.deliveryAddress,
+    });
+  }
+
+  if (params?.template == "welcome") {
+    htmlTemplate = htmlEmails.welcomeTemplate(params?.name);
+  }
+
+  if (params?.template == "message") {
+    htmlTemplate = htmlEmails.messageTemplate({
+      email: params?.email,
+      name: params?.name,
+      message: params?.message,
+    });
+  }
+
   try {
     const res = await resend.emails.send({
-      from: "info@yookatale.com",
-      to: params?.email,
+      from: params?.from,
+      to: params?.to,
       subject: params?.subject,
-      html:
-        params?.template == "order"
-          ? htmlEmails.orderTemplate({
-              orderID: params?.orderID,
-              orderFor: params?.orderFor,
-              orderTotal: `UGX ${params?.orderTotal}`,
-              deliveryAddress: params?.deliveryAddress,
-            })
-          : htmlEmails.welcomeTemplate(params?.name),
+      html: htmlTemplate,
     });
 
     if (res?.id) {
       response = "success";
     }
   } catch (error) {
+    console.log({ error });
     response = "Error occured";
   }
 

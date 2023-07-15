@@ -64,16 +64,11 @@ const Header = () => {
     try {
       const res = await logoutApiCall().unwrap();
 
-      console.log({ res });
-
-      console.log("here");
-
       // set loading to be false
       setLoading({ ...isLoading, operation: "", status: false });
 
       dispatch(logout());
 
-      console.log("and here");
       push("/");
     } catch (err) {
       // set loading to be false
@@ -95,9 +90,13 @@ const Header = () => {
     e.preventDefault();
 
     // set loading to be true
-    setLoading({ ...isLoading, operation: "search", status: true });
+    setLoading(
+      (prevState) => (prevState = { operation: "search", status: true })
+    );
 
-    setMobileNavOpen((prevState) => (prevState ? false : true));
+    if (mobileNavOpen) {
+      setMobileNavOpen(false);
+    }
 
     if (searchParam == "")
       return chakraToast({
@@ -438,6 +437,7 @@ fontSize={"lg"}}}
                 placeholder="search product by name"
                 padding={"0.3rem 0.5rem"}
                 borderRadius={"0.3rem"}
+                style={{ color: "#fff" }}
                 onChange={(e) => setSearchParam(e.target.value)}
               />
             </Box>

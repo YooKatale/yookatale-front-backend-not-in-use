@@ -117,6 +117,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    messagePost: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/message`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -138,4 +145,5 @@ export const {
   useSubscriptionCardGetMutation,
   useSubscriptionCardPostMutation,
   useProductCreateMutation,
+  useMessagePostMutation,
 } = usersApiSlice;

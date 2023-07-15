@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  authAdminPost,
   authUserPost,
   createCartPost,
   createNewOrderPost,
@@ -17,7 +18,9 @@ import {
   fetchSubscriptionCards,
   logoutUserPost,
   productSearchGet,
+  registerAdminPost,
   registerUserPost,
+  sendMessagePost,
   testEmailFeature,
 } from "../controllers/Controller.js";
 import multer from "multer";
@@ -52,6 +55,8 @@ const upload = multer({
 });
 
 router.post("/users/auth", authUserPost);
+router.post("/admin/auth", authAdminPost);
+router.post("/admin/register", registerAdminPost);
 router.post("/users/register", registerUserPost);
 router.post("/users/logout", logoutUserPost);
 router.post("/product/new", upload.array("images", 10), createNewProductPost);
@@ -72,6 +77,7 @@ router.get("/subscription", fetchSubscriptionCards);
 router.post("/subscription/card", createSubscriptionCard);
 router.post("/subscription", createSubscriptionPost);
 router.post("/test/email", testEmailFeature);
+router.post("/message", sendMessagePost);
 // router.get("/payment/webhook", paymentWebhookGet);
 
 export default router;

@@ -28,6 +28,7 @@ import {
 } from "@slices/usersApiSlice";
 import { useRouter } from "next/navigation";
 import currency from "currency.js";
+import ProductCard from "@components/ProductCard";
 
 const Products = () => {
   const CategoriesJson = [
@@ -291,80 +292,12 @@ const Products = () => {
                   gridGap={"1rem"}
                 >
                   {Products.map((product, index) => (
-                    <Box
-                      padding={"1rem"}
-                      borderRadius={"md"}
-                      _hover={{
-                        boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                      }}
+                    <ProductCard
+                      product={product}
                       key={index}
-                    >
-                      <Box height={"150px"} padding="0.5rem">
-                        <Link href={`/product?id=${product._id}`}>
-                          <Flex
-                            alignContent={"center"}
-                            justifyContent={"center"}
-                            height={"100%"}
-                          >
-                            <Image
-                              src={product.images}
-                              style={{
-                                width: "auto",
-                                height: "100%",
-                                margin: "auto",
-                              }}
-                            />
-                          </Flex>
-                        </Link>
-                      </Box>
-                      <Box>
-                        <Text
-                          textAlign={"center"}
-                          className="secondary-light-font"
-                          fontSize={"2xl"}
-                        >
-                          {product.name}
-                        </Text>
-                        <Heading
-                          as={"h3"}
-                          margin={"0.5rem 0"}
-                          textAlign={"center"}
-                          className="secondary-extra-bold"
-                          fontSize={"lg"}
-                          color={ThemeColors.darkColor}
-                        >
-                          {UGX(product.price).format()}
-                        </Heading>
-                        <Box padding={"0.5rem 0"}>
-                          <Flex justifyContent={"center"}>
-                            <Button
-                              color={ThemeColors.lightColor}
-                              background={ThemeColors.darkColor}
-                              border={"1.7px solid " + ThemeColors.darkColor}
-                              borderRadius={"0.3rem"}
-                              padding={"1rem"}
-                              className="secondary-light-font"
-                              fontSize={"md"}
-                              _hover={{
-                                border: "1.7px solid " + ThemeColors.lightColor,
-                              }}
-                              onClick={() => handleAddCart(product._id)}
-                            >
-                              {isLoading ? (
-                                <Spinner />
-                              ) : (
-                                <FA.FaCartPlus
-                                  size={26}
-                                  style={{ margin: "0 0.5rem 0 0" }}
-                                  color={ThemeColors.lightColor}
-                                />
-                              )}
-                              Add To cart
-                            </Button>
-                          </Flex>
-                        </Box>
-                      </Box>
-                    </Box>
+                      userInfo={userInfo}
+                      UGX={UGX}
+                    />
                   ))}
                 </Grid>
               ) : (

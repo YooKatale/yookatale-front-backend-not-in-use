@@ -20,6 +20,7 @@ import SubscriptionCard from "../models/SubscriptionCard.model.js";
 import Flutterwave from "flutterwave-node-v3";
 import Subscription from "../models/Subscription.model.js";
 import { addDays } from "date-fns";
+import Admin from "../models/Admin.model.js";
 
 dotenv.config();
 
@@ -44,7 +45,7 @@ const S3 = new S3Client({
   region: bucketRegion,
 });
 
-// public route to sign in
+// public route to sign in user
 export const authUserPost = TryCatch(async (req, res) => {
   const { email, password } = req.body;
 
@@ -63,6 +64,36 @@ export const authUserPost = TryCatch(async (req, res) => {
     email: user.email,
     gender: user.gender,
     vegan: user.vegan,
+    phone: user.phone,
+    expires: addDays(new Date(), 3),
+  });
+});
+
+// public route to sign in admin
+export const authAdminPost = TryCatch(async (req, res) => {
+  const { username, password } = req.body;
+
+  console.log(username);
+
+  if (!username) throw new Error("Username is required");
+
+  if (!password) throw new Error("Password is required");
+
+  const user = await Admin.findOne({ username });
+
+  if (!user) throw new Error("User account not found");
+
+  if (!(await user.matchPasswords(password))) throw new Error("Wrong password");
+
+  generateToken(res, user._id);
+
+  res.status(200).json({
+    _id: user._id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    username: user.username,
+    email: user.email,
+    gender: user.gender,
     phone: user.phone,
     expires: addDays(new Date(), 3),
   });
@@ -106,6 +137,63 @@ export const registerUserPost = TryCatch(async (req, res) => {
     _id: user._id,
     firstname: user.firstname,
     lastname: user.lastname,
+    email: user.email,
+    gender: user.gender,
+    vegan: user.vegan,
+    phone: user.phone,
+    expires: addDays(new Date(), 3),
+  });
+});
+
+// public route to sign up user
+export const registerAdminPost = TryCatch(async (req, res) => {
+  const {
+    firstname,
+    lastname,
+    username,
+    email,
+    phone,
+    gender,
+    vegan,
+    password,
+  } = req.body;
+
+  if (!firstname || firstname == "") throw new Error("Firstname is required");
+  if (!lastname || lastname == "") throw new Error("Lastname is required");
+  if (!username || username == "") throw new Error("Username is required");
+  if (!email || email == "") throw new Error("Email is required");
+  if (!phone || phone == "") throw new Error("Phone number is required");
+  if (!gender || gender == "") throw new Error("Gender is required");
+  if (!password || password == "") throw new Error("Password is required");
+  if (!validator.isEmail(email)) throw new Error("Email is invalid");
+
+  const findUser = await Admin.findOne({ username });
+
+  if (findUser) throw new Error("Account already exists");
+
+  const user = await Admin.create({
+    firstname,
+    lastname,
+    username,
+    email,
+    gender,
+    vegan,
+    phone,
+    password,
+  });
+
+  generateToken(res, user._id);
+
+  // const response = await resendEmail({
+  //   template: "welcome",
+  //   name: user.firstname,
+  // });
+
+  res.status(200).json({
+    _id: user._id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    username: user.username,
     email: user.email,
     gender: user.gender,
     vegan: user.vegan,
@@ -643,6 +731,7 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
 
     const response = await resendEmail({
       template: "order",
+      from: "info@yookatale.com",
       email: data?.personalInfo?.email,
       subject: "Order Successful",
       orderID: NewOrder?._id,
@@ -713,6 +802,7 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
 
   const response = await resendEmail({
     template: "order",
+    from: "info@yookatale.com",
     email: data?.personalInfo?.email,
     subject: "Order Successful",
     orderID: NewOrder?._id,
@@ -728,6 +818,35 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
     res.status(200).json({
       status: "Success",
       data: { message: "Order successfully placed" },
+    });
+  }
+});
+
+export const sendMessagePost = TryCatch(async (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!name || name == "") throw new Error("Name is required");
+  if (!email || email == "") throw new Error("email is required");
+  if (!message || message == "") throw new Error("message is required");
+
+  const response = await resendEmail({
+    template: "message",
+    email: email,
+    to: "yookatale0@gmail.com",
+    from: "info@yookatale.com",
+    subject: "Support",
+    name,
+    message,
+  });
+
+  if (response == "Error occured") throw new Error("Service offline");
+
+  if (response === "success") {
+    res.status(200).json({
+      status: "Success",
+      data: {
+        message: "Message sent. Our team will get back to you shortly",
+      },
     });
   }
 });
