@@ -20,7 +20,6 @@ import SubscriptionCard from "../models/SubscriptionCard.model.js";
 import Flutterwave from "flutterwave-node-v3";
 import Subscription from "../models/Subscription.model.js";
 import { addDays } from "date-fns";
-import Admin from "../models/Admin.model.js";
 
 dotenv.config();
 
@@ -64,36 +63,6 @@ export const authUserPost = TryCatch(async (req, res) => {
     email: user.email,
     gender: user.gender,
     vegan: user.vegan,
-    phone: user.phone,
-    expires: addDays(new Date(), 3),
-  });
-});
-
-// public route to sign in admin
-export const authAdminPost = TryCatch(async (req, res) => {
-  const { username, password } = req.body;
-
-  console.log(username);
-
-  if (!username) throw new Error("Username is required");
-
-  if (!password) throw new Error("Password is required");
-
-  const user = await Admin.findOne({ username });
-
-  if (!user) throw new Error("User account not found");
-
-  if (!(await user.matchPasswords(password))) throw new Error("Wrong password");
-
-  generateToken(res, user._id);
-
-  res.status(200).json({
-    _id: user._id,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    username: user.username,
-    email: user.email,
-    gender: user.gender,
     phone: user.phone,
     expires: addDays(new Date(), 3),
   });
@@ -145,63 +114,6 @@ export const registerUserPost = TryCatch(async (req, res) => {
   });
 });
 
-// public route to sign up user
-export const registerAdminPost = TryCatch(async (req, res) => {
-  const {
-    firstname,
-    lastname,
-    username,
-    email,
-    phone,
-    gender,
-    vegan,
-    password,
-  } = req.body;
-
-  if (!firstname || firstname == "") throw new Error("Firstname is required");
-  if (!lastname || lastname == "") throw new Error("Lastname is required");
-  if (!username || username == "") throw new Error("Username is required");
-  if (!email || email == "") throw new Error("Email is required");
-  if (!phone || phone == "") throw new Error("Phone number is required");
-  if (!gender || gender == "") throw new Error("Gender is required");
-  if (!password || password == "") throw new Error("Password is required");
-  if (!validator.isEmail(email)) throw new Error("Email is invalid");
-
-  const findUser = await Admin.findOne({ username });
-
-  if (findUser) throw new Error("Account already exists");
-
-  const user = await Admin.create({
-    firstname,
-    lastname,
-    username,
-    email,
-    gender,
-    vegan,
-    phone,
-    password,
-  });
-
-  generateToken(res, user._id);
-
-  // const response = await resendEmail({
-  //   template: "welcome",
-  //   name: user.firstname,
-  // });
-
-  res.status(200).json({
-    _id: user._id,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    username: user.username,
-    email: user.email,
-    gender: user.gender,
-    vegan: user.vegan,
-    phone: user.phone,
-    expires: addDays(new Date(), 3),
-  });
-});
-
 // public route to logout user and remove token
 export const logoutUserPost = TryCatch(async (req, res) => {
   res.cookie("jwtYookatale", "", {
@@ -210,53 +122,6 @@ export const logoutUserPost = TryCatch(async (req, res) => {
   });
 
   res.status(200).json({ message: "Logged out" });
-});
-
-// private route to create new products
-export const createNewProductPost = TryCatch(async (req, res) => {
-  const { name, category, description, subCategory, price } = req.body;
-
-  if (!name || name == "") throw new Error("Product name is required");
-  if (!category || category == "")
-    throw new Error("Product category is required");
-  if (!description || description == "")
-    throw new Error("Product description is required");
-  if (!price || price == "") throw new Error("Product price is required");
-
-  // uploading of images would ideally go here
-  let images = [];
-
-  if (env === "production") {
-    for (const image of req.files) {
-      const imageName = uniqueString();
-      const params = {
-        Bucket: bucketName,
-        Key: imageName,
-        Body: image.buffer,
-        ContentType: image.mimetype,
-      };
-      const putCommand = new PutObjectCommand(params);
-
-      await S3.send(putCommand);
-
-      images.push(imageName);
-    }
-  } else {
-    images = req.files.map((file) => file.filename);
-  }
-
-  const newProduct = new Product({
-    name,
-    category,
-    description,
-    subCategory,
-    images,
-    price,
-  });
-
-  await newProduct.save();
-
-  res.status(200).json({ status: "Success" });
 });
 
 // public function to fetch all products
@@ -495,7 +360,7 @@ export const fetchCartGet = TryCatch(async (req, res) => {
 
 // private controller to add item to cart
 export const createCartPost = TryCatch(async (req, res) => {
-  const { productId, userId } = req.body;
+  const { productId, userId, quantity } = req.body;
 
   if (!productId || productId == "")
     throw new Error("Unexpected error has occured");
@@ -510,7 +375,7 @@ export const createCartPost = TryCatch(async (req, res) => {
 
   if (CartFetch) throw new Error("Product already added to cart");
 
-  const NewCart = new Cart({ productId, user: userId });
+  const NewCart = new Cart({ productId, user: userId, quantity });
 
   await NewCart.save();
 

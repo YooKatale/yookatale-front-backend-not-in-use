@@ -11,6 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import fs from "fs";
 import path from "path";
+import Admin from "../models/Admin.model.js";
 
 const newID = v4();
 const fsPromises = fs.promises;
@@ -22,7 +23,13 @@ export const Protect = TryCatch(async (req, res, next) => {
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  req.user = await User.findById(decoded.userId).select("-password");
+  let user = await User.findById(decoded.userId).select("-password");
+
+  if (!user) {
+    user = await Admin.findById(decoded.userId).select("-password");
+  }
+
+  req.user = user;
 
   next();
 });
@@ -55,17 +62,32 @@ export const ErrorHandler = (err, req, res, next) => {
   });
 };
 
-export const Logger = TryCatch(async (req, res, next) => {
-  const dateTime = `${format(new Date(), "yyyy-MM-dd\t-\tHH:mm:ss")}`;
-  const logData = `${dateTime}\t-\t${newID}\t-\t${`${req.method}\t-\t${req.headers.origin}\t-\t${req.url}`}\n`;
+export const Logger = {
+  requestEventLogger: TryCatch(async (req, res, next) => {
+    const dateTime = `${format(new Date(), "yyyy-MM-dd\t-\tHH:mm:ss")}`;
+    const logData = `${dateTime}\t-\t${newID}\t-\t${`${req.method}\t-\t${req.headers.origin}\t-\t${req.url}`}\n`;
 
-  if (!fs.existsSync(path.join(__dirname, "../public/", "logs")))
-    await fsPromises.mkdir(path.join(__dirname, "logs"));
+    if (!fs.existsSync(path.join(__dirname, "../public/", "logs")))
+      await fsPromises.mkdir(path.join(__dirname, "logs"));
 
-  await fsPromises.appendFile(
-    path.join(__dirname, "../public/", "logs", "requestLogs.txt"),
-    logData
-  );
+    await fsPromises.appendFile(
+      path.join(__dirname, "../public/", "logs", "requestLogs.txt"),
+      logData
+    );
 
-  next();
-});
+    next();
+  }),
+  adminEventLogger: async (action, user, message) => {
+    // this is not really a middleware
+    const dateTime = `${format(new Date(), "yyyy-MM-dd\t-\tHH:mm:ss")}`;
+    const logData = `${dateTime}\t-\t${newID}\t-\t${`${user}\t-\t${message}\t-\t${action}`}\n`;
+
+    if (!fs.existsSync(path.join(__dirname, "../public/", "logs")))
+      await fsPromises.mkdir(path.join(__dirname, "logs"));
+
+    await fsPromises.appendFile(
+      path.join(__dirname, "../public/", "logs", "adminLogs.txt"),
+      logData
+    );
+  },
+};

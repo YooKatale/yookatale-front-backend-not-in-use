@@ -1,10 +1,8 @@
 import express from "express";
 import {
-  authAdminPost,
   authUserPost,
   createCartPost,
   createNewOrderPost,
-  createNewProductPost,
   createSubscriptionCard,
   createSubscriptionPost,
   deleteCart,
@@ -18,7 +16,6 @@ import {
   fetchSubscriptionCards,
   logoutUserPost,
   productSearchGet,
-  registerAdminPost,
   registerUserPost,
   sendMessagePost,
   testEmailFeature,
@@ -55,11 +52,8 @@ const upload = multer({
 });
 
 router.post("/users/auth", authUserPost);
-router.post("/admin/auth", authAdminPost);
-router.post("/admin/register", registerAdminPost);
 router.post("/users/register", registerUserPost);
 router.post("/users/logout", logoutUserPost);
-router.post("/product/new", upload.array("images", 10), createNewProductPost);
 router.get("/products", fetchProductsGet);
 router.get("/product/:data", fetchProductGet);
 router.get("/products/:data", fetchProductsCategoryGet);

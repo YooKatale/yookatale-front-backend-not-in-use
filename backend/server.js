@@ -4,6 +4,7 @@ dotenv.config();
 import cookieParser from "cookie-parser";
 import chalk from "chalk";
 import router from "./routes/routes.js";
+import adminRouter from "./routes/admin/routes.js";
 import { connectDB } from "./config/db.config.js";
 import { ErrorHandler, Logger, NotFound } from "./middleware/middleware.js";
 import cors from "cors";
@@ -28,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
-app.use(Logger);
+app.use(Logger.requestEventLogger);
 
 const whitelist = [
   "http://localhost:3000",
@@ -54,6 +55,7 @@ const corsOptions = {
 // app.use(env === "production" ? cors(corsOptions) : cors());
 app.use(cors(corsOptions));
 app.use("/api", router);
+app.use("/admin", adminRouter);
 
 app.use(NotFound);
 app.use(ErrorHandler);
