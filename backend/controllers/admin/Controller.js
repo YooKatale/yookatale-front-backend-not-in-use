@@ -8,6 +8,7 @@ import validator from "validator";
 import { v4 as uniqueString } from "uuid";
 import bcrypt from "bcryptjs";
 import PasswordGen from "password-npm";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 dotenv.config();
 
@@ -18,6 +19,14 @@ const awsAccessKey = process.env.AWS_ACCESS_KEY;
 const awsSecretKey = process.env.AWS_SECRET_KEY;
 const jwtSign = process.env.JWT_SECRET_SIGN;
 const env = process.env.NODE_ENV;
+
+const S3 = new S3Client({
+  credentials: {
+    accessKeyId: awsAccessKey,
+    secretAccessKey: awsSecretKey,
+  },
+  region: bucketRegion,
+});
 
 // public route to sign in admin
 export const authAdminPost = TryCatch(async (req, res) => {
