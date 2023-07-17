@@ -30,6 +30,8 @@ const Product = () => {
   // get user information stored in the localstorage
   const { userInfo } = useSelector((state) => state.auth);
 
+  const [quantity, setQuantity] = useState(1);
+
   const chakraToast = useToast();
 
   const { push } = useRouter();
@@ -77,7 +79,11 @@ const Product = () => {
     }
 
     try {
-      const res = await addCartApi({ productId: ID, userId: userInfo?._id });
+      const res = await addCartApi({
+        productId: ID,
+        userId: userInfo?._id,
+        quantity,
+      });
 
       if (res.data?.message) {
         chakraToast({
@@ -107,6 +113,16 @@ const Product = () => {
         isClosable: false,
       });
     }
+  };
+
+  //handle increase quantity
+  const handleIncreaseQuantity = () => {
+    setQuantity((prev, curr) => (curr = prev + 1));
+  };
+
+  //handle reduce quantity
+  const handleDecreaseQuantity = () => {
+    if (quantity !== 1) setQuantity((prev, curr) => (curr = prev - 1));
   };
 
   return (
@@ -209,7 +225,7 @@ const Product = () => {
                 </Box>
                 <Box padding={"0.5rem 0"}>
                   <Flex>
-                    {/* <Box paddingRight="1rem">
+                    <Box paddingRight="1rem">
                       <Flex
                         borderRadius={"0.3rem"}
                         border={"1.7px solid " + ThemeColors.darkColor}
@@ -219,6 +235,7 @@ const Product = () => {
                           background={"none"}
                           padding={"0.3rem"}
                           margin={"0 0.3rem"}
+                          onClick={handleIncreaseQuantity}
                         >
                           <AiOutlinePlus size={25} />
                         </Button>
@@ -228,17 +245,18 @@ const Product = () => {
                           border={"1.7px solid " + ThemeColors.darkColor}
                           width={"3rem"}
                         >
-                          <Text fontSize={"md"}>1</Text>
+                          <Text fontSize={"md"}>{quantity}</Text>
                         </Box>
                         <Button
                           background={"none"}
                           padding={"0.3rem"}
                           margin={"0 0.3rem"}
+                          onClick={handleDecreaseQuantity}
                         >
                           <AiOutlineMinus size={25} />
                         </Button>
                       </Flex>
-                    </Box> */}
+                    </Box>
                     <Box padding={"0.3rem 1rem"}>
                       <Button
                         color={ThemeColors.lightColor}

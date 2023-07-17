@@ -3,26 +3,19 @@ import bcrypt from "bcryptjs";
 
 const adminSchema = Schema(
   {
-    firstname: {
-      type: String,
-    },
-    lastname: {
-      type: String,
-    },
+    firstname: String,
+    lastname: String,
     username: {
       type: String,
       unique: true,
     },
-    email: {
-      type: String,
-    },
+    email: String,
     gender: String,
-    phone: {
-      type: String,
-    },
-    password: {
-      type: String,
-    },
+    phone: String,
+    password: String,
+    tempPassword: String,
+    accountType: String,
+    permissions: Array,
   },
   {
     timestamps: true,

@@ -51,6 +51,8 @@ const Cart = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [tabOneData, setTabOneData] = useState({});
 
+  console.log({ Cart });
+
   const { onOpen, onClose, isOpen } = useDisclosure();
 
   // get user information stored in the localstorage
@@ -93,7 +95,6 @@ const Cart = () => {
 
         // set value of total for each cart item
         for (const cart of TempCart) {
-          cart.quantity = 1;
           cart.total = cart?.price * cart?.quantity;
           // cart.cartId = cart._id;
         }
@@ -173,6 +174,8 @@ const Cart = () => {
 
   // function to handle increasing and reducing product quantity
   const IncreaseProductQuantity = (id) => {
+    console.log("clicked +");
+
     // find the index of the product in the cart array
     const currentProductIndex = Cart.findIndex((cart) => cart.cartId === id);
 
@@ -196,6 +199,7 @@ const Cart = () => {
   };
 
   const ReduceProductQuantity = (id) => {
+    console.log("clicked -");
     // check if the current product quantity is 1. If true don't reduce else reduce
     // find the index of the product in the cart array
     const currentProductIndex = Cart.findIndex((cart) => cart.cartId === id);
@@ -237,7 +241,7 @@ const Cart = () => {
             xl: "1rem 2rem",
           }}
         >
-          <Box>
+          <Box padding={{ base: "0", md: "0", xl: "0 2rem" }}>
             <Heading as={"h2"} size={"lg"}>
               Your Cart
             </Heading>
@@ -250,8 +254,11 @@ const Cart = () => {
             }}
             overflowX={"auto"}
           >
-            <Box width={{ base: "300%", md: "250%", xl: "100%" }}>
-              <Box padding={"0.5rem 0"}>
+            <Box>
+              <Box
+                padding={"0.5rem 0"}
+                display={{ base: "none", md: "none", xl: "block" }}
+              >
                 <Flex flexShrink={0} width={"100%"}>
                   <Box width={"15%"} padding={"0.5rem 1rem"}>
                     <Heading as={"h2"} size={"md"}>
@@ -290,14 +297,21 @@ const Cart = () => {
               <Box
                 padding={"0.5rem 0"}
                 borderBottom={"1.7px solid " + ThemeColors.lightColor}
+                maxHeight={{ base: "550px", md: "500px" }}
+                overflowY={{ base: "auto", md: "auto", xl: "hidden" }}
               >
                 {Cart.length > 0 ? (
                   Cart.map((cart, index) => (
                     <Flex
                       key={cart?.cartId ? cart?.cartId : index}
                       flexShrink={1}
+                      display={{ base: "block", md: "block", xl: "flex" }}
                     >
-                      <Box width={"15%"} padding={"0 2rem"}>
+                      <Box
+                        width={{ base: "100%", md: "100%", xl: "15%" }}
+                        padding={"0 2rem"}
+                        height={{ base: "120px", md: "150px", xl: "auto" }}
+                      >
                         <Flex
                           alignContent={"center"}
                           justifyContent={"center"}
@@ -307,24 +321,26 @@ const Cart = () => {
                             alt=""
                             src={`${cart?.images ? cart.images : ""}`}
                             style={{
-                              height: "auto",
-                              width: "100%",
+                              height: "100%",
+                              width: "auto",
                               margin: "auto",
                             }}
                           />
                         </Flex>
                       </Box>
                       <Box
-                        width={{ base: "20%", md: "20%", xl: "25%" }}
+                        width={"25%"}
                         padding={"1rem"}
+                        display={{ base: "none", md: "none", xl: "block" }}
                       >
-                        <Text fontSize={{ base: "lg", md: "lg", xl: "2xl" }}>
+                        <Text fontSize={"2xl"}>
                           {cart?.name ? cart?.name : ""}
                         </Text>
                       </Box>
                       <Box
-                        width={{ base: "20%", md: "20%", xl: "15%" }}
+                        width={"15%"}
                         padding={"1rem"}
+                        display={{ base: "none", md: "none", xl: "block" }}
                       >
                         <Flex
                           borderRadius={"0.3rem"}
@@ -367,24 +383,122 @@ const Cart = () => {
                           </Button>
                         </Flex>
                       </Box>
-                      <Box width={"15%"} padding={"1rem"}>
-                        <Text fontSize={{ base: "lg", md: "lg", xl: "2xl" }}>
+                      <Box
+                        width={"15%"}
+                        padding={"1rem"}
+                        display={{ base: "none", md: "none", xl: "block" }}
+                      >
+                        <Text fontSize={"2xl"}>
                           {UGX(cart?.price ? cart?.price : 0).format()}
                         </Text>
                       </Box>
-                      <Box width={"20%"} padding={"1rem"}>
-                        <Text fontSize={{ base: "lg", md: "lg", xl: "2xl" }}>
+                      <Box
+                        width={"20%"}
+                        padding={"1rem"}
+                        display={{ base: "none", md: "none", xl: "block" }}
+                      >
+                        <Text fontSize={"2xl"}>
                           {cart?.total
                             ? UGX(cart?.total ? cart?.total : 0).format()
                             : 0}
                         </Text>
                       </Box>
-                      <Box width={"10%"} padding={"1rem"}>
+                      <Box
+                        width={"10%"}
+                        padding={"1rem"}
+                        display={{ base: "none", md: "none", xl: "block" }}
+                      >
                         <FaTrashAlt
                           size={30}
                           onClick={() => handleDeleteCartItem(cart?.cartId)}
                           style={{ cursor: "pointer" }}
                         />
+                      </Box>
+
+                      {/* // display for small and medium devices */}
+                      <Box
+                        display={{ base: "block", md: "block", xl: "none" }}
+                        borderBottom={"1.7px solid " + ThemeColors.darkColor}
+                        paddingTop={"1rem"}
+                      >
+                        <Box padding={"0.5rem"}>
+                          <Text fontSize={"2xl"}>
+                            {cart?.name ? cart?.name : ""}
+                          </Text>
+                        </Box>
+
+                        <Flex>
+                          <Box padding={"0.5rem"} width={"40%"}>
+                            <Text fontSize={"md"} fontWeight={"bold"}>
+                              Unit Price
+                            </Text>
+                            <Text fontSize={"lg"}>
+                              {UGX(cart?.price ? cart?.price : 0).format()}
+                            </Text>
+                          </Box>
+                          <Box width={"50%"} padding={"0.5rem"}>
+                            <Flex
+                              borderRadius={"0.3rem"}
+                              border={"1.7px solid " + ThemeColors.darkColor}
+                              padding={"0.2rem"}
+                            >
+                              <Button
+                                background={"none"}
+                                padding={"0.2rem"}
+                                margin={"0 0.2rem"}
+                                onClick={() =>
+                                  IncreaseProductQuantity(
+                                    cart?.cartId ? cart?.cartId : index
+                                  )
+                                }
+                              >
+                                <AiOutlinePlus size={18} />
+                              </Button>
+                              <Box
+                                padding={"0.2rem"}
+                                borderRadius={"0.3rem"}
+                                border={"1.7px solid " + ThemeColors.darkColor}
+                                width={"3rem"}
+                              >
+                                <Text fontSize={"lg"}>
+                                  {cart?.quantity ? cart?.quantity : 1}
+                                </Text>
+                              </Box>
+                              <Button
+                                background={"none"}
+                                padding={"0.2rem"}
+                                margin={"0 0.2rem"}
+                                onClick={() =>
+                                  ReduceProductQuantity(
+                                    cart?.cartId ? cart?.cartId : index
+                                  )
+                                }
+                              >
+                                <AiOutlineMinus size={18} />
+                              </Button>
+                            </Flex>
+                          </Box>
+                        </Flex>
+                        <Flex padding={"0.5rem 0 0 0"}>
+                          <Box padding={"1rem 0"}>
+                            <Text fontSize={"md"} fontWeight={"bold"}>
+                              Sub Total
+                            </Text>
+                            <Text fontSize={"lg"}>
+                              {cart?.total
+                                ? UGX(cart?.total ? cart?.total : 0).format()
+                                : 0}
+                            </Text>
+                          </Box>
+                          <Spacer />
+                          <Box padding={"1rem"}>
+                            <FaTrashAlt
+                              size={30}
+                              onClick={() => handleDeleteCartItem(cart?.cartId)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </Box>
+                        </Flex>
                       </Box>
                     </Flex>
                   ))
@@ -397,8 +511,8 @@ const Cart = () => {
             </Box>
           </Box>
           {Cart.length > 0 ? (
-            <Box padding={"1rem 3rem"}>
-              <Flex>
+            <Box padding={{ base: "0 1rem", md: "0 1rem", xl: "1rem 3rem" }}>
+              <Flex flexDirection={{ base: "column", md: "column", xl: "row" }}>
                 <Box hidden>
                   <Box
                     border={"1.7px solid " + ThemeColors.lightColor}

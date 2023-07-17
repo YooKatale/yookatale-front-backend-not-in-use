@@ -1,9 +1,13 @@
 import { addDays } from "date-fns";
 import Admin from "../../models/Admin.model.js";
-import { TryCatch, generateToken } from "../../utils/utils.js";
+import { TryCatch, generateToken, resendEmail } from "../../utils/utils.js";
 import { Logger } from "../../middleware/middleware.js";
 import Product from "../../models/Product.model.js";
 import dotenv from "dotenv";
+import validator from "validator";
+import { v4 as uniqueString } from "uuid";
+import bcrypt from "bcryptjs";
+import PasswordGen from "password-npm";
 
 dotenv.config();
 
@@ -29,6 +33,9 @@ export const authAdminPost = TryCatch(async (req, res) => {
 
   if (!(await user.matchPasswords(password))) throw new Error("Wrong password");
 
+  if (user?.tempPassword !== "")
+    await Admin.findOneAndUpdate({ _id: user._id }, { tempPassword: "" });
+
   generateToken(res, user._id);
 
   res.status(200).json({
@@ -39,35 +46,45 @@ export const authAdminPost = TryCatch(async (req, res) => {
     email: user.email,
     gender: user.gender,
     phone: user.phone,
+    account: user.accountType,
     expires: addDays(new Date(), 3),
   });
 });
 
 // public route to sign up admin
 export const registerAdminPost = TryCatch(async (req, res) => {
-  const {
-    firstname,
-    lastname,
-    username,
-    email,
-    phone,
-    gender,
-    vegan,
-    password,
-  } = req.body;
+  const { firstname, lastname, email, phone, gender, accountType } = req.body;
+
+  console.log({ gender, accountType });
 
   if (!firstname || firstname == "") throw new Error("Firstname is required");
   if (!lastname || lastname == "") throw new Error("Lastname is required");
-  if (!username || username == "") throw new Error("Username is required");
   if (!email || email == "") throw new Error("Email is required");
-  if (!phone || phone == "") throw new Error("Phone number is required");
-  if (!gender || gender == "") throw new Error("Gender is required");
-  if (!password || password == "") throw new Error("Password is required");
+
   if (!validator.isEmail(email)) throw new Error("Email is invalid");
 
-  const findUser = await Admin.findOne({ username });
+  const findUser = await Admin.findOne({ firstname, lastname });
 
   if (findUser) throw new Error("Account already exists");
+
+  const password = new PasswordGen(8, true, true, true, false).random();
+
+  const username = `${firstname}_${
+    lastname.toString().length > 3 ? lastname.toString().slice(0, 3) : lastname
+  }`;
+
+  const response = await resendEmail({
+    template: "loginDetails",
+    email,
+    firstname,
+    username,
+    password,
+    to: email,
+    from: "info@yookatale.com",
+    subject: "Account details",
+  });
+
+  if (response == "Error occured") throw new Error("Email not sent");
 
   const user = await Admin.create({
     firstname,
@@ -75,29 +92,75 @@ export const registerAdminPost = TryCatch(async (req, res) => {
     username,
     email,
     gender,
-    vegan,
     phone,
     password,
+    tempPassword: password,
+    accountType,
+    permissions: accountType == "root" ? ["all"] : [],
   });
-
-  generateToken(res, user._id);
 
   // const response = await resendEmail({
   //   template: "welcome",
   //   name: user.firstname,
   // });
 
-  res.status(200).json({
-    _id: user._id,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    username: user.username,
-    email: user.email,
-    gender: user.gender,
-    vegan: user.vegan,
-    phone: user.phone,
-    expires: addDays(new Date(), 3),
-  });
+  res.status(200).json({ status: "Success", data: email });
+});
+
+// private route to update user info
+export const updateUserPut = TryCatch(async (req, res) => {
+  const {
+    id,
+    firstname,
+    lastname,
+    username,
+    email,
+    phone,
+    gender,
+    currPassword,
+    password,
+  } = req.body;
+
+  if (!validator.isEmail(email)) throw new Error("Email is invalid");
+
+  if (!currPassword || currPassword == "")
+    throw new Error("Enter your current password");
+
+  const user = await Admin.findOne({ _id: id });
+
+  if (!user) throw new Error("User account not found");
+
+  if (!(await user.matchPasswords(currPassword)))
+    throw new Error("Wrong password");
+
+  if (password === currPassword) throw new Error("Password rejected");
+
+  // hash password
+  const salt = await bcrypt.genSalt(10);
+
+  const newPassword =
+    password == ""
+      ? await bcrypt.hash(currPassword, salt)
+      : await bcrypt.hash(password, salt);
+
+  await Admin.findOneAndUpdate(
+    { _id: user._id },
+    {
+      firstname,
+      lastname,
+      username,
+      email,
+      phone,
+      gender,
+      password: newPassword,
+    }
+  );
+
+  const updatedUser = await Admin.findOne({ _id: user._id }).select(
+    "-password"
+  );
+
+  res.status(200).json({ status: "Success", data: updatedUser });
 });
 
 // private route to create new products
@@ -206,7 +269,7 @@ export const editProductPost = TryCatch(async (req, res) => {
   res.status(200).json({ status: "Success" });
 });
 
-// public function to fetch a product
+// private function to fetch a product
 export const deleteProductDelete = TryCatch(async (req, res) => {
   const data = req.params.data;
 
@@ -231,4 +294,11 @@ export const deleteProductDelete = TryCatch(async (req, res) => {
   );
 
   res.status(200).json({ status: "Success" });
+});
+
+// private function to fetch accounts
+export const fetchAccountsGet = TryCatch(async (req, res) => {
+  const Accounts = await Admin.find({ accountType: { $nin: ["root"] } });
+
+  res.status(200).json({ status: "Success", data: Accounts });
 });

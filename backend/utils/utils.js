@@ -212,6 +212,15 @@ export const resendEmail = async (params) => {
     });
   }
 
+  if (params?.template == "loginDetails") {
+    htmlTemplate = htmlEmails.loginDetailsTemplate({
+      email: params?.email,
+      firstname: params?.firstname,
+      username: params?.username,
+      password: params?.password,
+    });
+  }
+
   try {
     const res = await resend.emails.send({
       from: params?.from,

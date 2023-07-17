@@ -11,7 +11,9 @@ import {
   createNewProductPost,
   deleteProductDelete,
   editProductPost,
+  fetchAccountsGet,
   registerAdminPost,
+  updateUserPut,
 } from "../../controllers/admin/Controller.js";
 import { Protect } from "../../middleware/middleware.js";
 
@@ -52,6 +54,8 @@ router.put(
   Protect,
   editProductPost
 );
+router.get("/accounts", Protect, fetchAccountsGet);
 router.delete("/product/:data", Protect, deleteProductDelete);
+router.put("/account", Protect, updateUserPut);
 
 export default router;

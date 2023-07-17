@@ -606,4 +606,146 @@ export const htmlEmails = {
 </html>
 
   `,
+  loginDetailsTemplate: ({ email, firstname, username, password }) => `
+  <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cabin&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      font-family: "Cabin", sans-serif;
+    }
+    a {
+      text-decoration: none;
+      color: #000;
+    }
+
+    @media screen and (max-width: 500px) {
+      .w-full {
+        width: 90% !important;
+      }
+    }
+  </style>
+  <body>
+    <main style="max-width: 100%; padding: 2rem 3rem; background: #d9f0f1">
+      <div style="border-radius: 1rem; background: #fff">
+        <header style="padding: 2rem 0; border-bottom: 1.7px solid #e6e9e9">
+          <div>
+            <h3 style="text-align: center; font-size: 2rem">
+              Account Creation
+            </h3>
+            <p style="text-align: center; font-size: 1.2rem; margin: 0.5rem 0">
+              ${email}
+            </p>
+          </div>
+        </header>
+        <div style="padding: 3rem 0">
+          <div style="display: flex; justify-content: center">
+            <div style="margin: auto; width: 65%" class="w-full">
+              <div style="padding: 1rem 0">
+                <h3 style="font-size: 1.5rem; text-align: center">
+                  Welcome ${firstname}, your account has been created successfully
+                </h3>
+              </div>
+              <div style="padding: 1rem 0">
+                <p
+                  style="
+                    font-size: 1.2rem;
+                    text-align: center;
+                    margin: 0.5rem 0;
+                  "
+                >
+                  Username: ${username}
+                </p>
+                <p
+                  style="
+                    font-size: 1.2rem;
+                    text-align: center;
+                    margin: 0.5rem 0;
+                  "
+                >
+                  Password: ${password}
+                </p>
+              </div>
+              <div
+                style="padding: 1rem 0; display: flex; justify-content: center"
+              >
+                <div>
+                  <button
+                    style="
+                      outline: none;
+                      border: none;
+                      background: #135f11;
+                      border-radius: 0.3rem;
+                      padding: 0.4rem 1rem;
+                      font-size: 1.2rem;
+                      cursor: pointer;
+                    "
+                  >
+                    <a
+                      href="https://admin.yookatale.com/signin"
+                      style="color: #fff"
+                      >Login</a
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer
+          style="
+            align-items: center;
+            border-top: 1.7px solid #d9f0f1;
+            padding: 2rem 3rem;
+          "
+        >
+          <div style="padding: 0.5rem 0">
+            <h4 style="text-align: center">
+              <a href="https://yookatale.com" style="font-size: 1.2rem"
+                >yookatale</a
+              >
+            </h4>
+          </div>
+          <div style="padding: 0.5rem 0">
+            <div>
+              <p style="text-align: center">
+                &copy; Copyright yokatale. All rights reserved
+              </p>
+            </div>
+          </div>
+          <div style="padding: 1rem 0">
+            <div style="display: flex; justify-content: center">
+              <a
+                target="_blank"
+                href="https://www.linkedin.com/company/yookatale/"
+                style="margin: 0 0.5rem"
+              >
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/3536/3536505.png?filename=linkedin_3536505.png&fd=1"
+                  alt=""
+                  srcset=""
+                  width="30"
+                />
+              </a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>
+
+  `,
 };
