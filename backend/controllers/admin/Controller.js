@@ -55,8 +55,6 @@ export const authAdminPost = TryCatch(async (req, res) => {
 export const registerAdminPost = TryCatch(async (req, res) => {
   const { firstname, lastname, email, phone, gender, accountType } = req.body;
 
-  console.log({ gender, accountType });
-
   if (!firstname || firstname == "") throw new Error("Firstname is required");
   if (!lastname || lastname == "") throw new Error("Lastname is required");
   if (!email || email == "") throw new Error("Email is required");
@@ -259,12 +257,12 @@ export const editProductPost = TryCatch(async (req, res) => {
     }
   );
 
-  // log record
-  await Logger.adminEventLogger(
-    "EDIT",
-    `${req?.user?.firstname} ${req?.user?.lastname}`,
-    `Edited product ${ParsedProduct?.name}`
-  );
+  // // log record
+  // await Logger.adminEventLogger(
+  //   "EDIT",
+  //   `${req?.user?.firstname} ${req?.user?.lastname}`,
+  //   `Edited product ${ParsedProduct?.name}`
+  // );
 
   res.status(200).json({ status: "Success" });
 });
@@ -287,11 +285,11 @@ export const deleteProductDelete = TryCatch(async (req, res) => {
   //   }
 
   // log record
-  await Logger.adminEventLogger(
-    "DELETE",
-    `${req?.user?.firstname} ${req?.user?.lastname}`,
-    `Deleted ${DelProduct?.name}`
-  );
+  // await Logger.adminEventLogger(
+  //   "DELETE",
+  //   `${req?.user?.firstname} ${req?.user?.lastname}`,
+  //   `Deleted ${DelProduct?.name}`
+  // );
 
   res.status(200).json({ status: "Success" });
 });

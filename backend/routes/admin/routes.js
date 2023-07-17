@@ -42,20 +42,10 @@ const upload = multer({
 
 router.post("/auth", authAdminPost);
 router.post("/register", registerAdminPost);
-router.post(
-  "/product/new",
-  upload.array("images", 10),
-  Protect,
-  createNewProductPost
-);
-router.put(
-  "/product/edit",
-  upload.array("images", 10),
-  Protect,
-  editProductPost
-);
-router.get("/accounts", Protect, fetchAccountsGet);
-router.delete("/product/:data", Protect, deleteProductDelete);
-router.put("/account", Protect, updateUserPut);
+router.post("/product/new", upload.array("images", 10), createNewProductPost);
+router.put("/product/edit", upload.array("images", 10), editProductPost);
+router.get("/accounts", fetchAccountsGet);
+router.delete("/product/:data", deleteProductDelete);
+router.put("/account", updateUserPut);
 
 export default router;
