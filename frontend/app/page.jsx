@@ -45,6 +45,7 @@ import { useSelector } from "react-redux";
 import ProductCard from "@components/ProductCard";
 import SpecialProducts from "@components/SpecialProducts";
 import ButtonComponent from "@components/Button";
+import SubscriptionCard from "@components/SubscriptionCard";
 
 const UGX = (value) =>
   currency(value, { symbol: "UGX", precision: 0, separator: "," });
@@ -52,7 +53,6 @@ const UGX = (value) =>
 const Home = () => {
   const [Products, setProducts] = useState({ recommended: [], popular: [] });
   const [Comments, setComments] = useState([]);
-  const [ActiveModal, setActiveModal] = useState("");
 
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -66,11 +66,6 @@ const Home = () => {
 
   const chakraToast = useToast();
 
-  // const handleModalFormClick = (form) => {
-  //   setActiveModal(form);
-  //   onOpen();
-  // };
-
   const handleFetchCommentsData = async () => {
     const res = await fetchComments().unwrap();
 
@@ -80,10 +75,12 @@ const Home = () => {
   };
 
   const handleFetchProductsData = async () => {
-    const res = await fetchProducts(JSON.stringify(["recommended", "popular"]));
+    const res = await fetchProducts(
+      JSON.stringify(["recommended", "popular"])
+    ).unwrap();
 
-    if (res.data?.status && res.data?.status == "Success") {
-      setProducts({ ...res.data?.data[0] });
+    if (res?.status && res?.status == "Success") {
+      setProducts({ ...res.data });
     }
   };
 
@@ -177,13 +174,13 @@ const Home = () => {
         </Flex>
       </Box>
       {/* section two */}
-      {Products?.recommended?.length > 0 ? (
+      {Products[0]?.recommended?.length > 0 ? (
         <Box
           padding={"3rem 0"}
           borderBottom={"1.7px solid " + ThemeColors.lightColor}
         >
           <Flex>
-            <Box margin={"auto"} width={"90%"}>
+            <Box margin={"auto"} width={{ base: "80%", md: "90%", xl: "90%" }}>
               <Box padding={"2rem 0"}>
                 <Heading as={"h2"} fontSize={"3xl"} textAlign={"center"}>
                   Recommended Products
@@ -198,7 +195,7 @@ const Home = () => {
                 </Flex>
               </Box>
               <SpecialProducts
-                Products={Products?.recommended}
+                Products={Products[0]?.recommended}
                 UGX={UGX}
                 userInfo={userInfo}
               />
@@ -209,13 +206,13 @@ const Home = () => {
         ""
       )}
       {/* section three */}
-      {Products?.popular?.length > 0 ? (
+      {Products[1]?.popular?.length > 0 ? (
         <Box
           padding={"3rem 0"}
           borderBottom={"1.7px solid " + ThemeColors.lightColor}
         >
           <Flex>
-            <Box margin={"auto"} width={"90%"}>
+            <Box margin={"auto"} width={{ base: "80%", md: "90%", xl: "90%" }}>
               <Box padding={"2rem 0"}>
                 <Heading as={"h2"} fontSize={"3xl"} textAlign={"center"}>
                   Popular Products
@@ -230,7 +227,7 @@ const Home = () => {
                 </Flex>
               </Box>
               <SpecialProducts
-                Products={Products?.popular}
+                Products={Products[1]?.popular}
                 UGX={UGX}
                 userInfo={userInfo}
               />
@@ -259,7 +256,7 @@ const Home = () => {
                   YooCard
                 </span>
               </Text>
-              <Flex justifyContent={"center"} padding={"1rem 0"}>
+              {/* <Flex justifyContent={"center"} padding={"1rem 0"}>
                 <Link href={"/subscription"}>
                   <ButtonComponent
                     type={"button"}
@@ -267,8 +264,97 @@ const Home = () => {
                     pd={"1.3rem 2rem"}
                   />
                 </Link>
-              </Flex>
+              </Flex> */}
             </Box>
+          </Box>
+        </Flex>
+        <Flex>
+          <Box margin={"auto"} width={{ base: "90%", md: "85%", xl: "75%" }}>
+            <Grid
+              gridTemplateColumns={{
+                base: "repeat(1, 1fr)",
+                md: "repeat(2, 1fr)",
+                xl: "repeat(3, 1fr)",
+              }}
+              gridGap={"1rem"}
+            >
+              <SubscriptionCard
+                card={{
+                  type: "premium",
+                  name: "Single|Small family",
+                  details: [
+                    "1 month free delivery",
+                    "3 meals credit",
+                    "Weekly newsletter",
+                  ],
+                  currPrice: 30000,
+                  prevPrice: 40000,
+                }}
+              />
+              <SubscriptionCard
+                card={{
+                  type: "diamond",
+                  name: "Medium family",
+                  details: [
+                    "1 month free delivery",
+                    "1 Extra premium YooCard",
+                    "14 meals credit",
+                    "4 fruit orders credit",
+                    "Newsletter & Nutritionist",
+                  ],
+                  currPrice: 100000,
+                  prevPrice: 150000,
+                }}
+              />
+              <SubscriptionCard
+                card={{
+                  type: "gold",
+                  name: "Large family",
+                  details: [
+                    "2 months free delivery",
+                    "Vivo gas refills",
+                    "21 meals, fruits & juice credit",
+                    "2 chef meals & 1 cake",
+                    "Newsletter & Nutritionist",
+                  ],
+                  currPrice: 450000,
+                  prevPrice: 370000,
+                }}
+              />
+              <Box display={{ base: "block", md: "block", xl: "none" }}>
+                <SubscriptionCard
+                  card={{
+                    type: "business",
+                    name: "",
+                    details: [
+                      "Restaurant, bar & hotel packages",
+                      "Get Access { mobile phone & email",
+                    ],
+                  }}
+                />
+              </Box>
+            </Grid>
+            <Flex
+              justifyContent={"center"}
+              padding={"1rem 0 2rem 0"}
+              display={{ base: "none", md: "none", xl: "block" }}
+            >
+              <Box
+                width={{ base: "100%", md: "60%", xl: "32%" }}
+                margin={"auto"}
+              >
+                <SubscriptionCard
+                  card={{
+                    type: "business",
+                    name: "",
+                    details: [
+                      "Restaurant, bar & hotel packages",
+                      "Get Access { mobile phone & email",
+                    ],
+                  }}
+                />
+              </Box>
+            </Flex>
           </Box>
         </Flex>
       </Box>

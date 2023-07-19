@@ -32,11 +32,13 @@ import ProductCard from "@components/ProductCard";
 
 const Products = () => {
   const CategoriesJson = [
-    "Starchy Food",
-    "Fruits and Vegetables",
-    "Dairy",
-    "Protein",
-    "Fat",
+    "roughages",
+    "fruits",
+    "root tubers",
+    "vegetables",
+    "grains and flour",
+    "meats",
+    "fats/oils",
   ];
 
   const [ProductsTitle, setProductsTitle] = useState("All Products");

@@ -12,6 +12,7 @@ import {
   Spacer,
   Stack,
   Spinner,
+  CloseButton,
 } from "@chakra-ui/react";
 import { Images, ThemeColors } from "@constants/constants";
 import Image from "next/image";
@@ -24,6 +25,7 @@ import {
   FaSignOutAlt,
   FaSearch,
   FaWhatsapp,
+  FaUser,
 } from "react-icons/fa";
 import {
   AiOutlineArrowLeft,
@@ -46,6 +48,7 @@ const Header = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [searchParam, setSearchParam] = useState("");
   const [isLoading, setLoading] = useState({ operation: "", status: false });
+  const [dropdownMenu, setDropdownMenu] = useState(false);
 
   IsAccountValid();
 
@@ -60,6 +63,9 @@ const Header = () => {
   const logoutHandler = async () => {
     // set loading to be true
     setLoading({ ...isLoading, operation: "logout", status: true });
+
+    // close dropdown menu if open
+    if (dropdownMenu) setDropdownMenu(false);
 
     try {
       const res = await logoutApiCall().unwrap();
@@ -230,17 +236,6 @@ const Header = () => {
                 </Link>
               </Box>
               <Box margin={"0.3rem 0.5rem"}>
-                <Link href={"/subscription"}>
-                  <Text
-                    color={"#000"}
-                    fontSize={"lg"}
-                    _hover={{ color: ThemeColors.darkColor }}
-                  >
-                    Get Card
-                  </Text>
-                </Link>
-              </Box>
-              <Box margin={"0.3rem 0.5rem"}>
                 <Link href={"/contact"}>
                   <Text
                     color={"#000"}
@@ -262,20 +257,6 @@ const Header = () => {
                   </Text>
                 </Link>
               </Box>
-              {userInfo ? (
-                <Box margin={"0.3rem 0.5rem"}>
-                  <Link href={"/orders"}>
-                    <Text
-                      fontSize={"lg"}
-                      _hover={{ color: ThemeColors.darkColor }}
-                    >
-                      Track Order
-                    </Text>
-                  </Link>
-                </Box>
-              ) : (
-                ""
-              )}
               {/* <Box margin={"0.3rem 0.5rem"}>
                 <Link href={"/schedule"}>
                   <Text
@@ -333,29 +314,95 @@ fontSize={"lg"}}}
                 </Link>
               </Box>
               {userInfo ? (
-                <Box padding={" 0.3rem 0.5rem"}>
-                  <Button
-                    color={ThemeColors.lightColor}
-                    background={ThemeColors.darkColor}
-                    border={"1.7px solid " + ThemeColors.darkColor}
-                    borderRadius={"0.3rem"}
-                    padding={"0.5rem 1rem"}
-                    _hover={{
-                      border: "none",
-                    }}
-                    onClick={logoutHandler}
-                  >
-                    {isLoading.status && isLoading.operation === "logout" ? (
-                      <Spinner />
-                    ) : (
-                      <FaSignOutAlt
+                <Box position={"relative"} zIndex={5}>
+                  <Box padding={" 0.3rem 0.5rem"}>
+                    <Button
+                      background={"none"}
+                      border={"1.7px solid " + ThemeColors.darkColor}
+                      borderRadius={"0.3rem"}
+                      padding={"0.8rem"}
+                      _hover={{
+                        border: "1.8px solid " + ThemeColors.darkColor,
+                      }}
+                      fontSize={"lg"}
+                      fontWeight={"thin"}
+                      onClick={() =>
+                        setDropdownMenu((prevState) =>
+                          prevState ? false : true
+                        )
+                      }
+                    >
+                      <FaUser
                         size={20}
-                        color={ThemeColors.lightColor}
-                        style={{ margin: "0 0.3rem" }}
+                        style={{
+                          margin: "0 0.5rem 0 0.3rem",
+                          color: ThemeColors.darkColor,
+                        }}
                       />
-                    )}{" "}
-                    Logout
-                  </Button>
+                      {`${userInfo?.lastname}`}
+                    </Button>
+                  </Box>
+                  {/* // dropdown menu */}
+                  <Box
+                    position={"fixed"}
+                    top={"15%"}
+                    padding={"1rem"}
+                    background={ThemeColors.lightColor}
+                    borderRadius={"0.5rem"}
+                    zIndex={3}
+                    width={"13rem"}
+                    visibility={dropdownMenu ? "visible" : "hidden"}
+                    transform={
+                      dropdownMenu
+                        ? "translate3d(0, 0, 0)"
+                        : "translate3d(150%, 0, 0)"
+                    }
+                  >
+                    <CloseButton
+                      position={"absolute"}
+                      fontSize={"md"}
+                      cursor={"pointer"}
+                      top={"0.5rem"}
+                      right={"1rem"}
+                      onClick={() =>
+                        setDropdownMenu((prevState) =>
+                          prevState ? false : true
+                        )
+                      }
+                    />
+                    <Stack paddingTop={"1rem"}>
+                      <Box margin={"0.3rem 0"}>
+                        <Link href={"/account"}>
+                          <Text
+                            fontSize={"md"}
+                            _hover={{ color: ThemeColors.darkColor }}
+                          >
+                            Account
+                          </Text>
+                        </Link>
+                      </Box>
+                      <Box
+                        margin={"0.3rem 0"}
+                        display={"flex"}
+                        cursor={"pointer"}
+                        onClick={logoutHandler}
+                      >
+                        {isLoading.status &&
+                        isLoading.operation === "logout" ? (
+                          <Spinner />
+                        ) : (
+                          <FaSignOutAlt size={20} />
+                        )}{" "}
+                        <Text
+                          fontSize={"md"}
+                          margin={"0 0.3rem"}
+                          _hover={{ color: ThemeColors.darkColor }}
+                        >
+                          Logout
+                        </Text>
+                      </Box>
+                    </Stack>
+                  </Box>
                 </Box>
               ) : (
                 <Box padding={" 0.3rem 0.5rem"}>
@@ -427,7 +474,116 @@ fontSize={"lg"}}}
             setMobileNavOpen((prevState) => (prevState ? false : true))
           }
         />
-        <Box padding={"1rem 0"}>
+        {userInfo ? (
+          <Box paddingTop={"0.5rem"} position={"relative"} zIndex={5}>
+            <Box padding={"0.5rem 0"}>
+              <Button
+                background={"none"}
+                border={"1.7px solid " + ThemeColors.darkColor}
+                borderRadius={"0.3rem"}
+                padding={"0.8rem"}
+                _hover={{
+                  border: "1.8px solid " + ThemeColors.darkColor,
+                }}
+                fontSize={"lg"}
+                fontWeight={"thin"}
+                onClick={() =>
+                  setDropdownMenu((prevState) => (prevState ? false : true))
+                }
+                color={ThemeColors.lightColor}
+              >
+                <FaUser
+                  size={20}
+                  style={{
+                    margin: "0 0.5rem 0 0.3rem",
+                    color: ThemeColors.darkColor,
+                  }}
+                />
+                {`${userInfo?.lastname ? userInfo?.lastname : "John Doe"}`}
+              </Button>
+            </Box>
+
+            {/* // -------------  dropdown menu ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+            <Box
+              position={"absolute"}
+              padding={"1rem"}
+              background={"#000"}
+              borderRadius={"0.5rem"}
+              zIndex={3}
+              width={"13rem"}
+              display={dropdownMenu ? "block" : "none"}
+            >
+              <CloseButton
+                position={"absolute"}
+                fontSize={"md"}
+                cursor={"pointer"}
+                top={"0.5rem"}
+                right={"1rem"}
+                color={ThemeColors.lightColor}
+                onClick={() =>
+                  setDropdownMenu((prevState) => (prevState ? false : true))
+                }
+              />
+              <Stack paddingTop={"1rem"}>
+                <Box
+                  margin={"0.3rem 0"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  }
+                >
+                  <Link href={"/account"}>
+                    <Text fontSize={"lg"} color={ThemeColors.lightColor}>
+                      Account
+                    </Text>
+                  </Link>
+                </Box>
+                <Box
+                  margin={"0.3rem 0"}
+                  display={"flex"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  }
+                >
+                  <Box>
+                    <Link
+                      href={"/cart"}
+                      onClick={() =>
+                        setMobileNavOpen((prevState) =>
+                          prevState ? false : true
+                        )
+                      }
+                    >
+                      <Flex
+                        position={"relative"}
+                        onClick={() =>
+                          setMobileNavOpen((prevState) =>
+                            prevState ? false : true
+                          )
+                        }
+                      >
+                        <FaShoppingBasket
+                          size={23}
+                          color={ThemeColors.primaryColor}
+                        />
+                        <Text
+                          fontSize={"lg"}
+                          margin={"0 0.5rem"}
+                          color={ThemeColors.lightColor}
+                        >
+                          Cart
+                        </Text>
+                      </Flex>
+                    </Link>
+                  </Box>
+                </Box>
+              </Stack>
+            </Box>
+          </Box>
+        ) : (
+          ""
+        )}
+
+        <Box padding={"0 0 1rem 0"}>
           <form onSubmit={handleSearchFormSubmit}>
             <Box>
               {isLoading ? <Spinner /> : ""}
@@ -463,22 +619,6 @@ fontSize={"lg"}}}
             </Box>
             <Box margin={"0.5rem 0"}>
               <Link
-                href={"/subscription"}
-                onClick={() =>
-                  setMobileNavOpen((prevState) => (prevState ? false : true))
-                }
-              >
-                <Text
-                  color={ThemeColors.lightColor}
-                  fontSize={"lg"}
-                  _hover={{ color: ThemeColors.darkColor }}
-                >
-                  Get Card
-                </Text>
-              </Link>
-            </Box>
-            <Box margin={"0.5rem 0"}>
-              <Link
                 href={"/contact"}
                 onClick={() =>
                   setMobileNavOpen((prevState) => (prevState ? false : true))
@@ -509,26 +649,6 @@ fontSize={"lg"}}}
                 </Text>
               </Link>
             </Box>
-            {userInfo ? (
-              <Box margin={"0.5rem 0"}>
-                <Link
-                  href={"/orders"}
-                  onClick={() =>
-                    setMobileNavOpen((prevState) => (prevState ? false : true))
-                  }
-                >
-                  <Text
-                    color={ThemeColors.lightColor}
-                    fontSize={"lg"}
-                    _hover={{ color: ThemeColors.darkColor }}
-                  >
-                    Track Order
-                  </Text>
-                </Link>
-              </Box>
-            ) : (
-              ""
-            )}
             {/* <Box margin={"0.5rem 0"}>
                 <Link href={"/schedule"} onClick={() =>
             setMobileNavOpen((prevState) => (prevState ? false : true))
@@ -568,88 +688,64 @@ fontSize={"lg"}}}
                 </Button>
               </Link>
             </Box>
-          </Stack>
-        </Box>
-        <Box>
-          <Stack padding={"2rem 0"}>
-            <Box padding={"0.5rem 0"}>
-              <Link
-                href={"/cart"}
-                onClick={() =>
-                  setMobileNavOpen((prevState) => (prevState ? false : true))
-                }
-              >
-                <Flex position={"relative"}>
-                  <FaShoppingBasket
-                    size={35}
-                    color={ThemeColors.primaryColor}
-                  />
-                  <Text
-                    style={{ fontSize: "1.3rem" }}
-                    margin={"0.3rem 0.5rem"}
-                    color={ThemeColors.lightColor}
-                  >
-                    Cart
-                  </Text>
-                </Flex>
-              </Link>
-            </Box>
-            {userInfo ? (
-              <Box padding={"0.5rem 0"}>
-                <Button
-                  color={ThemeColors.lightColor}
-                  background={ThemeColors.darkColor}
-                  border={"1.7px solid " + ThemeColors.darkColor}
-                  borderRadius={"0.3rem"}
-                  padding={"0.5rem 1rem"}
-                  _hover={{
-                    border: "none",
-                  }}
-                  onClick={() => {
-                    logoutHandler();
-                    setMobileNavOpen((prevState) => (prevState ? false : true));
-                  }}
-                >
-                  {isLoading.status && isLoading.operation === "logout" ? (
-                    <Spinner />
-                  ) : (
-                    <FaSignOutAlt
-                      size={20}
-                      color={ThemeColors.lightColor}
-                      style={{ margin: "0 0.3rem" }}
-                    />
-                  )}{" "}
-                  Logout
-                </Button>
-              </Box>
-            ) : (
-              <Box padding={"0.5rem 0"}>
-                <Link
-                  href={"/signin"}
-                  onClick={() =>
-                    setMobileNavOpen((prevState) => (prevState ? false : true))
-                  }
-                >
+            <Box margin={"1rem 0"}>
+              {userInfo ? (
+                <Box padding={"0"}>
                   <Button
-                    color={ThemeColors.lightColor}
                     background={ThemeColors.darkColor}
-                    border={"1.7px solid " + ThemeColors.darkColor}
-                    borderRadius={"0.3rem"}
-                    padding={"0.5rem 1rem"}
-                    _hover={{
-                      border: "none",
-                    }}
+                    onClick={logoutHandler}
+                    fontWeight={"light"}
                   >
-                    <FaSignInAlt
-                      size={20}
-                      color={ThemeColors.lightColor}
-                      style={{ margin: "0 0.3rem" }}
-                    />{" "}
-                    Sign In
+                    <Flex>
+                      {isLoading.status && isLoading.operation === "logout" ? (
+                        <Spinner />
+                      ) : (
+                        <FaSignOutAlt
+                          size={20}
+                          style={{ color: ThemeColors.lightColor }}
+                        />
+                      )}{" "}
+                      <Text
+                        fontSize={"md"}
+                        margin={"0 0.3rem"}
+                        color={ThemeColors.lightColor}
+                      >
+                        Logout
+                      </Text>
+                    </Flex>
                   </Button>
-                </Link>
-              </Box>
-            )}
+                </Box>
+              ) : (
+                <Box padding={"0"}>
+                  <Link
+                    href={"/signin"}
+                    onClick={() =>
+                      setMobileNavOpen((prevState) =>
+                        prevState ? false : true
+                      )
+                    }
+                  >
+                    <Button
+                      color={ThemeColors.lightColor}
+                      background={ThemeColors.darkColor}
+                      border={"1.7px solid " + ThemeColors.darkColor}
+                      borderRadius={"0.3rem"}
+                      padding={"0.5rem 1rem"}
+                      _hover={{
+                        border: "none",
+                      }}
+                    >
+                      <FaSignInAlt
+                        size={20}
+                        color={ThemeColors.lightColor}
+                        style={{ margin: "0 0.3rem" }}
+                      />{" "}
+                      Sign In
+                    </Button>
+                  </Link>
+                </Box>
+              )}
+            </Box>
           </Stack>
         </Box>
       </Box>

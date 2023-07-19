@@ -163,7 +163,13 @@ export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
   let ProductsCategory = [];
 
   for (const param of data) {
-    let productsFetched = await Product.find({ category: param });
+    let productsFetched = "";
+
+    if (param == "popular") {
+      productsFetched = await Product.find().limit(10);
+    } else {
+      productsFetched = await Product.find({ category: param });
+    }
 
     // check if products were found in category attribute, if not check in the subCategory attribute
     if (!productsFetched || productsFetched.length < 1) {
@@ -549,25 +555,25 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
   if (!data) throw new Error("Unexpected error occured. Please try again");
 
   // if user has purchased only one card
-  if (data?.quantity == 1) {
+  if (data?.card?.quantity == 1) {
     let NewCardNo = new Array(14)
       .fill(0)
       .map(() => Math.floor(Math.random() * 10).toString())
       .join("");
 
     const NewSubscription = new Subscription({
-      userId: data?.personalInfo?._id ? data?.personalInfo?._id : "",
+      userId: data?._id ? data?._id : "",
       user: {
-        firstname: data?.personalInfo?.firstname,
-        lastname: data?.personalInfo?.lastname,
-        email: data?.personalInfo?.email,
-        phone: data?.personalInfo?.phone,
-        gender: data?.personalInfo?.gender,
+        firstname: data?.firstname,
+        lastname: data?.lastname,
+        email: data?.email,
+        phone: data?.phone,
+        gender: data?.gender,
       },
       cards: [
         {
           cardNumber: NewCardNo,
-          card: data?.selectedSubscriptionCard?._id,
+          card: data?.card?.type,
         },
       ],
       status: "active",
@@ -577,34 +583,34 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
     await NewSubscription.save();
 
     const NewOrder = await Order.create({
-      user: data?.personalInfo?._id
-        ? data?.personalInfo?._id
-        : `${data?.personalInfo?.firstname} ${data?.personalInfo?.lastname}`,
+      user: data?._id ? data?._id : `${data?.firstname} ${data?.lastname}`,
       products: [
         {
-          id: data?.selectedSubscriptionCard?._id,
-          name: `YooCard ${data?.selectedSubscriptionCard?.type}`,
+          type: data?.card?.name,
+          name: `YooCard ${data?.card?.type}`,
         },
       ],
-      total: data?.total,
-      productItems: data?.quantity,
+      total: data?.card?.total == "Contact for price" ? 0 : data?.card?.total,
+      productItems: data?.card?.quantity,
       paymentMethod: data?.paymentMethod,
-      deliveryAddress: data?.deliveryAddress,
-      specialRequest: {},
+      deliveryAddress: { address1: data?.address1, address2: data?.address2 },
+      specialRequest: {
+        moreInfo: data?.moreInfo,
+      },
       status: "pending",
     });
 
     const response = await resendEmail({
       template: "order",
       from: "info@yookatale.com",
-      email: data?.personalInfo?.email,
+      to: data?.email,
       subject: "Order Successful",
       orderID: NewOrder?._id,
       orderTotal: NewOrder?.total,
-      orderFor: `YooCard ${data?.selectedSubscriptionCard?.type}`,
+      orderFor: `YooCard ${data?.card?.type}`,
       deliveryAddress: {
-        address1: data?.deliveryAddress?.address1,
-        address2: data?.deliveryAddress?.address2,
+        address1: data?.address1,
+        address2: data?.address2,
       },
     });
 
@@ -619,63 +625,62 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
   }
 
   // if user has purchased more than one card
-  for (let i = 0; i < parseInt(data?.quantity); i++) {
+  const Cards = [];
+  for (let i = 0; i < parseInt(data?.card.quantity); i++) {
     let NewCardNo = new Array(14)
       .fill(0)
       .map(() => Math.floor(Math.random() * 10).toString())
       .join("");
 
-    const NewSubscription = new Subscription({
-      userId: data?.personalInfo?._id ? data?.personalInfo?._id : "",
-      user: {
-        firstname: data?.personalInfo?.firstname,
-        lastname: data?.personalInfo?.lastname,
-        email: data?.personalInfo?.email,
-        phone: data?.personalInfo?.phone,
-        gender: data?.personalInfo?.gender,
-      },
-      cards: [
-        {
-          cardNumber: NewCardNo,
-          card: data?.selectedSubscriptionCard?._id,
-        },
-      ],
-      status: "active",
-      expiresOn: addDays(new Date(), 30),
+    Cards.push({
+      cardNumber: NewCardNo,
+      card: data?.card?.type,
     });
-
-    await NewSubscription.save();
   }
 
+  const NewSubscription = new Subscription({
+    userId: data?._id ? data?._id : "",
+    user: {
+      firstname: data?.firstname,
+      lastname: data?.lastname,
+      email: data?.email,
+      phone: data?.phone,
+      gender: data?.gender,
+    },
+    cards: Cards,
+    status: "active",
+    expiresOn: addDays(new Date(), 30),
+  });
+
+  await NewSubscription.save();
+
   const NewOrder = await Order.create({
-    user: data?.personalInfo?._id
-      ? data?.personalInfo?._id
-      : `${data?.personalInfo?.firstname} ${data?.personalInfo?.lastname}`,
+    user: data?._id ? data?._id : `${data?.firstname} ${data?.lastname}`,
     products: [
       {
-        id: data?.selectedSubscriptionCard?._id,
-        name: `YooCard ${data?.selectedSubscriptionCard?.type}`,
+        type: data?.card?.type,
+        name: `YooCard ${data?.card?.type}`,
       },
     ],
-    total: data?.total,
-    productItems: data?.quantity,
+    total: data?.card?.total == "Contact for price" ? 0 : data?.card?.total,
+    productItems: data?.card?.quantity,
     paymentMethod: data?.paymentMethod,
-    deliveryAddress: data?.deliveryAddress,
-    specialRequest: {},
+    deliveryAddress: { address1: data?.address1, address2: data?.address2 },
+    specialRequest: { moreInfo: data?.moreInfo },
     status: "pending",
   });
 
   const response = await resendEmail({
     template: "order",
     from: "info@yookatale.com",
-    email: data?.personalInfo?.email,
+    to: data?.email,
     subject: "Order Successful",
     orderID: NewOrder?._id,
     orderTotal: NewOrder?.total,
-    orderFor: `YooCard ${data?.selectedSubscriptionCard?.type}`,
+    orderFor: `YooCard ${data?.card?.type}`,
     deliveryAddress: {
-      address1: data?.deliveryAddress?.address1,
-      address2: data?.deliveryAddress?.address2,
+      address1: data?.address1,
+      address2: data?.address2,
     },
   });
 
