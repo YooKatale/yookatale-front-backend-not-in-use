@@ -72,6 +72,7 @@ router.post("/subscription/card", createSubscriptionCard);
 router.post("/subscription", createSubscriptionPost);
 router.post("/test/email", testEmailFeature);
 router.post("/message", sendMessagePost);
+// router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 
 export default router;

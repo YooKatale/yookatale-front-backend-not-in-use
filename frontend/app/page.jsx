@@ -80,7 +80,7 @@ const Home = () => {
     ).unwrap();
 
     if (res?.status && res?.status == "Success") {
-      setProducts({ ...res.data });
+      setProducts(res.data);
     }
   };
 
@@ -109,14 +109,18 @@ const Home = () => {
     handleFetchProductsData();
   }, []);
 
+  console.log(Products);
+
   return (
     <>
       <Head>
         <link rel="shortcut icon" href="/public/assets/icons/logo1.png" />
       </Head>
       <Hero />
-      {/* section one */}
-      <Box padding={"3rem 0"}>
+
+      {/* ------------- section 
+      ------------------------------- */}
+      <Box padding={"3rem 0"} hidden>
         <Flex>
           <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "70%" }}>
             <Flex direction={{ base: "column", md: "column", xl: "row" }}>
@@ -173,71 +177,54 @@ const Home = () => {
           </Box>
         </Flex>
       </Box>
-      {/* section two */}
-      {Products[0]?.recommended?.length > 0 ? (
-        <Box
-          padding={"3rem 0"}
-          borderBottom={"1.7px solid " + ThemeColors.lightColor}
-        >
-          <Flex>
-            <Box margin={"auto"} width={{ base: "80%", md: "90%", xl: "90%" }}>
-              <Box padding={"2rem 0"}>
-                <Heading as={"h2"} fontSize={"3xl"} textAlign={"center"}>
-                  Recommended Products
-                </Heading>
-                <Flex>
-                  <Box
-                    height={"0.2rem"}
-                    width={"10rem"}
-                    margin={"1rem auto"}
-                    background={ThemeColors.primaryColor}
-                  ></Box>
-                </Flex>
-              </Box>
-              <SpecialProducts
-                Products={Products[0]?.recommended}
-                UGX={UGX}
-                userInfo={userInfo}
-              />
-            </Box>
-          </Flex>
-        </Box>
-      ) : (
-        ""
-      )}
-      {/* section three */}
-      {Products[1]?.popular?.length > 0 ? (
-        <Box
-          padding={"3rem 0"}
-          borderBottom={"1.7px solid " + ThemeColors.lightColor}
-        >
-          <Flex>
-            <Box margin={"auto"} width={{ base: "80%", md: "90%", xl: "90%" }}>
-              <Box padding={"2rem 0"}>
-                <Heading as={"h2"} fontSize={"3xl"} textAlign={"center"}>
-                  Popular Products
-                </Heading>
-                <Flex>
-                  <Box
-                    height={"0.2rem"}
-                    width={"10rem"}
-                    margin={"1rem auto"}
-                    background={ThemeColors.primaryColor}
-                  ></Box>
-                </Flex>
-              </Box>
-              <SpecialProducts
-                Products={Products[1]?.popular}
-                UGX={UGX}
-                userInfo={userInfo}
-              />
-            </Box>
-          </Flex>
-        </Box>
-      ) : (
-        ""
-      )}
-      {/* Section four */}
+
+      {/* ------------- section 
+      ------------------------------- */}
+      {Products.length > 0
+        ? Products.map(
+            (product) =>
+              product?.category == "popular" &&
+              product?.products?.length > 0 && (
+                <Box
+                  padding={"3rem 0"}
+                  borderBottom={"1.7px solid " + ThemeColors.lightColor}
+                >
+                  <Flex>
+                    <Box
+                      margin={"auto"}
+                      width={{ base: "95%", md: "90%", xl: "90%" }}
+                    >
+                      <Box padding={"2rem 0"}>
+                        <Heading
+                          as={"h2"}
+                          fontSize={"3xl"}
+                          textAlign={"center"}
+                        >
+                          Popular Products
+                        </Heading>
+                        <Flex>
+                          <Box
+                            height={"0.2rem"}
+                            width={"10rem"}
+                            margin={"1rem auto"}
+                            background={ThemeColors.primaryColor}
+                          ></Box>
+                        </Flex>
+                      </Box>
+                      <SpecialProducts
+                        Products={product?.products}
+                        UGX={UGX}
+                        userInfo={userInfo}
+                      />
+                    </Box>
+                  </Flex>
+                </Box>
+              )
+          )
+        : ""}
+
+      {/* ------------- section 
+      ------------------------------- */}
       <Box padding={"3rem 0"}>
         <Flex>
           <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "60%" }}>
@@ -256,7 +243,7 @@ const Home = () => {
                   YooCard
                 </span>
               </Text>
-              {/* <Flex justifyContent={"center"} padding={"1rem 0"}>
+              <Flex justifyContent={"center"} padding={"1rem 0"}>
                 <Link href={"/subscription"}>
                   <ButtonComponent
                     type={"button"}
@@ -264,101 +251,60 @@ const Home = () => {
                     pd={"1.3rem 2rem"}
                   />
                 </Link>
-              </Flex> */}
+              </Flex>
             </Box>
           </Box>
         </Flex>
-        <Flex>
-          <Box margin={"auto"} width={{ base: "90%", md: "85%", xl: "75%" }}>
-            <Grid
-              gridTemplateColumns={{
-                base: "repeat(1, 1fr)",
-                md: "repeat(2, 1fr)",
-                xl: "repeat(3, 1fr)",
-              }}
-              gridGap={"1rem"}
-            >
-              <SubscriptionCard
-                card={{
-                  type: "premium",
-                  name: "Single|Small family",
-                  details: [
-                    "1 month free delivery",
-                    "3 meals credit",
-                    "Weekly newsletter",
-                  ],
-                  currPrice: 30000,
-                  prevPrice: 40000,
-                }}
-              />
-              <SubscriptionCard
-                card={{
-                  type: "diamond",
-                  name: "Medium family",
-                  details: [
-                    "1 month free delivery",
-                    "1 Extra premium YooCard",
-                    "14 meals credit",
-                    "4 fruit orders credit",
-                    "Newsletter & Nutritionist",
-                  ],
-                  currPrice: 100000,
-                  prevPrice: 150000,
-                }}
-              />
-              <SubscriptionCard
-                card={{
-                  type: "gold",
-                  name: "Large family",
-                  details: [
-                    "2 months free delivery",
-                    "Vivo gas refills",
-                    "21 meals, fruits & juice credit",
-                    "2 chef meals & 1 cake",
-                    "Newsletter & Nutritionist",
-                  ],
-                  currPrice: 450000,
-                  prevPrice: 370000,
-                }}
-              />
-              <Box display={{ base: "block", md: "block", xl: "none" }}>
-                <SubscriptionCard
-                  card={{
-                    type: "business",
-                    name: "",
-                    details: [
-                      "Restaurant, bar & hotel packages",
-                      "Get Access { mobile phone & email",
-                    ],
-                  }}
-                />
-              </Box>
-            </Grid>
-            <Flex
-              justifyContent={"center"}
-              padding={"1rem 0 2rem 0"}
-              display={{ base: "none", md: "none", xl: "block" }}
-            >
-              <Box
-                width={{ base: "100%", md: "60%", xl: "32%" }}
-                margin={"auto"}
-              >
-                <SubscriptionCard
-                  card={{
-                    type: "business",
-                    name: "",
-                    details: [
-                      "Restaurant, bar & hotel packages",
-                      "Get Access { mobile phone & email",
-                    ],
-                  }}
-                />
-              </Box>
-            </Flex>
-          </Box>
-        </Flex>
       </Box>
-      {/* section five */}
+
+      {/* ------------- section 
+      ------------------------------- */}
+      {Products.length > 0
+        ? Products.map(
+            (product) =>
+              product?.category !== "popular" &&
+              product?.products?.length > 0 && (
+                <Box
+                  padding={"3rem 0"}
+                  borderBottom={"1.7px solid " + ThemeColors.lightColor}
+                >
+                  <Flex>
+                    <Box
+                      margin={"auto"}
+                      width={{ base: "95%", md: "90%", xl: "90%" }}
+                    >
+                      <Box padding={"2rem 0"}>
+                        <Heading
+                          as={"h2"}
+                          fontSize={"3xl"}
+                          textAlign={"center"}
+                          textTransform={"capitalize"}
+                        >
+                          {product?.category} Products
+                        </Heading>
+                        <Flex>
+                          <Box
+                            height={"0.2rem"}
+                            width={"10rem"}
+                            margin={"1rem auto"}
+                            background={ThemeColors.primaryColor}
+                          ></Box>
+                        </Flex>
+                      </Box>
+                      <SpecialProducts
+                        Products={product?.products}
+                        UGX={UGX}
+                        userInfo={userInfo}
+                      />
+                    </Box>
+                  </Flex>
+                </Box>
+              )
+          )
+        : ""}
+
+      {/* ------------- section 
+      ------------------------------- */}
       <Box>
         {Comments.length > 0 ? (
           <Box
@@ -437,7 +383,9 @@ const Home = () => {
           ""
         )}
       </Box>
-      {/* Section four */}
+
+      {/* ------------- section 
+      ----------------------------------- */}
       <Box>
         <Box padding={"3rem 0"}>
           <Flex>

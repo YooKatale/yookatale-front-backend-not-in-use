@@ -123,6 +123,18 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    blogsFetch: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/blogs`,
+        method: "GET",
+      }),
+    }),
+    blogFetch: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/blog/${data}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -145,4 +157,6 @@ export const {
   useSubscriptionCardPostMutation,
   useProductCreateMutation,
   useMessagePostMutation,
+  useBlogFetchMutation,
+  useBlogsFetchMutation,
 } = usersApiSlice;

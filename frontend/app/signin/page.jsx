@@ -102,7 +102,7 @@ const SignIn = () => {
               margin={"auto"}
               width={{ base: "90%", md: "80%", xl: "50%" }}
               padding={{
-                base: "1rem 0 3rem 0",
+                base: "2rem 0 5rem 0",
                 md: "1rem 0 3rem 0",
                 xl: "1rem",
               }}

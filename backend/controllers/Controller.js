@@ -159,8 +159,34 @@ export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
   // categories passed shall be an array
   const data = req.params.data ? JSON.parse(req.params.data) : [];
 
+  // fetch products for each category
+  const CategoriesJson = [
+    "roughages",
+    "fruits",
+    "root tubers",
+    "vegetables",
+    "grains and flour",
+    "meats",
+    "fats/oils",
+  ];
+
   // loop through the categories passed and fetch products for each category and store them in the ProductsCategory object
-  let ProductsCategory = [];
+  const Products = [];
+
+  for (const category of CategoriesJson) {
+    let products = await Product.find({ category });
+
+    if (env === "production") {
+      for (const product of products) {
+        product.images = await fetchImageUrl(product.images[0]);
+      }
+    }
+
+    Products.push({
+      category,
+      products,
+    });
+  }
 
   for (const param of data) {
     let productsFetched = "";
@@ -182,10 +208,10 @@ export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
       }
     }
 
-    ProductsCategory.push({ [param]: productsFetched });
+    Products.push({ category: param, products: productsFetched });
   }
 
-  res.status(200).json({ status: "Success", data: ProductsCategory });
+  res.status(200).json({ status: "Success", data: Products });
 });
 
 // public function to fetch filterd products
@@ -573,7 +599,7 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
       cards: [
         {
           cardNumber: NewCardNo,
-          card: data?.card?.type,
+          card: data?.selectedCard?.type,
         },
       ],
       status: "active",
@@ -586,13 +612,19 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
       user: data?._id ? data?._id : `${data?.firstname} ${data?.lastname}`,
       products: [
         {
-          type: data?.card?.name,
-          name: `YooCard ${data?.card?.type}`,
+          type: data?.selectedCard?.name,
+          name: `YooCard ${data?.selectedCard?.type}`,
         },
       ],
-      total: data?.card?.total == "Contact for price" ? 0 : data?.card?.total,
-      productItems: data?.card?.quantity,
-      paymentMethod: data?.paymentMethod,
+      total:
+        data?.selectedCard?.price == "Contact for price"
+          ? 0
+          : parseInt(data?.selectedCard?.price * parseInt(data?.quantity)),
+      productItems: data?.quantity,
+      payment: {
+        paymentMethod: data?.paymentMethod,
+        paymentId: data?.paymentId,
+      },
       deliveryAddress: { address1: data?.address1, address2: data?.address2 },
       specialRequest: {
         moreInfo: data?.moreInfo,
@@ -607,7 +639,7 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
       subject: "Order Successful",
       orderID: NewOrder?._id,
       orderTotal: NewOrder?.total,
-      orderFor: `YooCard ${data?.card?.type}`,
+      orderFor: `YooCard ${data?.selectedCard?.type}`,
       deliveryAddress: {
         address1: data?.address1,
         address2: data?.address2,
@@ -626,7 +658,7 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
 
   // if user has purchased more than one card
   const Cards = [];
-  for (let i = 0; i < parseInt(data?.card.quantity); i++) {
+  for (let i = 0; i < parseInt(data?.quantity); i++) {
     let NewCardNo = new Array(14)
       .fill(0)
       .map(() => Math.floor(Math.random() * 10).toString())
@@ -634,7 +666,7 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
 
     Cards.push({
       cardNumber: NewCardNo,
-      card: data?.card?.type,
+      card: data?.selectedCard?.type,
     });
   }
 
@@ -658,13 +690,16 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
     user: data?._id ? data?._id : `${data?.firstname} ${data?.lastname}`,
     products: [
       {
-        type: data?.card?.type,
-        name: `YooCard ${data?.card?.type}`,
+        type: data?.selectedCard?.type,
+        name: `YooCard ${data?.selectedCard?.type}`,
       },
     ],
-    total: data?.card?.total == "Contact for price" ? 0 : data?.card?.total,
-    productItems: data?.card?.quantity,
-    paymentMethod: data?.paymentMethod,
+    total:
+      data?.selectedCard?.price == "Contact for price"
+        ? 0
+        : parseInt(data?.selectedCard?.price * parseInt(data?.quantity)),
+    productItems: data?.quantity,
+    payment: { paymentMethod: data?.paymentMethod, paymentId: data?.paymentId },
     deliveryAddress: { address1: data?.address1, address2: data?.address2 },
     specialRequest: { moreInfo: data?.moreInfo },
     status: "pending",
@@ -677,7 +712,7 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
     subject: "Order Successful",
     orderID: NewOrder?._id,
     orderTotal: NewOrder?.total,
-    orderFor: `YooCard ${data?.card?.type}`,
+    orderFor: `YooCard ${data?.selectedCard?.type}`,
     deliveryAddress: {
       address1: data?.address1,
       address2: data?.address2,
@@ -720,6 +755,8 @@ export const sendMessagePost = TryCatch(async (req, res) => {
     });
   }
 });
+
+export const fetchBlogPostsGet = TryCatch(async (req, res) => {});
 
 export const testEmailFeature = TryCatch(async (req, res) => {
   const { message } = req.body;

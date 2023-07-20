@@ -235,6 +235,19 @@ const Header = () => {
                   </Text>
                 </Link>
               </Box>
+              {userInfo && (
+                <Box margin={"0.3rem 0.5rem"}>
+                  <Link href={"/subscription"}>
+                    <Text
+                      color={"#000"}
+                      fontSize={"lg"}
+                      _hover={{ color: ThemeColors.darkColor }}
+                    >
+                      YooCards
+                    </Text>
+                  </Link>
+                </Box>
+              )}
               <Box margin={"0.3rem 0.5rem"}>
                 <Link href={"/contact"}>
                   <Text
@@ -268,6 +281,17 @@ fontSize={"lg"}}}
                   </Text>
                 </Link>
               </Box> */}
+              <Box margin={"0.3rem 0.5rem"}>
+                <Link href={"/blogs"}>
+                  <Text
+                    color={"#000"}
+                    fontSize={"lg"}
+                    _hover={{ color: ThemeColors.darkColor }}
+                  >
+                    News Blog
+                  </Text>
+                </Link>
+              </Box>
               <Box margin={"0 0.5rem"}>
                 <Link href={"https://wa.me/256754615840"} target="_blank">
                   <Button
@@ -617,6 +641,24 @@ fontSize={"lg"}}}
                 </Text>
               </Link>
             </Box>
+            {userInfo && (
+              <Box margin={"0.5rem 0"}>
+                <Link
+                  href={"/subscription"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  }
+                >
+                  <Text
+                    color={ThemeColors.lightColor}
+                    fontSize={"lg"}
+                    _hover={{ color: ThemeColors.darkColor }}
+                  >
+                    YooCards
+                  </Text>
+                </Link>
+              </Box>
+            )}
             <Box margin={"0.5rem 0"}>
               <Link
                 href={"/contact"}
@@ -662,6 +704,22 @@ fontSize={"lg"}}}
                   </Text>
                 </Link>
               </Box> */}
+            <Box margin={"0.5rem 0"}>
+              <Link
+                href={"/blogs"}
+                onClick={() =>
+                  setMobileNavOpen((prevState) => (prevState ? false : true))
+                }
+              >
+                <Text
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  _hover={{ color: ThemeColors.darkColor }}
+                >
+                  News Blog
+                </Text>
+              </Link>
+            </Box>
             <Box margin={"1rem 0"}>
               <Link
                 href={"https://wa.me/256754615840"}
