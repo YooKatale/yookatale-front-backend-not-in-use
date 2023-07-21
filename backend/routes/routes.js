@@ -3,7 +3,6 @@ import {
   authUserPost,
   createCartPost,
   createNewOrderPost,
-  createSubscriptionCard,
   createSubscriptionPost,
   deleteCart,
   fetchCartGet,
@@ -13,7 +12,6 @@ import {
   fetchProductsCategoryGet,
   fetchProductsFilterGet,
   fetchProductsGet,
-  fetchSubscriptionCards,
   logoutUserPost,
   productSearchGet,
   registerUserPost,
@@ -67,8 +65,6 @@ router.get("/products/search/:data", productSearchGet);
 router.post("/products/order", Protect, createNewOrderPost);
 router.get("/products/order/:data", Protect, fetchOrdersGet);
 router.get("/users/comments", fetchCommentsGet);
-router.get("/subscription", fetchSubscriptionCards);
-router.post("/subscription/card", createSubscriptionCard);
 router.post("/subscription", createSubscriptionPost);
 router.post("/test/email", testEmailFeature);
 router.post("/message", sendMessagePost);

@@ -9,6 +9,10 @@ import { v4 as uniqueString } from "uuid";
 import bcrypt from "bcryptjs";
 import PasswordGen from "password-npm";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import SubscriptionCard from "../../models/SubscriptionCard.model.js";
+import Order from "../../models/Order.model.js";
+import User from "../../models/User.model.js";
+import Subscription from "../../models/Subscription.model.js";
 
 dotenv.config();
 
@@ -308,4 +312,68 @@ export const fetchAccountsGet = TryCatch(async (req, res) => {
   const Accounts = await Admin.find({ accountType: { $nin: ["root"] } });
 
   res.status(200).json({ status: "Success", data: Accounts });
+});
+
+// private function to create subscription cards
+export const createSubscriptionCard = TryCatch(async (req, res) => {
+  const { type, price, name, details, previousPrice } = req.body;
+
+  if (!type || type == "") throw new Error("Card type is required");
+  if (!name || name == "") throw new Error("Card name is required");
+  if (!details || details == "") throw new Error("Card details is required");
+  // if (!price || price == 0) throw new Error("Card price is required");
+  // if (!previousPrice || previousPrice == 0)
+  //   throw new Error("Card previousPrice is required");
+
+  const NewSubscriptionCard = new SubscriptionCard({
+    type,
+    price,
+    name,
+    details,
+    previousPrice,
+  });
+
+  await NewSubscriptionCard.save();
+
+  res.status(200).json({ status: "Success" });
+});
+
+// private function to fetch subscription card plans
+export const fetchSubscriptionCards = TryCatch(async (req, res) => {
+  const Cards = await SubscriptionCard.find();
+
+  res.status(200).json({ status: "Success", data: Cards });
+});
+
+export const fetchDashboardGet = TryCatch(async (req, res) => {
+  // fetch all data
+  const data = {
+    PendingOrders: {
+      count: await Order.find({ status: "pending" }).count(),
+      orders: await Order.find({ status: "pending" })
+        .sort({ _id: -1 })
+        .limit(5)
+        .lean(),
+    },
+    CompletedOrders: {
+      count: await Order.find({ status: "completed" }).count(),
+    },
+    Users: { count: await User.find().count() },
+    Products: { count: await Product.find().count() },
+    Subscriptions: {
+      subscriptions: await Subscription.find({ status: "pending" })
+        .sort({ _id: -1 })
+        .limit(5)
+        .lean(),
+    },
+  };
+
+  // fetch user data for each order
+  for (const order of data.PendingOrders.orders) {
+    order.user = await User.findOne({ _id: order.user })
+      .lean()
+      .select("-password");
+  }
+
+  res.status(200).json({ status: "Success", data });
 });

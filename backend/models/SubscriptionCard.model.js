@@ -4,7 +4,7 @@ const subscriptionCardSchema = Schema(
   {
     type: String,
     price: Number,
-    renewed: String,
+    name: String,
     details: Array,
     previousPrice: Number,
   },

@@ -109,8 +109,6 @@ const Home = () => {
     handleFetchProductsData();
   }, []);
 
-  console.log(Products);
-
   return (
     <>
       <Head>
@@ -182,12 +180,13 @@ const Home = () => {
       ------------------------------- */}
       {Products.length > 0
         ? Products.map(
-            (product) =>
+            (product, index) =>
               product?.category == "popular" &&
               product?.products?.length > 0 && (
                 <Box
                   padding={"3rem 0"}
                   borderBottom={"1.7px solid " + ThemeColors.lightColor}
+                  key={index}
                 >
                   <Flex>
                     <Box
@@ -261,12 +260,13 @@ const Home = () => {
       ------------------------------- */}
       {Products.length > 0
         ? Products.map(
-            (product) =>
+            (product, index) =>
               product?.category !== "popular" &&
               product?.products?.length > 0 && (
                 <Box
                   padding={"3rem 0"}
                   borderBottom={"1.7px solid " + ThemeColors.lightColor}
+                  key={index}
                 >
                   <Flex>
                     <Box
@@ -293,6 +293,7 @@ const Home = () => {
                       </Box>
                       <SpecialProducts
                         Products={product?.products}
+                        category={product?.category}
                         UGX={UGX}
                         userInfo={userInfo}
                       />

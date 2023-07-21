@@ -549,30 +549,6 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
   res.status(200).json({ status: "Success", data: Comments });
 });
 // public function to fetch comments
-// public function to create subscription cards
-export const createSubscriptionCard = TryCatch(async (req, res) => {
-  const { type, price, name, renewed, details, previousPrice } = req.body;
-
-  const NewSubscriptionCard = new SubscriptionCard({
-    type,
-    price,
-    name,
-    renewed,
-    details,
-    previousPrice,
-  });
-
-  await NewSubscriptionCard.save();
-
-  res.status(200).json({ status: "Success" });
-});
-
-// public function to fetch subscription card plans
-export const fetchSubscriptionCards = TryCatch(async (req, res) => {
-  const Cards = await SubscriptionCard.find();
-
-  res.status(200).json({ status: "Success", data: Cards });
-});
 
 // public function to create subscription
 export const createSubscriptionPost = TryCatch(async (req, res) => {
