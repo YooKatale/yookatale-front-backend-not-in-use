@@ -399,3 +399,5 @@
 2023-07-21	-	17:31:31	-	0b1fe18f-9156-41d7-973c-4b6c40ae23b6	-	GET	-	http://localhost:3000	-	/admin/dashboard
 2023-07-21	-	17:33:05	-	89f18680-4fed-4a17-93ed-4a28ce6cadbd	-	GET	-	http://localhost:3000	-	/admin/dashboard
 2023-07-21	-	17:34:05	-	17e05de0-1f04-4151-b60e-9e329f70af53	-	GET	-	http://localhost:3000	-	/admin/dashboard
+2023-07-21	-	22:33:51	-	de09cfe1-bc77-488d-8760-a77f6197c43b	-	GET	-	http://localhost:3000	-	/admin/dashboard
+2023-07-21	-	22:35:16	-	de09cfe1-bc77-488d-8760-a77f6197c43b	-	GET	-	http://localhost:3000	-	/api/subscription
