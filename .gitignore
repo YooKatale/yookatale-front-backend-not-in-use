@@ -1,4 +1,4 @@
-node_modules
-frontend
-admin
+/node_modules
+/frontend
+/admin
 .env
