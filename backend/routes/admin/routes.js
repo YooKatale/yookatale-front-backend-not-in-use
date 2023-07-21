@@ -14,7 +14,6 @@ import {
   editProductPost,
   fetchAccountsGet,
   fetchDashboardGet,
-  fetchSubscriptionCards,
   registerAdminPost,
   updateUserPut,
 } from "../../controllers/admin/Controller.js";
@@ -50,7 +49,6 @@ router.put("/product/edit", upload.array("images", 10), editProductPost);
 router.get("/accounts", fetchAccountsGet);
 router.delete("/product/:data", deleteProductDelete);
 router.put("/account", updateUserPut);
-router.get("/subscription", fetchSubscriptionCards);
 router.post("/subscription/card", createSubscriptionCard);
 router.get("/dashboard", fetchDashboardGet);
 

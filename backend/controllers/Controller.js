@@ -744,6 +744,13 @@ export const testEmailFeature = TryCatch(async (req, res) => {
   res.status(200).json({ response });
 });
 
+// private function to fetch subscription card plans
+export const fetchSubscriptionCards = TryCatch(async (req, res) => {
+  const Cards = await SubscriptionCard.find();
+
+  res.status(200).json({ status: "Success", data: Cards });
+});
+
 // export const paymentWebhookGet = TryCatch(async (req, res) => {
 //   console.log(req);
 // });

@@ -12,6 +12,7 @@ import {
   fetchProductsCategoryGet,
   fetchProductsFilterGet,
   fetchProductsGet,
+  fetchSubscriptionCards,
   logoutUserPost,
   productSearchGet,
   registerUserPost,
@@ -68,6 +69,7 @@ router.get("/users/comments", fetchCommentsGet);
 router.post("/subscription", createSubscriptionPost);
 router.post("/test/email", testEmailFeature);
 router.post("/message", sendMessagePost);
+router.get("/subscription", fetchSubscriptionCards);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 

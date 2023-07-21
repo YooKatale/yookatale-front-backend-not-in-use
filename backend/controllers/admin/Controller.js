@@ -338,13 +338,6 @@ export const createSubscriptionCard = TryCatch(async (req, res) => {
   res.status(200).json({ status: "Success" });
 });
 
-// private function to fetch subscription card plans
-export const fetchSubscriptionCards = TryCatch(async (req, res) => {
-  const Cards = await SubscriptionCard.find();
-
-  res.status(200).json({ status: "Success", data: Cards });
-});
-
 export const fetchDashboardGet = TryCatch(async (req, res) => {
   // fetch all data
   const data = {
