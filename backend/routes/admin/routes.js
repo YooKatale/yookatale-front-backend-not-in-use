@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
 import {
+  approveSubscriptionsPut,
   authAdminPost,
   createNewProductPost,
   createSubscriptionCard,
@@ -14,6 +15,7 @@ import {
   editProductPost,
   fetchAccountsGet,
   fetchDashboardGet,
+  fetchSubscriptionsGet,
   registerAdminPost,
   updateUserPut,
 } from "../../controllers/admin/Controller.js";
@@ -51,5 +53,7 @@ router.delete("/product/:data", deleteProductDelete);
 router.put("/account", updateUserPut);
 router.post("/subscription/card", createSubscriptionCard);
 router.get("/dashboard", fetchDashboardGet);
+router.get("/subscriptions/:data", fetchSubscriptionsGet);
+router.put("/subscriptions/:data", approveSubscriptionsPut);
 
 export default router;

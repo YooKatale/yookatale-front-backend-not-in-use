@@ -370,3 +370,22 @@ export const fetchDashboardGet = TryCatch(async (req, res) => {
 
   res.status(200).json({ status: "Success", data });
 });
+
+export const fetchSubscriptionsGet = TryCatch(async (req, res) => {
+  const param = req.params.data;
+
+  const Subscriptions = await Subscription.find({ status: param });
+
+  res.status(200).json({ status: "Success", data: Subscriptions });
+});
+
+export const approveSubscriptionsPut = TryCatch(async (req, res) => {
+  const param = req.params.data;
+
+  const Subscriptions = await Subscription.findOneAndUpdate(
+    { _id: param },
+    { status: "active", expiresOn: addDays(new Date(), 30) }
+  );
+
+  res.status(200).json({ status: "Success" });
+});
