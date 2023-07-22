@@ -578,8 +578,8 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
           card: data?.selectedCard?.type,
         },
       ],
-      status: "active",
-      expiresOn: addDays(new Date(), 30),
+      status: "pending",
+      expiresOn: new Date(),
     });
 
     await NewSubscription.save();
@@ -656,8 +656,8 @@ export const createSubscriptionPost = TryCatch(async (req, res) => {
       gender: data?.gender,
     },
     cards: Cards,
-    status: "active",
-    expiresOn: addDays(new Date(), 30),
+    status: "pending",
+    expiresOn: new Date(),
   });
 
   await NewSubscription.save();
