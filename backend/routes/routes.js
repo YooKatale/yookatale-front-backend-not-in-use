@@ -3,12 +3,14 @@ import {
   authUserPost,
   createCartPost,
   createNewOrderPost,
+  createNewsletterPost,
   createSubscriptionPost,
   deleteCart,
   fetchCartGet,
   fetchCommentsGet,
   fetchNewsblogGet,
   fetchNewsblogsGet,
+  fetchNewslettersGet,
   fetchOrdersGet,
   fetchProductGet,
   fetchProductsCategoryGet,
@@ -74,6 +76,8 @@ router.post("/message", sendMessagePost);
 router.get("/subscription", fetchSubscriptionCards);
 router.get("/newsblogs", fetchNewsblogsGet);
 router.get("/newsblog/:data", fetchNewsblogGet);
+router.post("/newsletter", createNewsletterPost);
+router.get("/newsletter", fetchNewslettersGet);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 

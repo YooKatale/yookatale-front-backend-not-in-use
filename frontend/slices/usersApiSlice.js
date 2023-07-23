@@ -135,6 +135,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    newsletterPost: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/newsletter`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -159,4 +166,5 @@ export const {
   useMessagePostMutation,
   useBlogFetchMutation,
   useBlogsFetchMutation,
+  useNewsletterPostMutation,
 } = usersApiSlice;

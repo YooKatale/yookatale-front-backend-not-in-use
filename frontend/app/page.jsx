@@ -14,6 +14,8 @@ import {
   Modal,
   ModalContent,
   ModalCloseButton,
+  Checkbox,
+  Input,
 } from "@chakra-ui/react";
 import Hero from "@components/Hero";
 import { Images, ThemeColors } from "@constants/constants";
@@ -35,6 +37,7 @@ import { useEffect, useState } from "react";
 import {
   useCartCreateMutation,
   useCommentsGetMutation,
+  useNewsletterPostMutation,
   useProductsCategoryGetMutation,
 } from "@slices/usersApiSlice";
 import currency from "currency.js";
@@ -53,14 +56,16 @@ const UGX = (value) =>
 const Home = () => {
   const [Products, setProducts] = useState({ recommended: [], popular: [] });
   const [Comments, setComments] = useState([]);
+  const [NewsletterEmail, setNewsletterEmail] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   const { onOpen, onClose, isOpen } = useDisclosure();
 
   const { userInfo } = useSelector((state) => state.auth);
 
   const [fetchProducts] = useProductsCategoryGetMutation();
-
   const [fetchComments] = useCommentsGetMutation();
+  const [createNewsletter] = useNewsletterPostMutation();
 
   const { push } = useRouter();
 
@@ -100,6 +105,46 @@ const Home = () => {
       setCurrSliderIndex((prev) => prev - 1);
     } else {
       setCurrSliderIndex((prev) => Comments.length - 1);
+    }
+  };
+
+  // submit email for newsletter
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoading((prevState) => (prevState ? false : true));
+
+    try {
+      const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
+
+      if (res.status == "Success") {
+        // set loading to be false
+        setLoading((prevState) => (prevState ? false : true));
+
+        // clear email value
+        setNewsletterEmail("");
+
+        chakraToast({
+          title: "Success",
+          description: "Successfully subscribed to newsletter",
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+      }
+    } catch (err) {
+      // set loading to be false
+      setLoading((prevState) => (prevState ? false : true));
+
+      chakraToast({
+        title: "Error has occured",
+        description: err.data?.message
+          ? err.data?.message
+          : err.data || err.error,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
     }
   };
 
@@ -224,7 +269,7 @@ const Home = () => {
 
       {/* ------------- section 
       ------------------------------- */}
-      <Box padding={"3rem 0"}>
+      <Box padding={"3rem 0"} background={"#000"}>
         <Flex>
           <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "60%" }}>
             <Box padding={{ base: "2rem", md: "2rem 1rem", xl: "2rem 0" }}>
@@ -232,15 +277,16 @@ const Home = () => {
                 textAlign={"center"}
                 fontSize={{ base: "4xl", md: "4xl", xl: "4xl" }}
                 className="secondary-light-font"
+                color={ThemeColors.lightColor}
               >
-                Enjoy Monthly Unlimited access to all Foods with your friends
-                and family{" "}
                 <span
                   style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
                   className="secondary-font"
                 >
                   YooCard
                 </span>
+                , your home mobile food bank. Feeding a smile to friends &
+                family always
               </Text>
               <Flex justifyContent={"center"} padding={"1rem 0"}>
                 <Link href={"/subscription"}>
@@ -388,7 +434,7 @@ const Home = () => {
       {/* ------------- section 
       ----------------------------------- */}
       <Box>
-        <Box padding={"3rem 0"}>
+        <Box padding={"5rem 0"}>
           <Flex>
             <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "70%" }}>
               <Flex
@@ -399,74 +445,134 @@ const Home = () => {
                   xl: "space-between",
                 }}
               >
-                <Box width={{ base: "100%", md: "90%", xl: "50%" }}>
-                  <Flex
-                    padding={"0 1rem"}
-                    justifyContent={{
-                      base: "center",
-                      md: "center",
-                      xl: "none",
-                    }}
-                  >
-                    <Box padding={"1rem "}>
-                      {/* <FaPhone size={40} color={ThemeColors.darkColor} /> */}
-                      <HI.HiOutlinePhoneOutgoing
-                        size={45}
-                        color={ThemeColors.darkColor}
-                      />
-                    </Box>
-                    <Box>
-                      <Heading
-                        as={"h2"}
-                        className="secondary-font"
-                        size={"md"}
-                        color={ThemeColors.darkColor}
-                      >
-                        Have a question ?
-                      </Heading>
-                      <Stack padding={"1rem 0"}>
-                        <Box>
-                          <Text>+256 754615840</Text>
+                <Stack
+                  width={{ base: "100%", md: "100%", xl: "50%" }}
+                  paddingTop={"2rem"}
+                >
+                  <Box>
+                    <Flex
+                      justifyContent={{
+                        base: "center",
+                        md: "center",
+                        xl: "none",
+                      }}
+                    >
+                      <Box padding={"1rem"}>
+                        {/* <FaPhone size={40} color={ThemeColors.darkColor} /> */}
+                        <HI.HiOutlinePhoneOutgoing
+                          size={30}
+                          color={ThemeColors.darkColor}
+                        />
+                      </Box>
+                      <Box>
+                        <Heading
+                          as={"h2"}
+                          className="secondary-font"
+                          size={"md"}
+                          color={ThemeColors.darkColor}
+                          margin={"0.3rem 0"}
+                        >
+                          Have a question ?
+                        </Heading>
+                        <Text style={{ fontSize: "1.1rem" }}>
+                          +256 754615840
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </Box>
+                  <Box>
+                    <Flex
+                      padding={""}
+                      justifyContent={{
+                        base: "center",
+                        md: "center",
+                        xl: "none",
+                      }}
+                    >
+                      <Box padding={"1rem"}>
+                        {/* <FaEnvelope size={40} color={ThemeColors.darkColor} /> */}
+                        <HI.HiOutlineMail
+                          size={30}
+                          color={ThemeColors.darkColor}
+                        />
+                      </Box>
+                      <Box>
+                        <Heading
+                          as={"h3"}
+                          className="secondary-font"
+                          size={"md"}
+                          color={ThemeColors.darkColor}
+                          margin={"0.3rem 0"}
+                        >
+                          For Support
+                        </Heading>
+                        <Text style={{ fontSize: "1.1rem" }}>
+                          info@yookatale.com
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </Box>
+                </Stack>
+
+                <Box
+                  padding={"1rem 0"}
+                  width={{ base: "100%", md: "100%", xl: "50%" }}
+                >
+                  <Flex>
+                    <Box
+                      margin={"auto"}
+                      width={{ base: "90%", md: "90%", xl: "100%" }}
+                    >
+                      <form onSubmit={handleNewsletterSubmit}>
+                        <Box
+                          border={"1.7px solid " + ThemeColors.lightColor}
+                          borderRadius={"0.5rem"}
+                          padding={"0.5rem"}
+                        >
+                          <Box>
+                            <Text
+                              fontSize={"lg"}
+                              fontWeight={"bold"}
+                              textAlign={"center"}
+                            >
+                              Subscribe to our newsletter
+                            </Text>
+                          </Box>
+                          <Box padding={"1rem 0"}>
+                            <Input
+                              type="text"
+                              name={"NewsletterEmail"}
+                              placeholder="Enter your email"
+                              value={NewsletterEmail}
+                              onChange={(e) =>
+                                setNewsletterEmail(e.target.value)
+                              }
+                            />
+                          </Box>
+                          <Box padding={"0.3rem 0"}>
+                            <Text
+                              textAlign={{
+                                base: "center",
+                                md: "center",
+                                xl: "left",
+                              }}
+                            >
+                              By clicking "Subscribe" I agree to receive news,
+                              promotions, information and offers from YooKatale
+                            </Text>
+                          </Box>
+                          <Box padding={"0.5rem 0"}>
+                            {isLoading ? (
+                              <Spinner />
+                            ) : (
+                              <ButtonComponent
+                                type={"submit"}
+                                text={"Subscribe"}
+                              />
+                            )}
+                          </Box>
                         </Box>
-                        {/* <Box>
-                          <Text>+256 7736 9384722</Text>
-                        </Box> */}
-                      </Stack>
-                    </Box>
-                  </Flex>
-                </Box>
-                <Box width={{ base: "100%", md: "90%", xl: "50%" }}>
-                  <Flex
-                    padding={"0 1rem"}
-                    justifyContent={{
-                      base: "center",
-                      md: "center",
-                      xl: "none",
-                    }}
-                  >
-                    <Box padding={"1rem "}>
-                      {/* <FaEnvelope size={40} color={ThemeColors.darkColor} /> */}
-                      <HI.HiOutlineMail
-                        size={45}
-                        color={ThemeColors.darkColor}
-                      />
-                    </Box>
-                    <Box>
-                      <Heading
-                        as={"h3"}
-                        className="secondary-font"
-                        size={"md"}
-                        color={ThemeColors.darkColor}
-                        margin={"0.5rem 0"}
-                      >
-                        For Support
-                      </Heading>
-                      <Text
-                        className="secondary-light-font"
-                        style={{ fontSize: "1.1rem" }}
-                      >
-                        info@yookatale.com
-                      </Text>
+                      </form>
                     </Box>
                   </Flex>
                 </Box>

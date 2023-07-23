@@ -64,8 +64,10 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
         setLoading((prevState) => (prevState ? false : true));
 
         chakraToast({
-          title: "Error",
-          description: res.error.data?.message,
+          title: "Error has occured",
+          description: err.data?.message
+            ? err.data?.message
+            : err.data || err.error,
           status: "error",
           duration: 5000,
           isClosable: false,

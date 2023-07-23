@@ -21,6 +21,7 @@ import Flutterwave from "flutterwave-node-v3";
 import Subscription from "../models/Subscription.model.js";
 import { addDays } from "date-fns";
 import Newsblog from "../models/Newsblog.model.js";
+import Newsletter from "../models/Newsletter.model.js";
 
 dotenv.config();
 
@@ -774,6 +775,29 @@ export const fetchNewsblogGet = TryCatch(async (req, res) => {
   }
 
   res.status(200).json({ status: "Success", data: FetchedNewsblog });
+});
+
+export const createNewsletterPost = TryCatch(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email || email == "") throw new Error("Email is required");
+
+  if (!validator.isEmail(email)) throw new Error("Email is invalid");
+
+  const NewNewsletter = new Newsletter({
+    email,
+    status: "active",
+  });
+
+  NewNewsletter.save();
+
+  res.status(200).json({ status: "Success" });
+});
+
+export const fetchNewslettersGet = TryCatch(async (req, res) => {
+  const Newsletters = await Newsletter.find();
+
+  res.status(200).json({ status: "Success", data: Newsletters });
 });
 
 // export const paymentWebhookGet = TryCatch(async (req, res) => {

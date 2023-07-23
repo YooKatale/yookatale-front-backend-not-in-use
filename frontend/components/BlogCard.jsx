@@ -17,7 +17,7 @@ const BlogCard = ({ blog }) => {
           <Box borderRadius={"md"}>
             <Image
               width={"100%"}
-              src={Images.testImage.src}
+              src={blog?.image}
               objectFit={"cover"}
               borderTopRightRadius={"md"}
               borderTopRLeftRadius={"md"}

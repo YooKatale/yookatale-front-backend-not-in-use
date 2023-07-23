@@ -61,10 +61,9 @@ const Blog = () => {
           <Box margin={"auto"} width={"80%"}>
             <Box padding={"1rem 0"}>
               <Image
-                src={
-                  BlogPost ? (BlogPost?.image ? BlogPost?.image.src : "") : ""
-                }
+                src={BlogPost ? (BlogPost?.image ? BlogPost?.image : "") : ""}
                 alt="newsblog image"
+                width={{ base: "70%", md: "60%", xl: "50%" }}
               />
             </Box>
             <Box padding={"0.5rem 0"}>

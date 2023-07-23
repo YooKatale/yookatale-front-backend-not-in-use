@@ -25,34 +25,41 @@ const Hero = () => {
                   fontSize={"4xl"}
                   margin={"0.3rem 0"}
                 >
+                  Feeding the{" "}
                   <span
                     style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
                     className="secondary-font"
                   >
-                    Welcome
-                  </span>{" "}
-                  to your{" "}
+                    soul
+                  </span>
+                </Text>
+                <Text
+                  textAlign={"center"}
+                  className="secondary-light-font"
+                  fontSize={"4xl"}
+                  margin={"0.3rem 0"}
+                >
+                  Celebrating{" "}
                   <span
                     style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
                     className="secondary-font"
                   >
-                    Reliable
-                  </span>{" "}
-                  market partner that{" "}
+                    togetherness
+                  </span>
+                </Text>
+                <Text
+                  textAlign={"center"}
+                  className="secondary-light-font"
+                  fontSize={"4xl"}
+                  margin={"0.3rem 0"}
+                >
+                  Living better while{" "}
                   <span
                     style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
                     className="secondary-font"
                   >
-                    Conveniently
-                  </span>{" "}
-                  delivers 24/7 with{" "}
-                  <span
-                    style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
-                    className="secondary-font"
-                  >
-                    Quality
-                  </span>{" "}
-                  assured.
+                    saving money
+                  </span>
                 </Text>
                 {/* <Heading
                   as={"h3"}
@@ -78,9 +85,9 @@ const Hero = () => {
                         background={ThemeColors.darkColor}
                         border={"1.7px solid " + ThemeColors.darkColor}
                         borderRadius={"0.3rem"}
-                        padding={"2rem 1.5rem"}
+                        padding={"1.5rem 1rem"}
                         className="secondary-light-font"
-                        fontSize={"lg"}
+                        fontSize={"md"}
                         _hover={{
                           background: "none",
                           color: ThemeColors.darkColor,
