@@ -14,7 +14,7 @@ import {
   Image,
   Spinner,
 } from "@chakra-ui/react";
-import { Images, ThemeColors } from "@constants/constants";
+import { CategoriesJson, Images, ThemeColors } from "@constants/constants";
 import * as FA from "react-icons/fa";
 import * as HI from "react-icons/hi";
 // import Image from "next/image";
@@ -31,16 +31,6 @@ import currency from "currency.js";
 import ProductCard from "@components/ProductCard";
 
 const Products = () => {
-  const CategoriesJson = [
-    "roughages",
-    "fruits",
-    "root tubers",
-    "vegetables",
-    "grains and flour",
-    "meats",
-    "fats/oils",
-  ];
-
   const [ProductsTitle, setProductsTitle] = useState("All Products");
   const [Products, setProducts] = useState([]);
   // const [productsFilter, setProductsFilter] = useState([]);

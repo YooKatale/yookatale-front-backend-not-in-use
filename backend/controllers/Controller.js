@@ -20,6 +20,7 @@ import SubscriptionCard from "../models/SubscriptionCard.model.js";
 import Flutterwave from "flutterwave-node-v3";
 import Subscription from "../models/Subscription.model.js";
 import { addDays } from "date-fns";
+import Newsblog from "../models/Newsblog.model.js";
 
 dotenv.config();
 
@@ -749,6 +750,30 @@ export const fetchSubscriptionCards = TryCatch(async (req, res) => {
   const Cards = await SubscriptionCard.find();
 
   res.status(200).json({ status: "Success", data: Cards });
+});
+
+export const fetchNewsblogsGet = TryCatch(async (req, res) => {
+  const Newsblogs = await Newsblog.find();
+
+  if (env === "production") {
+    for (const newsblog of Newsblogs) {
+      newsblog.image = await fetchImageUrl(newsblog.image);
+    }
+  }
+
+  res.status(200).json({ status: "Success", data: Newsblogs });
+});
+
+export const fetchNewsblogGet = TryCatch(async (req, res) => {
+  const ID = req.params.data;
+
+  const FetchedNewsblog = await Newsblog.findOne({ _id: ID });
+
+  if (env === "production") {
+    FetchedNewsblog.image = await fetchImageUrl(FetchedNewsblog.image);
+  }
+
+  res.status(200).json({ status: "Success", data: FetchedNewsblog });
 });
 
 // export const paymentWebhookGet = TryCatch(async (req, res) => {

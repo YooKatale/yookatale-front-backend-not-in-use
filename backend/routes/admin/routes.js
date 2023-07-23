@@ -10,7 +10,9 @@ import {
   approveSubscriptionsPut,
   authAdminPost,
   createNewProductPost,
+  createNewsblogPost,
   createSubscriptionCard,
+  deleteNewsblog,
   deleteProductDelete,
   editProductPost,
   fetchAccountsGet,
@@ -19,6 +21,7 @@ import {
   registerAdminPost,
   updateUserPut,
 } from "../../controllers/admin/Controller.js";
+
 import { Protect } from "../../middleware/middleware.js";
 
 dotenv.config();
@@ -31,7 +34,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/uploads"));
+    cb(null, path.join(__dirname, "../../public/uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, uniqueString() + file.originalname);
@@ -55,5 +58,7 @@ router.post("/subscription/card", createSubscriptionCard);
 router.get("/dashboard", fetchDashboardGet);
 router.get("/subscriptions/:data", fetchSubscriptionsGet);
 router.put("/subscriptions/:data", approveSubscriptionsPut);
+router.post("/newsblog", upload.single("image"), createNewsblogPost);
+router.delete("/newsblog/:data", deleteNewsblog);
 
 export default router;

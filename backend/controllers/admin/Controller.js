@@ -1,6 +1,11 @@
 import { addDays } from "date-fns";
 import Admin from "../../models/Admin.model.js";
-import { TryCatch, generateToken, resendEmail } from "../../utils/utils.js";
+import {
+  TryCatch,
+  fetchImageUrl,
+  generateToken,
+  resendEmail,
+} from "../../utils/utils.js";
 import { Logger } from "../../middleware/middleware.js";
 import Product from "../../models/Product.model.js";
 import dotenv from "dotenv";
@@ -13,6 +18,7 @@ import SubscriptionCard from "../../models/SubscriptionCard.model.js";
 import Order from "../../models/Order.model.js";
 import User from "../../models/User.model.js";
 import Subscription from "../../models/Subscription.model.js";
+import Newsblog from "../../models/Newsblog.model.js";
 
 dotenv.config();
 
@@ -386,6 +392,56 @@ export const approveSubscriptionsPut = TryCatch(async (req, res) => {
     { _id: param },
     { status: "active", expiresOn: addDays(new Date(), 30) }
   );
+
+  res.status(200).json({ status: "Success" });
+});
+
+export const createNewsblogPost = TryCatch(async (req, res) => {
+  const { author, title, blog } = req.body;
+
+  if (!author || author == "") throw new Error("Author is required");
+  if (!title || title == "") throw new Error("Title is required");
+  if (!blog || blog == "") throw new Error("Blog is required");
+
+  // uploading of image would ideally go here
+  let image = req.file;
+
+  if (!image || image == "") throw new Error("Image is required");
+
+  const imageName = uniqueString();
+
+  if (env === "production") {
+    const params = {
+      Bucket: bucketName,
+      Key: imageName,
+      Body: image.buffer,
+      ContentType: image.mimetype,
+    };
+    const putCommand = new PutObjectCommand(params);
+
+    await S3.send(putCommand);
+  }
+
+  const NewNewsblog = new Newsblog({
+    author,
+    title,
+    blog: JSON.parse(blog),
+    image: env === "production" ? imageName : image.filename,
+  });
+
+  NewNewsblog.save();
+
+  res.status(200).json({ status: "Success" });
+});
+
+export const deleteNewsblog = TryCatch(async (req, res) => {
+  const ID = req.params.data;
+
+  await Newsblog.findOneAndRemove({ _id: ID });
+
+  // if (env === "production") {
+  //   FetchedNewsblog.image = await fetchImageUrl(FetchedNewsblog.image);
+  // }
 
   res.status(200).json({ status: "Success" });
 });

@@ -9,7 +9,7 @@ import React from "react";
 const BlogCard = ({ blog }) => {
   return (
     <>
-      <Link href={`/blog?id=${blog?.id}`}>
+      <Link href={`/blog?id=${blog?._id}`}>
         <Box
           borderRadius={"md"}
           border={"1.7px solid " + ThemeColors.lightColor}
@@ -26,16 +26,15 @@ const BlogCard = ({ blog }) => {
           <Box padding={"0.5rem"}>
             <Text fontSize={"lg"}>{blog?.title}</Text>
             <Text fontSize={"sm"} fontWeight={"bold"} color={"gray.500"}>
-              {moment(blog?.date).fromNow()}
+              {moment(blog?.createdAt).fromNow()}
             </Text>
-            <Box maxHeight={"45px"} padding={"0.3rem 0"} overflow={"clip"}>
-              <Text
-                fontSize={"sm"}
-                fontWeight={"thin"}
-                textOverflow={"ellipsis"}
-              >
-                {blog?.blog}
-              </Text>
+            <Box padding={"0.3rem 0"} overflow={"clip"}>
+              <Box
+                className="__truncate"
+                dangerouslySetInnerHTML={{
+                  __html: blog.blog,
+                }}
+              ></Box>
             </Box>
           </Box>
         </Box>

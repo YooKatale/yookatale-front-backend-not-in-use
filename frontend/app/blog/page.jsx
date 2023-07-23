@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex, Grid, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, Heading, Image, Text } from "@chakra-ui/react";
 import BlogCard from "@components/BlogCard";
 import { Images, TestBlog, ThemeColors } from "@constants/constants";
 import { useBlogFetchMutation } from "@slices/usersApiSlice";
@@ -26,8 +26,8 @@ const Blog = () => {
       const res = await fetchBlog(param).unwrap();
 
       if (res?.status == "Success") {
-        setBlogPost(res?.data?.BlogPosts);
-        setSimilarBlogPost(res?.data?.SimilarBlogPosts);
+        setBlogPost(res?.data);
+        // setSimilarBlogPost(res?.data?.SimilarBlogPosts);
       }
     } catch (error) {}
   };
@@ -58,9 +58,54 @@ const Blog = () => {
     <>
       <Box padding={"2rem 0"}>
         <Flex borderBottom={"1.7px solid " + ThemeColors.lightColor}>
-          <Box margin={"auto"} width={"80%"}></Box>
+          <Box margin={"auto"} width={"80%"}>
+            <Box padding={"1rem 0"}>
+              <Image
+                src={
+                  BlogPost ? (BlogPost?.image ? BlogPost?.image.src : "") : ""
+                }
+                alt="newsblog image"
+              />
+            </Box>
+            <Box padding={"0.5rem 0"}>
+              <Heading as={"h2"} size={"lg"}>
+                {BlogPost ? (BlogPost?.title ? BlogPost?.title : "") : ""}
+              </Heading>
+            </Box>
+            <Box>
+              <Flex>
+                <Box>
+                  <Text>
+                    {BlogPost
+                      ? BlogPost?.createdAt
+                        ? moment(BlogPost?.createdAt).fromNow()
+                        : ""
+                      : ""}
+                  </Text>
+                </Box>
+                <Box margin={"0 0.5rem"}>
+                  <Text color={"gray.500"}>
+                    -{" "}
+                    {BlogPost ? (BlogPost?.author ? BlogPost?.author : "") : ""}
+                  </Text>
+                </Box>
+              </Flex>
+            </Box>
+            <Box padding={"2rem 0"}>
+              <Box
+                dangerouslySetInnerHTML={{
+                  __html: BlogPost
+                    ? BlogPost?.blog
+                      ? BlogPost?.blog
+                      : ""
+                    : "",
+                }}
+              ></Box>
+            </Box>
+          </Box>
         </Flex>
-        <Box padding={"1rem 0"}>
+
+        <Box padding={"1rem 0"} hidden>
           <Flex display={{ base: "none", md: "none", xl: "flex" }}>
             <Box margin={"auto"} width={"90%"}>
               <Box padding={"1rem 0"}>
@@ -82,7 +127,7 @@ const Blog = () => {
             padding={"1rem 1rem 3rem 1rem"}
             display={{ base: "block", md: "block", xl: "none" }}
           >
-            {similarBlogPost.length > 0 && (
+            {similarBlogPost && similarBlogPost.length > 0 && (
               <>
                 <Box padding={"1rem 0"}>
                   <Text fontSize={"lg"}>More by John Doe</Text>
@@ -96,7 +141,7 @@ const Blog = () => {
                 </Flex>
               </>
             )}
-            {similarBlogPost.length > 4 && (
+            {similarBlogPost && similarBlogPost.length > 4 && (
               <Box display={{ base: "none", md: "none", xl: "block" }}>
                 <Box
                   onClick={handleLeftScroll}

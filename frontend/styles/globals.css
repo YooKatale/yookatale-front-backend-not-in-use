@@ -126,3 +126,11 @@ body {
 .car__design__back {
   transform: rotateY(180deg) !important;
 }
+
+.__truncate {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: pre-wrap;
+}

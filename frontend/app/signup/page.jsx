@@ -95,7 +95,7 @@ const SignUp = () => {
   return (
     <>
       <Box>
-        <Box paddingBottom={"1rem"}>
+        <Box paddingBottom={"3rem"}>
           <Box padding={"1rem 0"}>
             <Heading as={"h2"} fontSize={"lg"} textAlign={"center"}>
               Are you new

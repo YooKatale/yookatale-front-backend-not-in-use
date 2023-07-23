@@ -125,13 +125,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
     blogsFetch: builder.mutation({
       query: () => ({
-        url: `${USERS_URL}/blogs`,
+        url: `${USERS_URL}/newsblogs`,
         method: "GET",
       }),
     }),
     blogFetch: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/blog/${data}`,
+        url: `${USERS_URL}/newsblog/${data}`,
         method: "GET",
       }),
     }),

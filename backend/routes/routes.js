@@ -7,6 +7,8 @@ import {
   deleteCart,
   fetchCartGet,
   fetchCommentsGet,
+  fetchNewsblogGet,
+  fetchNewsblogsGet,
   fetchOrdersGet,
   fetchProductGet,
   fetchProductsCategoryGet,
@@ -70,6 +72,8 @@ router.post("/subscription", createSubscriptionPost);
 router.post("/test/email", testEmailFeature);
 router.post("/message", sendMessagePost);
 router.get("/subscription", fetchSubscriptionCards);
+router.get("/newsblogs", fetchNewsblogsGet);
+router.get("/newsblog/:data", fetchNewsblogGet);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 
