@@ -9,7 +9,7 @@ import React from "react";
 const BlogCard = ({ blog }) => {
   return (
     <>
-      <Link href={`/blog?id=${blog?._id}`}>
+      <Link href={`/blog?q=${blog?.title}&id=${blog?._id}`}>
         <Box
           borderRadius={"md"}
           border={"1.7px solid " + ThemeColors.lightColor}

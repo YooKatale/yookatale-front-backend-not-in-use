@@ -73,7 +73,11 @@ const Footer = () => {
                     <Box padding={"1rem 0"}>
                       <Flex>
                         <Box margin={"0 0.7rem 0 0"}>
-                          <Link href={"/"}>
+                          <Link
+                            href={
+                              "https://www.linkedin.com/company/96071915/admin/feed/posts/"
+                            }
+                          >
                             <FaLinkedin
                               size={23}
                               color={ThemeColors.lightColor}
@@ -82,7 +86,11 @@ const Footer = () => {
                           </Link>
                         </Box>
                         <Box margin={"0 0.7rem 0 0"}>
-                          <Link href={"/"}>
+                          <Link
+                            href={
+                              "https://twitter.com/YooKatale?t=3Q96I9JR98HgA69gisdXdA&s=09"
+                            }
+                          >
                             <FaTwitter
                               size={23}
                               color={ThemeColors.lightColor}
@@ -91,7 +99,7 @@ const Footer = () => {
                           </Link>
                         </Box>
                         <Box margin={"0 0.7rem 0 0"}>
-                          <Link href={"/"}>
+                          <Link href={"https://wa.me/256754615840"}>
                             <FaWhatsapp
                               size={23}
                               color={ThemeColors.lightColor}
@@ -100,7 +108,11 @@ const Footer = () => {
                           </Link>
                         </Box>
                         <Box margin={"0 0.7rem 0 0"}>
-                          <Link href={"/"}>
+                          <Link
+                            href={
+                              "https://www.facebook.com/profile.php?id=100094194942669&mibextid=LQQJ4d"
+                            }
+                          >
                             <FaFacebook
                               size={23}
                               color={ThemeColors.lightColor}
@@ -109,7 +121,11 @@ const Footer = () => {
                           </Link>
                         </Box>
                         <Box margin={"0 0.7rem 0 0"}>
-                          <Link href={"/"}>
+                          <Link
+                            href={
+                              "https://www.instagram.com/p/CuHdaksN5UW/?igshid=NTc4MTIwNjQ2YQ=="
+                            }
+                          >
                             <FaInstagram
                               size={23}
                               color={ThemeColors.lightColor}

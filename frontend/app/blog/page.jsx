@@ -1,25 +1,51 @@
 "use client";
 
-import { Box, Flex, Grid, Heading, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  Heading,
+  Image,
+  Input,
+  Spinner,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import BlogCard from "@components/BlogCard";
+import ButtonComponent from "@components/Button";
 import { Images, TestBlog, ThemeColors } from "@constants/constants";
-import { useBlogFetchMutation } from "@slices/usersApiSlice";
+import {
+  useBlogFetchMutation,
+  useNewsletterPostMutation,
+} from "@slices/usersApiSlice";
 import moment from "moment";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import {
+  AiOutlineArrowLeft,
+  AiOutlineArrowRight,
+  AiOutlineClose,
+} from "react-icons/ai";
+import { FaFacebook, FaShareAlt, FaTwitter, FaWhatsapp } from "react-icons/fa";
 
 const Blog = () => {
   const [BlogPost, setBlogPost] = useState([]);
   const [similarBlogPost, setSimilarBlogPost] = useState([]);
+  const [socialShareModal, setSocialShareModal] = useState(false);
+  const [newsletterPrompt, setNewsletterPrompt] = useState(false);
+  const [NewsletterEmail, setNewsletterEmail] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   // use the useSearchParam hooks from next/navigation to get url params
   const searchParam = useSearchParams();
+  const pathname = usePathname();
 
   const param = searchParam.get("id");
+  const chakraToast = useToast();
 
   const [fetchBlog] = useBlogFetchMutation();
+  const [createNewsletter] = useNewsletterPostMutation();
 
   const handleBlogFetch = async () => {
     try {
@@ -50,12 +76,137 @@ const Blog = () => {
     }
   };
 
+  // submit email for newsletter
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoading((prevState) => (prevState ? false : true));
+
+    try {
+      const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
+
+      if (res.status == "Success") {
+        // set loading to be false
+        setLoading((prevState) => (prevState ? false : true));
+
+        // clear email value
+        setNewsletterEmail("");
+
+        chakraToast({
+          title: "Success",
+          description: "Successfully subscribed to newsletter",
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+      }
+    } catch (err) {
+      // set loading to be false
+      setLoading((prevState) => (prevState ? false : true));
+
+      chakraToast({
+        title: "Error has occured",
+        description: err.data?.message
+          ? err.data?.message
+          : err.data || err.error,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
+    }
+  };
+
   useEffect(() => {
     handleBlogFetch();
+
+    setTimeout(() => {
+      setNewsletterPrompt((prev) => (prev ? false : true));
+    }, 3000);
   }, []);
 
   return (
     <>
+      {/* // newsletter prompt modal */}
+      <Box
+        position={"fixed"}
+        left={"5%"}
+        bottom={"10%"}
+        padding={"1rem"}
+        background={ThemeColors.lightColor}
+        borderRadius={"md"}
+        width={{ base: "90%", md: "60%", xl: "40%" }}
+        visibility={newsletterPrompt ? "visible" : "hidden"}
+        transform={
+          newsletterPrompt ? "translate3d(0, 0, 0)" : "translate3d(0, 150%, 0)"
+        }
+      >
+        <Box
+          position={"absolute"}
+          top={{ base: "1rem", md: "2rem", xl: "2rem" }}
+          right={{ base: "1rem", md: "2rem", xl: "2rem" }}
+          cursor={"pointer"}
+        >
+          <AiOutlineClose
+            size={25}
+            onClick={() => setNewsletterPrompt((prev) => (prev ? false : true))}
+          />
+        </Box>
+        <Box
+          padding={{ base: "1rem 0 0 0", md: "1rem 0", xl: "1rem 0" }}
+          width={{ base: "100%", md: "100%", xl: "100%" }}
+        >
+          <Flex>
+            <Box
+              margin={"auto"}
+              width={{ base: "100%", md: "100%", xl: "100%" }}
+            >
+              <form onSubmit={handleNewsletterSubmit}>
+                <Box borderRadius={"0.5rem"} padding={"0.5rem"}>
+                  <Box>
+                    <Text
+                      fontSize={"lg"}
+                      fontWeight={"bold"}
+                      textAlign={"center"}
+                    >
+                      Subscribe to our newsletter
+                    </Text>
+                  </Box>
+                  <Box padding={"1rem 0"}>
+                    <Input
+                      type="text"
+                      name={"NewsletterEmail"}
+                      placeholder="Enter your email"
+                      value={NewsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                    />
+                  </Box>
+                  <Box padding={"0.3rem 0"}>
+                    <Text
+                      fontSize={{ base: "sm", md: "md", xl: "md" }}
+                      textAlign={{
+                        base: "center",
+                        md: "center",
+                        xl: "left",
+                      }}
+                    >
+                      By clicking "Subscribe" I agree to receive news,
+                      promotions, information and offers from YooKatale
+                    </Text>
+                  </Box>
+                  <Box padding={"0.5rem 0"}>
+                    {isLoading ? (
+                      <Spinner />
+                    ) : (
+                      <ButtonComponent type={"submit"} text={"Subscribe"} />
+                    )}
+                  </Box>
+                </Box>
+              </form>
+            </Box>
+          </Flex>
+        </Box>
+      </Box>
+
       <Box padding={"2rem 0"}>
         <Flex borderBottom={"1.7px solid " + ThemeColors.lightColor}>
           <Box margin={"auto"} width={"80%"}>
@@ -87,6 +238,89 @@ const Blog = () => {
                     -{" "}
                     {BlogPost ? (BlogPost?.author ? BlogPost?.author : "") : ""}
                   </Text>
+                </Box>
+
+                <Box
+                  padding={"0.3rem 0.5rem"}
+                  position={"relative"}
+                  overflow={socialShareModal ? "visible" : "hidden"}
+                  hidden
+                >
+                  <FaShareAlt
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                      setSocialShareModal((prev) => (prev ? false : true))
+                    }
+                  />
+
+                  {/* // modal pop up */}
+                  <Box
+                    position={"absolute"}
+                    top={"90%"}
+                    padding={"0.5rem"}
+                    width={"250px"}
+                    background={ThemeColors.lightColor}
+                    borderRadius={"0.3rem"}
+                    visibility={socialShareModal ? "visible" : "hidden"}
+                    transform={
+                      socialShareModal
+                        ? "translate3d(0, 0, 0)"
+                        : "translate3d(0, 150%, 0)"
+                    }
+                  >
+                    <Box
+                      position={"absolute"}
+                      top={"0.5rem"}
+                      right={"0.5rem"}
+                      cursor={"pointer"}
+                    >
+                      <AiOutlineClose
+                        size={20}
+                        onClick={() =>
+                          setSocialShareModal((prev) => (prev ? false : true))
+                        }
+                      />
+                    </Box>
+
+                    <Box padding={"0.3rem 0"}>
+                      <Text
+                        fontSize={"md"}
+                        fontWeight={"bold"}
+                        textAlign={"center"}
+                      >
+                        Share on social media
+                      </Text>
+                    </Box>
+                    <Flex padding={"0.5rem 0"} justifyContent={"center"}>
+                      <Box margin={"0 0.5rem"}>
+                        <Link href={`{}`}>
+                          <FaWhatsapp size={25} style={{ color: "#178b17" }} />
+                        </Link>
+                      </Box>
+                      <Box margin={"0 0.5rem"}>
+                        <Link href={`{}`}>
+                          <FaFacebook size={25} style={{ color: "#1553a5" }} />
+                        </Link>
+                      </Box>
+                      <Box margin={"0 0.5rem"}>
+                        <a
+                          href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+                          class="twitter-share-button"
+                          data-text={`${BlogPost?.title}`}
+                          data-url={`${pathname}`}
+                          data-via="YooKatale"
+                          data-show-count="false"
+                        >
+                          <FaTwitter size={25} style={{ color: "#1553a5" }} />
+                        </a>
+                        <script
+                          async
+                          src="https://platform.twitter.com/widgets.js"
+                          charset="utf-8"
+                        ></script>
+                      </Box>
+                    </Flex>
+                  </Box>
                 </Box>
               </Flex>
             </Box>
