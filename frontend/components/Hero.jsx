@@ -17,12 +17,12 @@ const Hero = () => {
             <Flex direction={{ base: "column", md: "column", xl: "row" }}>
               <Box
                 width={{ base: "100%", md: "100%", xl: "60%" }}
-                padding={"1rem"}
+                padding={{ base: "1rem 0", md: "1rem", xl: "1rem" }}
               >
                 <Text
                   textAlign={"center"}
                   className="secondary-light-font"
-                  fontSize={"4xl"}
+                  fontSize={{ base: "3xl", md: "3xl", xl: "4xl" }}
                   margin={"0.3rem 0"}
                 >
                   Feeding the{" "}
@@ -36,7 +36,7 @@ const Hero = () => {
                 <Text
                   textAlign={"center"}
                   className="secondary-light-font"
-                  fontSize={"4xl"}
+                  fontSize={{ base: "3xl", md: "3xl", xl: "4xl" }}
                   margin={"0.3rem 0"}
                 >
                   Celebrating{" "}
@@ -50,7 +50,7 @@ const Hero = () => {
                 <Text
                   textAlign={"center"}
                   className="secondary-light-font"
-                  fontSize={"4xl"}
+                  fontSize={{ base: "3xl", md: "3xl", xl: "4xl" }}
                   margin={"0.3rem 0"}
                 >
                   Living better while{" "}

@@ -8,18 +8,13 @@ import {
   Heading,
   Stack,
   Text,
-  Image,
   Spinner,
   useDisclosure,
-  Modal,
-  ModalContent,
-  ModalCloseButton,
-  Checkbox,
   Input,
 } from "@chakra-ui/react";
 import Hero from "@components/Hero";
 import { Images, ThemeColors } from "@constants/constants";
-// import Image from "next/image";
+import Image from "next/image";
 import {
   FaCartPlus,
   FaMoneyBill,
@@ -29,13 +24,18 @@ import {
   FaEnvelope,
   FaPhone,
   FaPhoneAlt,
+  FaMoneyCheckAlt,
+  FaCreditCard,
+  FaUserShield,
+  FaUserClock,
+  FaRegCreditCard,
+  FaHeadset,
 } from "react-icons/fa";
 import * as HI from "react-icons/hi";
 import * as AI from "react-icons/ai";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import {
-  useCartCreateMutation,
   useCommentsGetMutation,
   useNewsletterPostMutation,
   useProductsCategoryGetMutation,
@@ -45,10 +45,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import ProductCard from "@components/ProductCard";
 import SpecialProducts from "@components/SpecialProducts";
 import ButtonComponent from "@components/Button";
-import SubscriptionCard from "@components/SubscriptionCard";
+import { CgShield } from "react-icons/cg";
+import Script from "next/script";
 
 const UGX = (value) =>
   currency(value, { symbol: "UGX", precision: 0, separator: "," });
@@ -59,13 +59,10 @@ const Home = () => {
   const [NewsletterEmail, setNewsletterEmail] = useState("");
   const [isLoading, setLoading] = useState(false);
 
-  const { onOpen, onClose, isOpen } = useDisclosure();
-
   const { userInfo } = useSelector((state) => state.auth);
 
   const [fetchProducts] = useProductsCategoryGetMutation();
   const [fetchComments] = useCommentsGetMutation();
-  const [createNewsletter] = useNewsletterPostMutation();
 
   const { push } = useRouter();
 
@@ -108,46 +105,6 @@ const Home = () => {
     }
   };
 
-  // submit email for newsletter
-  const handleNewsletterSubmit = async (e) => {
-    e.preventDefault();
-
-    setLoading((prevState) => (prevState ? false : true));
-
-    try {
-      const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
-
-      if (res.status == "Success") {
-        // set loading to be false
-        setLoading((prevState) => (prevState ? false : true));
-
-        // clear email value
-        setNewsletterEmail("");
-
-        chakraToast({
-          title: "Success",
-          description: "Successfully subscribed to newsletter",
-          status: "success",
-          duration: 5000,
-          isClosable: false,
-        });
-      }
-    } catch (err) {
-      // set loading to be false
-      setLoading((prevState) => (prevState ? false : true));
-
-      chakraToast({
-        title: "Error has occured",
-        description: err.data?.message
-          ? err.data?.message
-          : err.data || err.error,
-        status: "error",
-        duration: 5000,
-        isClosable: false,
-      });
-    }
-  };
-
   // fetch product categories
   useEffect(() => {
     handleFetchCommentsData();
@@ -156,67 +113,88 @@ const Home = () => {
 
   return (
     <>
-      <Head>
-        <link rel="shortcut icon" href="/public/assets/icons/logo1.png" />
-      </Head>
       <Hero />
 
       {/* ------------- section 
       ------------------------------- */}
-      <Box padding={"3rem 0"} hidden>
+      <Box
+        padding={"3rem 0"}
+        borderBottom={"1.7px solid " + ThemeColors.lightColor}
+      >
         <Flex>
-          <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "70%" }}>
-            <Flex direction={{ base: "column", md: "column", xl: "row" }}>
-              <Box width={{ base: "100%", md: "100%", xl: "50%" }}>
-                <Flex padding={"0 1rem"}>
-                  <Box padding={"1rem "}>
-                    <FaTruckLoading size={80} color={ThemeColors.darkColor} />
-                  </Box>
-                  <Box>
-                    <Heading
-                      as={"h3"}
-                      className="secondary-font"
-                      size={"lg"}
-                      color={ThemeColors.darkColor}
-                      margin={"0.5rem 0"}
-                    >
-                      Delivery
-                    </Heading>
-                    <Text
-                      className="secondary-light-font"
-                      style={{ fontSize: "1.1rem" }}
-                    >
-                      Fast, timely and affordable delivery any where in the city
+          <Box margin={"auto"} width={{ base: "100%", md: "75%", xl: "70%" }}>
+            <Grid
+              gridTemplateColumns={{
+                base: "repeat(2, 1fr)",
+                md: "repeat(2, 1fr)",
+                xl: "repeat(4, 1fr)",
+              }}
+              gridGap={"1rem"}
+            >
+              <Box>
+                <Flex
+                  padding={{ base: "0 0.5rem", md: "0 0.5rem", xl: "0 1rem" }}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <FaCreditCard size={60} color={ThemeColors.darkColor} />
+                  <Box padding={"0.5rem 0"}>
+                    <Text textAlign={"center"} fontSize={"lg"}>
+                      Register for 25% YooCard premium & Gold discount
                     </Text>
                   </Box>
                 </Flex>
               </Box>
-              <Box width={{ base: "100%", md: "100%", xl: "50%" }}>
-                <Flex padding={"0 1rem"}>
-                  <Box padding={"1rem "}>
-                    <FaMoneyCheck size={80} color={ThemeColors.darkColor} />
-                  </Box>
-                  <Box>
-                    <Heading
-                      as={"h3"}
-                      className="secondary-font"
-                      size={"lg"}
-                      color={ThemeColors.darkColor}
-                      margin={"0.5rem 0"}
-                    >
-                      Easy Payments
-                    </Heading>
-                    <Text
-                      className="secondary-light-font"
-                      style={{ fontSize: "1.1rem" }}
-                    >
-                      All payments are processed instantly over a secure payment
-                      protocol
+              <Box>
+                <Flex
+                  padding={{ base: "0 0.5rem", md: "0 0.5rem", xl: "0 1rem" }}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <FaHeadset size={60} color={ThemeColors.darkColor} />
+                  {/* <Image src={Images.customerServiceIcon} width={60} /> */}
+                  <Box padding={"0.5rem 0"}>
+                    <Text textAlign={"center"} fontSize={"lg"}>
+                      24/7 service support
                     </Text>
                   </Box>
                 </Flex>
               </Box>
-            </Flex>
+              <Box>
+                <Flex
+                  padding={{ base: "0 0.5rem", md: "0 0.5rem", xl: "0 1rem" }}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <FaTruckLoading size={60} color={ThemeColors.darkColor} />
+                  <Box padding={"0.5rem 0"}>
+                    <Text textAlign={"center"} fontSize={"lg"}>
+                      Delivery offer [21 - 30] <br />
+                      (Register for 9 days free delivery)
+                    </Text>
+                  </Box>
+                </Flex>
+              </Box>
+              <Box>
+                <Flex
+                  padding={{ base: "0 0.5rem", md: "0 0.5rem", xl: "0 1rem" }}
+                  flexDirection={"column"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  {/* <CgShield size={60} color={ThemeColors.darkColor} /> */}
+                  <Image src={Images.cardSecureIcon} width={60} />
+                  <Box padding={"0.5rem 0"}>
+                    <Text textAlign={"center"} fontSize={"lg"}>
+                      Safe, instant & secured
+                    </Text>
+                  </Box>
+                </Flex>
+              </Box>
+            </Grid>
           </Box>
         </Flex>
       </Box>
@@ -238,21 +216,46 @@ const Home = () => {
                       margin={"auto"}
                       width={{ base: "95%", md: "90%", xl: "90%" }}
                     >
-                      <Box padding={"2rem 0"}>
-                        <Heading
-                          as={"h2"}
-                          fontSize={"3xl"}
-                          textAlign={"center"}
-                        >
-                          Popular Products
-                        </Heading>
-                        <Flex>
-                          <Box
-                            height={"0.2rem"}
-                            width={"10rem"}
-                            margin={"1rem auto"}
-                            background={ThemeColors.primaryColor}
-                          ></Box>
+                      <Box padding={"1rem 0"}>
+                        <Flex justifyContent={"space-between"}>
+                          <Box>
+                            <Heading
+                              as={"h2"}
+                              fontSize={{ base: "lg", md: "2xl", xl: "2xl" }}
+                              textAlign={"center"}
+                            >
+                              Popular Products
+                            </Heading>
+                            <Flex>
+                              <Box
+                                height={"0.15rem"}
+                                width={{
+                                  base: "5rem",
+                                  md: "8rem",
+                                  xl: "10rem",
+                                }}
+                                margin={"0.5rem 0"}
+                                background={ThemeColors.primaryColor}
+                              ></Box>
+                            </Flex>
+                          </Box>
+                          <Box>
+                            <Link href={"/search?q=popular"}>
+                              <Heading
+                                as={"h2"}
+                                fontSize={{ base: "md", md: "lg", xl: "lg" }}
+                                textAlign={"center"}
+                                _hover={{ color: ThemeColors.darkColor }}
+                                color={{
+                                  base: ThemeColors.darkColor,
+                                  md: ThemeColors.darkColor,
+                                  xl: "#000",
+                                }}
+                              >
+                                View More
+                              </Heading>
+                            </Link>
+                          </Box>
                         </Flex>
                       </Box>
                       <SpecialProducts
@@ -271,11 +274,11 @@ const Home = () => {
       ------------------------------- */}
       <Box padding={"3rem 0"} background={"#000"}>
         <Flex>
-          <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "60%" }}>
+          <Box margin={"auto"} width={{ base: "100%", md: "70%", xl: "50%" }}>
             <Box padding={{ base: "2rem", md: "2rem 1rem", xl: "2rem 0" }}>
               <Text
                 textAlign={"center"}
-                fontSize={{ base: "4xl", md: "4xl", xl: "4xl" }}
+                fontSize={{ base: "2xl", md: "2xl", xl: "3xl" }}
                 className="secondary-light-font"
                 color={ThemeColors.lightColor}
               >
@@ -319,22 +322,47 @@ const Home = () => {
                       margin={"auto"}
                       width={{ base: "95%", md: "90%", xl: "90%" }}
                     >
-                      <Box padding={"2rem 0"}>
-                        <Heading
-                          as={"h2"}
-                          fontSize={"3xl"}
-                          textAlign={"center"}
-                          textTransform={"capitalize"}
-                        >
-                          {product?.category} Products
-                        </Heading>
-                        <Flex>
-                          <Box
-                            height={"0.2rem"}
-                            width={"10rem"}
-                            margin={"1rem auto"}
-                            background={ThemeColors.primaryColor}
-                          ></Box>
+                      <Box padding={"1rem 0"}>
+                        <Flex justifyContent={"space-between"}>
+                          <Box>
+                            <Heading
+                              as={"h2"}
+                              fontSize={{ base: "lg", md: "2xl", xl: "2xl" }}
+                              textAlign={"center"}
+                              textTransform={"capitalize"}
+                            >
+                              {product?.category} Products
+                            </Heading>
+                            <Flex>
+                              <Box
+                                height={"0.15rem"}
+                                width={{
+                                  base: "5rem",
+                                  md: "8rem",
+                                  xl: "10rem",
+                                }}
+                                margin={"0.5rem 0"}
+                                background={ThemeColors.primaryColor}
+                              ></Box>
+                            </Flex>
+                          </Box>
+                          <Box>
+                            <Link href={`/search?q=${product?.category}`}>
+                              <Heading
+                                as={"h2"}
+                                fontSize={{ base: "md", md: "lg", xl: "lg" }}
+                                textAlign={"center"}
+                                _hover={{ color: ThemeColors.darkColor }}
+                                color={{
+                                  base: ThemeColors.darkColor,
+                                  md: ThemeColors.darkColor,
+                                  xl: "#000",
+                                }}
+                              >
+                                View More
+                              </Heading>
+                            </Link>
+                          </Box>
                         </Flex>
                       </Box>
                       <SpecialProducts
@@ -366,7 +394,7 @@ const Home = () => {
               <Flex>
                 <Box
                   height={"0.2rem"}
-                  width={"10rem"}
+                  width={{ base: "6rem", md: "8rem", xl: "10rem" }}
                   margin={"1rem auto"}
                   background={ThemeColors.primaryColor}
                 ></Box>
@@ -433,163 +461,6 @@ const Home = () => {
 
       {/* ------------- section 
       ----------------------------------- */}
-      <Box>
-        <Box padding={"5rem 0"}>
-          <Flex>
-            <Box margin={"auto"} width={{ base: "100%", md: "90%", xl: "70%" }}>
-              <Flex
-                direction={{ base: "column", md: "column", xl: "row" }}
-                justifyContent={{
-                  base: "center",
-                  md: "center",
-                  xl: "space-between",
-                }}
-              >
-                <Stack
-                  width={{ base: "100%", md: "100%", xl: "50%" }}
-                  paddingTop={"2rem"}
-                >
-                  <Box>
-                    <Flex
-                      justifyContent={{
-                        base: "center",
-                        md: "center",
-                        xl: "none",
-                      }}
-                    >
-                      <Box padding={"1rem"}>
-                        {/* <FaPhone size={40} color={ThemeColors.darkColor} /> */}
-                        <HI.HiOutlinePhoneOutgoing
-                          size={30}
-                          color={ThemeColors.darkColor}
-                        />
-                      </Box>
-                      <Box>
-                        <Heading
-                          as={"h2"}
-                          className="secondary-font"
-                          size={"md"}
-                          color={ThemeColors.darkColor}
-                          margin={"0.3rem 0"}
-                        >
-                          Have a question ?
-                        </Heading>
-                        <Text style={{ fontSize: "1.1rem" }}>
-                          +256 754615840
-                        </Text>
-                      </Box>
-                    </Flex>
-                  </Box>
-                  <Box>
-                    <Flex
-                      padding={""}
-                      justifyContent={{
-                        base: "center",
-                        md: "center",
-                        xl: "none",
-                      }}
-                    >
-                      <Box padding={"1rem"}>
-                        {/* <FaEnvelope size={40} color={ThemeColors.darkColor} /> */}
-                        <HI.HiOutlineMail
-                          size={30}
-                          color={ThemeColors.darkColor}
-                        />
-                      </Box>
-                      <Box>
-                        <Heading
-                          as={"h3"}
-                          className="secondary-font"
-                          size={"md"}
-                          color={ThemeColors.darkColor}
-                          margin={"0.3rem 0"}
-                        >
-                          For Support
-                        </Heading>
-                        <Text style={{ fontSize: "1.1rem" }}>
-                          info@yookatale.com
-                        </Text>
-                      </Box>
-                    </Flex>
-                  </Box>
-                </Stack>
-
-                <Box
-                  padding={"1rem 0"}
-                  width={{ base: "100%", md: "100%", xl: "50%" }}
-                >
-                  <Flex>
-                    <Box
-                      margin={"auto"}
-                      width={{ base: "90%", md: "90%", xl: "100%" }}
-                    >
-                      <form onSubmit={handleNewsletterSubmit}>
-                        <Box
-                          border={"1.7px solid " + ThemeColors.lightColor}
-                          borderRadius={"0.5rem"}
-                          padding={"0.5rem"}
-                        >
-                          <Box>
-                            <Text
-                              fontSize={"lg"}
-                              fontWeight={"bold"}
-                              textAlign={"center"}
-                            >
-                              Subscribe to our newsletter
-                            </Text>
-                          </Box>
-                          <Box padding={"1rem 0"}>
-                            <Input
-                              type="text"
-                              name={"NewsletterEmail"}
-                              placeholder="Enter your email"
-                              value={NewsletterEmail}
-                              onChange={(e) =>
-                                setNewsletterEmail(e.target.value)
-                              }
-                            />
-                          </Box>
-                          <Box padding={"0.3rem 0"}>
-                            <Text
-                              textAlign={{
-                                base: "center",
-                                md: "center",
-                                xl: "left",
-                              }}
-                            >
-                              By clicking "Subscribe" I agree to receive news,
-                              promotions, information and offers from YooKatale
-                            </Text>
-                          </Box>
-                          <Box padding={"0.5rem 0"}>
-                            {isLoading ? (
-                              <Spinner />
-                            ) : (
-                              <ButtonComponent
-                                type={"submit"}
-                                text={"Subscribe"}
-                              />
-                            )}
-                          </Box>
-                        </Box>
-                      </form>
-                    </Box>
-                  </Flex>
-                </Box>
-              </Flex>
-            </Box>
-          </Flex>
-        </Box>
-      </Box>
-
-      {/* // modal form container -------------------------- */}
-      <Modal isOpen={isOpen} onClose={onClose} size={"4xl"} padding={"1rem 0"}>
-        {/* <ModalOverlay /> */}
-        <ModalContent padding={"2rem 3rem"}>
-          <ModalCloseButton size={"lg"} color={ThemeColors.darkColor} />
-          <Box padding={"1rem 0"}>Modal</Box>
-        </ModalContent>
-      </Modal>
     </>
   );
 };

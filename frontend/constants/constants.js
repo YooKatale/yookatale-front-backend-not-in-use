@@ -8,6 +8,8 @@ import img2 from "@public/assets/images/img2.png";
 import img3 from "@public/assets/images/img3.png";
 import img4 from "@public/assets/images/img4.png";
 import testImage from "@public/assets/images/test.png";
+import customerServiceIcon from "@public/assets/icons/customer-service.png";
+import cardSecureIcon from "@public/assets/icons/card-secure.png";
 
 export const ThemeColors = {
   primaryColor: "#185f2d",
@@ -27,6 +29,8 @@ export const Images = {
   img3,
   img4,
   testImage,
+  customerServiceIcon,
+  cardSecureIcon,
 };
 
 export const CategoriesJson = [
@@ -36,7 +40,7 @@ export const CategoriesJson = [
   "vegetables",
   "grains and flour",
   "meats",
-  "fats/oils",
+  "fats&oils",
 ];
 
 export const DisplayImages = [img, img1, img2, img3, img4];

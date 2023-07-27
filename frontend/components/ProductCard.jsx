@@ -97,14 +97,14 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
           _hover={{
             boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
           }}
-          width={!width ? "auto" : width}
-          maxHeight={{ base: "270px", md: "400px", xl: "500px" }}
+          width={"200px"}
+          maxHeight={"auto"}
           margin={!width ? "none" : "0 1rem 0 0"}
-          height={height ? height : "auto"}
+          height={"auto"}
         >
           <Box
-            height={{ base: "100px", md: "120px", xl: "150px" }}
-            padding="0.5rem"
+            height={{ base: "120px", md: "120px", xl: "120px" }}
+            padding="0.3rem"
           >
             <Link href={`/product?id=${product._id}`}>
               <Flex
@@ -124,11 +124,11 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
               </Flex>
             </Link>
           </Box>
-          <Box padding={"0.5rem 0"}>
+          <Box padding={"0.3rem 0"}>
             <Text
               textAlign={"center"}
               className="secondary-light-font"
-              fontSize={{ base: "lg", md: "2xl", xl: "2xl" }}
+              fontSize={{ base: "lg", md: "lg", xl: "lg" }}
             >
               {product.name}
             </Text>
@@ -137,12 +137,12 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
               margin={"0.5rem 0"}
               textAlign={"center"}
               className="secondary-extra-bold"
-              fontSize={{ base: "md", md: "lg", xl: "lg" }}
+              fontSize={{ base: "md", md: "md", xl: "md" }}
               color={ThemeColors.darkColor}
             >
               {UGX(product.price).format()}
             </Heading>
-            <Box padding={"1rem 0"}>
+            <Box padding={"0.3rem 0"}>
               <Flex justifyContent={"center"}>
                 <Button
                   color={ThemeColors.lightColor}
@@ -151,7 +151,7 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
                   borderRadius={"0.3rem"}
                   padding={"1rem"}
                   className="secondary-light-font"
-                  fontSize={"md"}
+                  fontSize={"sm"}
                   _hover={{
                     border: "1.7px solid " + ThemeColors.lightColor,
                   }}
@@ -161,7 +161,7 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
                     <Spinner />
                   ) : (
                     <FaCartPlus
-                      size={26}
+                      size={20}
                       style={{ margin: "0 0.5rem 0 0" }}
                       color={ThemeColors.lightColor}
                     />

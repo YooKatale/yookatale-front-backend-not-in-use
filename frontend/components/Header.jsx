@@ -30,18 +30,20 @@ import {
 import {
   AiOutlineArrowLeft,
   AiOutlineMenu,
+  AiOutlineSearch,
   AiOutlineShoppingCart,
   AiTwotoneShopping,
 } from "react-icons/ai";
 import { CgMenuRight, CgMenuRightAlt, CgMenu } from "react-icons/cg";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@slices/authSlice";
 import { useLogoutMutation } from "@slices/usersApiSlice";
 import { redirect, useRouter } from "next/navigation";
 import { useToast } from "@chakra-ui/react";
 import { IsAccountValid } from "@middleware/middleware";
+import { HiChevronLeft } from "react-icons/hi";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -49,6 +51,7 @@ const Header = () => {
   const [searchParam, setSearchParam] = useState("");
   const [isLoading, setLoading] = useState({ operation: "", status: false });
   const [dropdownMenu, setDropdownMenu] = useState(false);
+  const [scrollDownState, setScrollDownState] = useState(false);
 
   IsAccountValid();
 
@@ -116,57 +119,94 @@ const Header = () => {
     // set loading to be false
     setLoading({ ...isLoading, operation: "", status: false });
 
-    push(`/search?name=${searchParam}`);
+    push(`/search?q=${searchParam}`);
   };
+
+  const stickyNavbarActivate = () => {
+    let lastScrollIndex = 0;
+
+    if (window)
+      window.addEventListener("scroll", (e) => {
+        const currentScrollIndex = window.scrollY;
+
+        if (currentScrollIndex <= 0) {
+          setScrollDownState(true);
+        }
+
+        if (currentScrollIndex > lastScrollIndex) setScrollDownState(true);
+
+        if (currentScrollIndex < lastScrollIndex) setScrollDownState(false);
+
+        lastScrollIndex = currentScrollIndex;
+      });
+  };
+
+  useEffect(() => {
+    stickyNavbarActivate();
+  }, []);
 
   return (
     <>
       <Box padding={{ base: "0", md: "0", xl: "2rem 0 1rem 0" }}>
-        <Flex
+        <Box
+          position={{
+            base: scrollDownState ? "fixed" : "relative",
+            md: "relative",
+            xl: "fixed",
+          }}
+          top={"0"}
+          right={"0"}
+          left={"0"}
           padding={"1rem 0"}
-          justifyContent={"center"}
-          display={{ base: "flex", md: "flex", xl: "none" }}
           background={"#000"}
+          zIndex={"900"}
+          visibility={{
+            base: "visible",
+            md: "visible",
+            xl: scrollDownState ? "visible" : "hidden",
+          }}
+          transform={{
+            base: "translate3d(0, 0, 0)",
+            md: "translate3d(0, 0, 0)",
+            xl: scrollDownState
+              ? "translate3d(0, 0, 0)"
+              : "translate3d(0, -100%, 0)",
+          }}
         >
-          <Box padding={"0 0.5rem"}>
-            <Text
-              display={"flex"}
-              textAlign={"center"}
-              color={ThemeColors.lightColor}
-            >
-              For support call us on{" "}
-            </Text>
-            <Text
-              className="primary-bold-font"
-              textAlign={"center"}
-              color={ThemeColors.lightColor}
-            >
-              {" "}
-              +256 754615840
-            </Text>
-          </Box>
-          <Box margin={"0.3rem 0.5rem"}>
-            <Link href={"https://wa.me/256754615840"} target="_blank">
-              <Button
-                color={ThemeColors.lightColor}
-                background={"whatsapp.600"}
-                border={"1.7px solid " + "whatsapp.600"}
-                borderRadius={"0.3rem"}
-                padding={"0.3rem 0.5rem"}
-                _hover={{
-                  border: "none",
-                }}
-              >
-                <FaWhatsapp
-                  size={20}
-                  color={ThemeColors.lightColor}
-                  style={{ margin: "0 0.3rem" }}
-                />{" "}
-                Quick Order
-              </Button>
-            </Link>
-          </Box>
-        </Flex>
+          <Flex>
+            <Box margin={"auto"} width={{ base: "80%", md: "60%", xl: "40%" }}>
+              <Box>
+                <form onSubmit={handleSearchFormSubmit}>
+                  {isLoading.status && isLoading.operation === "search" && (
+                    <Spinner />
+                  )}
+                  <Box position={"relative"}>
+                    <AiOutlineSearch
+                      size={30}
+                      style={{
+                        color: ThemeColors.lightColor,
+                        margin: "0 0.5rem",
+                        position: "absolute",
+                        top: "0.5rem",
+                        left: "0",
+                      }}
+                    />
+                    <Input
+                      type="text"
+                      name="search"
+                      width={"100%"}
+                      placeholder="search product by name"
+                      padding={"0.3rem 0.5rem 0.3rem 2.5rem"}
+                      borderRadius={"0.3rem"}
+                      color={ThemeColors.lightColor}
+                      onChange={(e) => setSearchParam(e.target.value)}
+                    />
+                  </Box>
+                </form>
+              </Box>
+            </Box>
+          </Flex>
+        </Box>
         <Flex
           justifyContent={"space-evenly"}
           padding={"0 0 1rem 0"}
@@ -175,10 +215,18 @@ const Header = () => {
           <Box padding={"0.5rem 1rem"}>
             <Link href={"/"}>
               <Flex justifyContent={"center"}>
-                <Image
-                  src={Images.logo1}
-                  style={{ width: "100px", height: "auto" }}
-                />
+                <Box display={{ base: "none", md: "none", xl: "block" }}>
+                  <Image
+                    src={Images.logo1}
+                    style={{ width: "100px", height: "auto" }}
+                  />
+                </Box>
+                <Box display={{ base: "block", md: "block", xl: "none" }}>
+                  <Image
+                    src={Images.logo1}
+                    style={{ width: "60px", height: "auto" }}
+                  />
+                </Box>
               </Flex>
               <Flex justifyContent={"center"}>
                 <Heading
@@ -224,7 +272,7 @@ const Header = () => {
               </Box>
             </Flex>
             <Flex justifyContent={"center"} padding={"1rem 0"}>
-              <Box margin={"0.3rem 0.5rem"}>
+              {/* <Box margin={"0.3rem 0.5rem"}>
                 <Link href={"/products"}>
                   <Text
                     color={"#000"}
@@ -234,7 +282,7 @@ const Header = () => {
                     Products
                   </Text>
                 </Link>
-              </Box>
+              </Box> */}
               {userInfo && (
                 <Box margin={"0.3rem 0.5rem"}>
                   <Link href={"/subscription"}>
@@ -461,7 +509,6 @@ fontSize={"lg"}}}
               }
             >
               <CgMenu size={30} />
-              {/* <AiOutlineMenu size={30} /> */}
             </Box>
           </Box>
         </Flex>
@@ -483,14 +530,15 @@ fontSize={"lg"}}}
         transform={
           mobileNavOpen ? "translate3d(0, 0, 0)" : "translate3d(150%, 0, 0)"
         }
-        zIndex={10}
+        zIndex={990}
       >
-        <AiOutlineArrowLeft
+        <HiChevronLeft
           style={{
             margin: "0 0.5rem",
             position: "absolute",
             top: "5%",
             left: "3%",
+            zIndex: "991",
           }}
           size={35}
           color={ThemeColors.lightColor}
@@ -607,25 +655,9 @@ fontSize={"lg"}}}
           ""
         )}
 
-        <Box padding={"0 0 1rem 0"}>
-          <form onSubmit={handleSearchFormSubmit}>
-            <Box>
-              {isLoading ? <Spinner /> : ""}
-              <Input
-                type="text"
-                name="search"
-                placeholder="search product by name"
-                padding={"0.3rem 0.5rem"}
-                borderRadius={"0.3rem"}
-                style={{ color: "#fff" }}
-                onChange={(e) => setSearchParam(e.target.value)}
-              />
-            </Box>
-          </form>
-        </Box>
         <Box>
           <Stack padding={"1rem"}>
-            <Box margin={"0.5rem 0"}>
+            {/* <Box margin={"0.5rem 0"}>
               <Link
                 href={"/products"}
                 onClick={() =>
@@ -640,7 +672,7 @@ fontSize={"lg"}}}
                   Products
                 </Text>
               </Link>
-            </Box>
+            </Box> */}
             {userInfo && (
               <Box margin={"0.5rem 0"}>
                 <Link

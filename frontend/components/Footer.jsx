@@ -8,12 +8,15 @@ import {
   Grid,
   Input,
   Spacer,
+  Spinner,
   Stack,
   StackDivider,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { CategoriesJson, ThemeColors } from "@constants/constants";
 import Link from "next/link";
+import { useState } from "react";
 import {
   FaEnvelope,
   FaFacebook,
@@ -24,16 +27,63 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import ButtonComponent from "./Button";
+import { useNewsletterPostMutation } from "@slices/usersApiSlice";
 
 const Footer = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const [NewsletterEmail, setNewsletterEmail] = useState("");
+  const [isLoading, setLoading] = useState(false);
+
+  const [createNewsletter] = useNewsletterPostMutation();
+  const chakraToast = useToast();
+
+  // submit email for newsletter
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoading((prevState) => (prevState ? false : true));
+
+    try {
+      const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
+
+      if (res.status == "Success") {
+        // set loading to be false
+        setLoading((prevState) => (prevState ? false : true));
+
+        // clear email value
+        setNewsletterEmail("");
+
+        chakraToast({
+          title: "Success",
+          description: "Successfully subscribed to newsletter",
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+      }
+    } catch (err) {
+      // set loading to be false
+      setLoading((prevState) => (prevState ? false : true));
+
+      chakraToast({
+        title: "Error has occured",
+        description: err.data?.message
+          ? err.data?.message
+          : err.data || err.error,
+        status: "error",
+        duration: 5000,
+        isClosable: false,
+      });
+    }
+  };
 
   return (
     <>
       <Box borderTop={"1.7px solid " + ThemeColors.lightColor}>
         <Box padding={"1rem 0 2rem 0"} background={"#0c0c0c"}>
           <Flex>
-            <Box width={"85%"} margin={"auto"}>
+            <Box width={"95%"} margin={"auto"}>
               <Grid
                 gridTemplateColumns={{
                   base: "repeat(1, 1fr)",
@@ -137,9 +187,64 @@ const Footer = () => {
                   </Stack>
                 </Box>
 
+                <Box
+                  padding={"1rem 0"}
+                  display={{ base: "block", md: "block", xl: "none" }}
+                >
+                  <form onSubmit={handleNewsletterSubmit}>
+                    <Box borderRadius={"0.5rem"} padding={"0.5rem"}>
+                      <Box>
+                        <Text
+                          fontSize={"lg"}
+                          fontWeight={"bold"}
+                          textAlign={{
+                            base: "center",
+                            md: "center",
+                            xl: "left",
+                          }}
+                          color={ThemeColors.lightColor}
+                        >
+                          Subscribe to our newsletter
+                        </Text>
+                      </Box>
+                      <Box padding={"1rem 0"}>
+                        <Input
+                          type="text"
+                          name={"NewsletterEmail"}
+                          placeholder="Enter your email"
+                          value={NewsletterEmail}
+                          onChange={(e) => setNewsletterEmail(e.target.value)}
+                          color={ThemeColors.lightColor}
+                        />
+                      </Box>
+                      <Box padding={"0.3rem 0"}>
+                        <Text
+                          fontSize={"sm"}
+                          textAlign={{
+                            base: "center",
+                            md: "center",
+                            xl: "left",
+                          }}
+                          color={ThemeColors.lightColor}
+                        >
+                          By clicking "Subscribe" I agree to receive news,
+                          promotions, information and offers from YooKatale
+                        </Text>
+                      </Box>
+                      <Box padding={"0.5rem 0"}>
+                        {isLoading ? (
+                          <Spinner />
+                        ) : (
+                          <ButtonComponent type={"submit"} text={"Subscribe"} />
+                        )}
+                      </Box>
+                    </Box>
+                  </form>
+                </Box>
+
                 <Box padding={"1rem 0"}>
                   <Stack padding={"1rem"}>
-                    <Box margin={"0.3rem 0"}>
+                    {/* <Box margin={"0.3rem 0"}>
                       <Link href={"/products"}>
                         <Text
                           color={ThemeColors.lightColor}
@@ -148,7 +253,7 @@ const Footer = () => {
                           Products
                         </Text>
                       </Link>
-                    </Box>
+                    </Box> */}
                     {userInfo && (
                       <Box margin={"0.3rem 0"}>
                         <Link href={"/subscription"}>
@@ -231,7 +336,7 @@ const Footer = () => {
                   <Stack padding={"1rem"}>
                     {CategoriesJson.map((category, index) => (
                       <Box margin={"0.3rem 0"} key={index}>
-                        <Link href={"#"}>
+                        <Link href={`/search?q=${category}`}>
                           <Text
                             color={ThemeColors.lightColor}
                             textTransform={"capitalize"}
@@ -243,6 +348,61 @@ const Footer = () => {
                       </Box>
                     ))}
                   </Stack>
+                </Box>
+
+                <Box
+                  padding={"1rem 0"}
+                  display={{ base: "none", md: "none", xl: "block" }}
+                >
+                  <form onSubmit={handleNewsletterSubmit}>
+                    <Box borderRadius={"0.5rem"} padding={"0.5rem"}>
+                      <Box>
+                        <Text
+                          fontSize={"lg"}
+                          fontWeight={"bold"}
+                          textAlign={{
+                            base: "center",
+                            md: "center",
+                            xl: "left",
+                          }}
+                          color={ThemeColors.lightColor}
+                        >
+                          Subscribe to our newsletter
+                        </Text>
+                      </Box>
+                      <Box padding={"1rem 0"}>
+                        <Input
+                          type="text"
+                          name={"NewsletterEmail"}
+                          placeholder="Enter your email"
+                          value={NewsletterEmail}
+                          onChange={(e) => setNewsletterEmail(e.target.value)}
+                          color={ThemeColors.lightColor}
+                        />
+                      </Box>
+                      <Box padding={"0.3rem 0"}>
+                        <Text
+                          fontSize={"sm"}
+                          textAlign={{
+                            base: "center",
+                            md: "center",
+                            xl: "left",
+                          }}
+                          color={ThemeColors.lightColor}
+                        >
+                          By clicking "Subscribe" I agree to receive news,
+                          promotions, information and offers from YooKatale
+                        </Text>
+                      </Box>
+                      <Box padding={"0.5rem 0"}>
+                        {isLoading ? (
+                          <Spinner />
+                        ) : (
+                          <ButtonComponent type={"submit"} text={"Subscribe"} />
+                        )}
+                      </Box>
+                    </Box>
+                  </form>
                 </Box>
               </Grid>
             </Box>

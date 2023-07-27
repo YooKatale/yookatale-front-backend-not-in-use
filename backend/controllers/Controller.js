@@ -10,7 +10,11 @@ import {
 } from "../utils/utils.js";
 import Product from "../models/Product.model.js";
 import Cart from "../models/Cart.model.js";
-import { calcCartTotal, createFilterObjects } from "../custom/Custom.js";
+import {
+  calcCartTotal,
+  createFilterObjects,
+  sumCartQuantity,
+} from "../custom/Custom.js";
 import Order from "../models/Order.model.js";
 import dotenv from "dotenv";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -222,7 +226,7 @@ export const fetchProductsFilterGet = TryCatch(async (req, res) => {
 
   // check if filter params have been passed. If no return all Products in the database
   if (data?.length === 0) {
-    let Products = Product.find();
+    let Products = await Product.find();
 
     if (env === "production") {
       for (const product of Products) {
@@ -446,6 +450,7 @@ export const productSearchGet = TryCatch(async (req, res) => {
   const Products = [];
 
   ProductsFetch.forEach((product) => {
+    // search product by product name
     if (
       product.name
         .toString()
@@ -454,6 +459,30 @@ export const productSearchGet = TryCatch(async (req, res) => {
     ) {
       Products.push(product);
     }
+
+    // search product by category
+    if (
+      product.category
+        .toString()
+        .toLowerCase()
+        .indexOf(data.toString().toLowerCase()) > -1
+    ) {
+      Products.push(product);
+    }
+
+    // search product by sub category
+    if (product?.subCategory && product?.subCategory.length > 0) {
+      for (const subCategory of product?.subCategory) {
+        if (
+          subCategory
+            .toString()
+            .toLowerCase()
+            .indexOf(data.toString().toLowerCase()) > -1
+        ) {
+          Products.push(product);
+        }
+      }
+    }
   });
 
   res.status(200).json({ status: "Success", Products });
@@ -461,9 +490,7 @@ export const productSearchGet = TryCatch(async (req, res) => {
 
 // public function to save orders
 export const createNewOrderPost = TryCatch(async (req, res) => {
-  const { Carts, Orders, payment, personalInfo } = req.body;
-
-  console.log(req.body);
+  const { Carts, Orders, payment, personalInfo, yooCardNumber } = req.body;
 
   if (!Carts || Carts == "" || Carts == {})
     throw new Error("Unexpected error occured");
@@ -476,6 +503,42 @@ export const createNewOrderPost = TryCatch(async (req, res) => {
 
   if (!payment || payment == "" || payment == {})
     throw new Error("Unexpected error occured");
+
+  if (payment && payment?.paymentMethod == "yoocard") {
+    if (!yooCardNumber || yooCardNumber == "")
+      throw new Error("Card number is required");
+  }
+
+  // verify users yoocard number
+  if (payment?.paymentMethod == "yoocard") {
+    const Subscriptions = await Subscription.find({ status: "active" });
+    const UserCard = [];
+
+    for (const subscription of Subscriptions) {
+      for (const card of subscription.cards) {
+        if (card.cardNumber == yooCardNumber) {
+          if (subscription.userId == personalInfo._id) {
+            UserCard.push(card);
+          }
+        }
+      }
+    }
+
+    if (UserCard.length < 1)
+      throw new Error(
+        "Card Number is either invalid or subscription has expired \n Please verify card and try again"
+      );
+
+    switch (UserCard.card) {
+      case "premium":
+        break;
+
+      default:
+        break;
+    }
+
+    return;
+  }
 
   const Products = [];
 

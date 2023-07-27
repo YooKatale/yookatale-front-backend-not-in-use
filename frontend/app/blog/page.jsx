@@ -27,7 +27,13 @@ import {
   AiOutlineArrowRight,
   AiOutlineClose,
 } from "react-icons/ai";
-import { FaFacebook, FaShareAlt, FaTwitter, FaWhatsapp } from "react-icons/fa";
+import {
+  FaClipboard,
+  FaFacebook,
+  FaShareAlt,
+  FaTwitter,
+  FaWhatsapp,
+} from "react-icons/fa";
 
 const Blog = () => {
   const [BlogPost, setBlogPost] = useState([]);
@@ -116,12 +122,28 @@ const Blog = () => {
     }
   };
 
+  const handleCopyClipboard = () => {
+    if (navigator) {
+      navigator.clipboard.writeText(
+        `https://yookatale.com/blog?q${BlogPost?.title}&id=${BlogPost?._id}`
+      );
+
+      chakraToast({
+        title: "Copied",
+        description: "Copied to clipboard",
+        status: "success",
+        duration: 5000,
+        isClosable: false,
+      });
+    }
+  };
+
   useEffect(() => {
     handleBlogFetch();
 
     setTimeout(() => {
       setNewsletterPrompt((prev) => (prev ? false : true));
-    }, 3000);
+    }, 5000);
   }, []);
 
   return (
@@ -134,6 +156,7 @@ const Blog = () => {
         padding={"1rem"}
         background={ThemeColors.lightColor}
         borderRadius={"md"}
+        zIndex={10}
         width={{ base: "90%", md: "60%", xl: "40%" }}
         visibility={newsletterPrompt ? "visible" : "hidden"}
         transform={
@@ -244,7 +267,7 @@ const Blog = () => {
                   padding={"0.3rem 0.5rem"}
                   position={"relative"}
                   overflow={socialShareModal ? "visible" : "hidden"}
-                  hidden
+                  display={"none"}
                 >
                   <FaShareAlt
                     style={{ cursor: "pointer" }}
@@ -260,6 +283,7 @@ const Blog = () => {
                     padding={"0.5rem"}
                     width={"250px"}
                     background={ThemeColors.lightColor}
+                    zIndex={5}
                     borderRadius={"0.3rem"}
                     visibility={socialShareModal ? "visible" : "hidden"}
                     transform={
@@ -288,21 +312,31 @@ const Blog = () => {
                         fontWeight={"bold"}
                         textAlign={"center"}
                       >
-                        Share on social media
+                        Share newsblog
                       </Text>
                     </Box>
                     <Flex padding={"0.5rem 0"} justifyContent={"center"}>
-                      <Box margin={"0 0.5rem"}>
+                      <Box margin={"0 0.5rem"} display={"none"}>
                         <Link href={`{}`}>
                           <FaWhatsapp size={25} style={{ color: "#178b17" }} />
                         </Link>
                       </Box>
-                      <Box margin={"0 0.5rem"}>
+                      <Box
+                        margin={"0 0.5rem"}
+                        onClick={handleCopyClipboard}
+                        cursor={"pointer"}
+                      >
+                        <Flex>
+                          <Text margin={"0 0.3rem"}>Copy link </Text>
+                          <FaClipboard size={25} />
+                        </Flex>
+                      </Box>
+                      <Box margin={"0 0.5rem"} display={"none"}>
                         <Link href={`{}`}>
                           <FaFacebook size={25} style={{ color: "#1553a5" }} />
                         </Link>
                       </Box>
-                      <Box margin={"0 0.5rem"}>
+                      <Box margin={"0 0.5rem"} display={"none"}>
                         <a
                           href="https://twitter.com/share?ref_src=twsrc%5Etfw"
                           class="twitter-share-button"
@@ -326,6 +360,7 @@ const Blog = () => {
             </Box>
             <Box padding={"2rem 0"}>
               <Box
+                className="__blog-content"
                 dangerouslySetInnerHTML={{
                   __html: BlogPost
                     ? BlogPost?.blog

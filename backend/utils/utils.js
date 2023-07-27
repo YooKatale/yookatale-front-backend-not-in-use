@@ -233,7 +233,6 @@ export const resendEmail = async (params) => {
       response = "success";
     }
   } catch (error) {
-    console.log({ error });
     response = "Error occured";
   }
 

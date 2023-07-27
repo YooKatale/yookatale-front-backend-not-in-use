@@ -261,7 +261,7 @@ const Cart = () => {
               >
                 <Flex flexShrink={0} width={"100%"}>
                   <Box width={"15%"} padding={"0.5rem 1rem"}>
-                    <Heading as={"h2"} size={"md"}>
+                    <Heading as={"h2"} size={"sm"}>
                       Image
                     </Heading>
                   </Box>
@@ -269,7 +269,7 @@ const Cart = () => {
                     width={{ base: "20%", md: "20%", xl: "25%" }}
                     padding={"0.5rem 1rem"}
                   >
-                    <Heading as={"h2"} size={"md"}>
+                    <Heading as={"h2"} size={"sm"}>
                       Name
                     </Heading>
                   </Box>
@@ -277,17 +277,17 @@ const Cart = () => {
                     width={{ base: "20%", md: "20%", xl: "15%" }}
                     padding={"0.5rem 1rem"}
                   >
-                    <Heading as={"h2"} size={"md"}>
+                    <Heading as={"h2"} size={"sm"}>
                       Quantity
                     </Heading>
                   </Box>
                   <Box width={"15%"} padding={"0.5rem 1rem"}>
-                    <Heading as={"h2"} size={"md"}>
+                    <Heading as={"h2"} size={"sm"}>
                       Unit Price
                     </Heading>
                   </Box>
                   <Box width={"20%"} padding={"0.5rem 1rem"}>
-                    <Heading as={"h2"} size={"md"}>
+                    <Heading as={"h2"} size={"sm"}>
                       Total
                     </Heading>
                   </Box>
@@ -295,7 +295,7 @@ const Cart = () => {
                 </Flex>
               </Box>
               <Box
-                padding={"0.5rem 0"}
+                padding={"0"}
                 borderBottom={"1.7px solid " + ThemeColors.lightColor}
                 maxHeight={{ base: "550px", md: "500px" }}
                 overflowY={{ base: "auto", md: "auto", xl: "hidden" }}
@@ -333,7 +333,7 @@ const Cart = () => {
                         padding={"1rem"}
                         display={{ base: "none", md: "none", xl: "block" }}
                       >
-                        <Text fontSize={"2xl"}>
+                        <Text fontSize={"lg"}>
                           {cart?.name ? cart?.name : ""}
                         </Text>
                       </Box>
@@ -388,7 +388,7 @@ const Cart = () => {
                         padding={"1rem"}
                         display={{ base: "none", md: "none", xl: "block" }}
                       >
-                        <Text fontSize={"2xl"}>
+                        <Text fontSize={"lg"}>
                           {UGX(cart?.price ? cart?.price : 0).format()}
                         </Text>
                       </Box>
@@ -397,7 +397,7 @@ const Cart = () => {
                         padding={"1rem"}
                         display={{ base: "none", md: "none", xl: "block" }}
                       >
-                        <Text fontSize={"2xl"}>
+                        <Text fontSize={"lg"}>
                           {cart?.total
                             ? UGX(cart?.total ? cart?.total : 0).format()
                             : 0}
@@ -493,7 +493,7 @@ const Cart = () => {
                           <Spacer />
                           <Box padding={"1rem"}>
                             <FaTrashAlt
-                              size={30}
+                              size={25}
                               onClick={() => handleDeleteCartItem(cart?.cartId)}
                               style={{ cursor: "pointer" }}
                             />

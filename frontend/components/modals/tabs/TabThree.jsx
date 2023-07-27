@@ -8,12 +8,15 @@ import {
   FormLabel,
   Grid,
   Heading,
+  Input,
   Spacer,
+  Spinner,
   Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
 import ButtonComponent from "@components/Button";
+import PaymentCard from "@components/PaymentCard";
 import { ThemeColors } from "@constants/constants";
 import { useNewOrderMutation } from "@slices/usersApiSlice";
 import { useFlutterwave } from "flutterwave-react-v3";
@@ -22,6 +25,8 @@ import { useEffect, useState } from "react";
 
 const TabThree = ({ updateTabIndex, data }) => {
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [yooCardNumber, setYooCardNumber] = useState("");
+  const [isLoading, setLoading] = useState(false);
   const [CartTotal, setCartTotal] = useState(0);
   const router = useRouter();
 
@@ -62,9 +67,12 @@ const TabThree = ({ updateTabIndex, data }) => {
     },
   };
 
-  const handleFlutterPayment = useFlutterwave(flwConfig);
+  // const handleFlutterPayment = useFlutterwave(flwConfig);
 
   const handleTabThree = async () => {
+    // set loading to be true
+    setLoading((prevState) => (prevState ? false : true));
+
     if (paymentMethod == "")
       return chakraToast({
         title: "Error",
@@ -75,7 +83,7 @@ const TabThree = ({ updateTabIndex, data }) => {
       });
 
     // if user chooses pay with mobile money or credit/debit card
-    if (paymentMethod !== "cash") {
+    if (paymentMethod === "card" || paymentMethod === "mobileMoney") {
       // // set loading to be false
       // setLoading((prevState) => (prevState ? false : true));
 
@@ -87,7 +95,12 @@ const TabThree = ({ updateTabIndex, data }) => {
               transactionID: response?.transaction_id,
             };
 
+            data.yooCardNumber = yooCardNumber;
+
             const res = await placeOrder({ ...data }).unwrap();
+
+            // set loading to be false
+            setLoading((prevState) => (prevState ? false : true));
 
             if (res?.status == "Success") {
               chakraToast({
@@ -100,6 +113,9 @@ const TabThree = ({ updateTabIndex, data }) => {
               router.push("/");
             }
           } else {
+            // set loading to be false
+            setLoading((prevState) => (prevState ? false : true));
+
             chakraToast({
               title: "Error",
               description: "Unexpected error",
@@ -118,25 +134,31 @@ const TabThree = ({ updateTabIndex, data }) => {
 
     try {
       // if payment method is cash on delivery
-      if (paymentMethod == "cash") {
-        data.payment = {
-          paymentMethod,
-        };
+      data.payment = {
+        paymentMethod,
+      };
 
-        const res = await placeOrder({ ...data }).unwrap();
+      data.yooCardNumber = yooCardNumber;
 
-        if (res?.status == "Success") {
-          chakraToast({
-            title: "Success",
-            description: `Successfully placed order`,
-            status: "success",
-            duration: 5000,
-            isClosable: false,
-          });
-          router.push("/");
-        }
+      const res = await placeOrder({ ...data }).unwrap();
+
+      // set loading to be false
+      setLoading((prevState) => (prevState ? false : true));
+
+      if (res?.status == "Success") {
+        chakraToast({
+          title: "Success",
+          description: `Successfully placed order`,
+          status: "success",
+          duration: 5000,
+          isClosable: false,
+        });
+        router.push("/");
       }
     } catch (err) {
+      // set loading to be false
+      setLoading((prevState) => (prevState ? false : true));
+
       chakraToast({
         title: "Error",
         description: err.data?.message
@@ -154,7 +176,7 @@ const TabThree = ({ updateTabIndex, data }) => {
       <Box>
         <Box padding={"1rem 0"}>
           <Heading as={"h3"} size={"md"} textAlign={"center"}>
-            Choose payment method
+            Choose payment method {paymentMethod}
           </Heading>
         </Box>
         <Box padding={"1rem 0"}>
@@ -162,101 +184,73 @@ const TabThree = ({ updateTabIndex, data }) => {
             <Box width={"100%"} margin={"auto"}>
               <Grid
                 gridTemplateColumns={{
-                  base: "repeat(1, 1fr)",
-                  md: "repeat(1, 1fr)",
-                  xl: "repeat(3, 1fr)",
+                  base: "repeat(2, 1fr)",
+                  md: "repeat(2, 1fr)",
+                  xl: "repeat(4, 1fr)",
                 }}
                 gridGap={"1rem"}
               >
-                <Box
-                  padding={"3rem 1rem"}
-                  cursor={"pointer"}
-                  background={
-                    paymentMethod === "cash"
-                      ? ThemeColors.darkColor
-                      : ThemeColors.lightColor
-                  }
-                  borderRadius={"0.5rem"}
-                  border={
-                    "1.7px solid " + paymentMethod === "cash"
-                      ? ThemeColors.lightColor
-                      : ThemeColors.darkColor
-                  }
-                  onClick={() => setPaymentMethod("cash")}
-                >
-                  <Text
-                    fontSize={"2xl"}
-                    textAlign={"center"}
-                    color={
-                      paymentMethod === "cash"
-                        ? ThemeColors.lightColor
-                        : ThemeColors.darkColor
-                    }
-                  >
-                    Pay on delivery
-                  </Text>
+                <Box>
+                  <PaymentCard
+                    text={"Pay on delivery"}
+                    setPaymentMethod={setPaymentMethod}
+                    paymentMethod={paymentMethod}
+                    type={"cash"}
+                  />
                 </Box>
-                <Box
-                  padding={"3rem 1rem"}
-                  cursor={"pointer"}
-                  background={
-                    paymentMethod === "mobileMoney"
-                      ? ThemeColors.darkColor
-                      : ThemeColors.lightColor
-                  }
-                  borderRadius={"0.5rem"}
-                  border={
-                    "1.7px solid " + paymentMethod === "mobileMoney"
-                      ? ThemeColors.lightColor
-                      : ThemeColors.darkColor
-                  }
-                  onClick={() => setPaymentMethod("mobileMoney")}
-                  hidden
-                >
-                  <Text
-                    fontSize={"2xl"}
-                    textAlign={"center"}
-                    color={
-                      paymentMethod === "mobileMoney"
-                        ? ThemeColors.lightColor
-                        : ThemeColors.darkColor
-                    }
-                  >
-                    Mobile Money
-                  </Text>
+                <Box>
+                  <PaymentCard
+                    text={"Mobile Money"}
+                    setPaymentMethod={setPaymentMethod}
+                    paymentMethod={paymentMethod}
+                    type={"mobileMoney"}
+                  />
                 </Box>
-                <Box
-                  padding={"3rem 1rem"}
-                  cursor={"pointer"}
-                  background={
-                    paymentMethod === "card"
-                      ? ThemeColors.darkColor
-                      : ThemeColors.lightColor
-                  }
-                  borderRadius={"0.5rem"}
-                  border={
-                    "1.7px solid " + paymentMethod === "card"
-                      ? ThemeColors.lightColor
-                      : ThemeColors.darkColor
-                  }
-                  onClick={() => setPaymentMethod("card")}
-                  hidden
-                >
-                  <Text
-                    fontSize={"2xl"}
-                    textAlign={"center"}
-                    color={
-                      paymentMethod === "card"
-                        ? ThemeColors.lightColor
-                        : ThemeColors.darkColor
-                    }
-                  >
-                    Card
-                  </Text>
+                <Box>
+                  <PaymentCard
+                    text={"Card"}
+                    setPaymentMethod={setPaymentMethod}
+                    paymentMethod={paymentMethod}
+                    type={"card"}
+                  />
+                </Box>
+                <Box>
+                  <PaymentCard
+                    text={"Yoo Card"}
+                    setPaymentMethod={setPaymentMethod}
+                    paymentMethod={paymentMethod}
+                    type={"yoocard"}
+                  />
                 </Box>
               </Grid>
             </Box>
           </Flex>
+        </Box>
+        <Box padding={"1rem 0"}>
+          {paymentMethod == "yoocard" && (
+            <Flex>
+              <Box margin={"auto"} width={"60%"}>
+                <Box
+                  border={"1.7px solid " + ThemeColors.lightColor}
+                  padding={"1rem"}
+                  borderRadius={"md"}
+                >
+                  <Box padding={"0.5rem 0"}>
+                    <Text textAlign={"center"} fontSize={"lg"}>
+                      Enter your YooCard Number
+                    </Text>
+                  </Box>
+                  <Input
+                    type="text"
+                    placeholder="Enter your YooCard number"
+                    name="yooCardNumber"
+                    onChange={(e) => setYooCardNumber(e.target.value)}
+                    value={yooCardNumber}
+                  />
+                </Box>
+              </Box>
+            </Flex>
+          )}
         </Box>
         <Box padding={"1rem 0 0.5rem 0"}>
           <Flex>
@@ -265,7 +259,11 @@ const TabThree = ({ updateTabIndex, data }) => {
             </Box>
             <Spacer />
             <Box onClick={() => handleTabThree()}>
-              <ButtonComponent type={"button"} text={"Complete Checkout"} />
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                <ButtonComponent type={"button"} text={"Complete Checkout"} />
+              )}
             </Box>
           </Flex>
         </Box>

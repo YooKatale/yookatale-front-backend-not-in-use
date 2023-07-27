@@ -17,3 +17,13 @@ export const calcCartTotal = (Cart) => {
 
   return total;
 };
+
+export const sumCartQuantity = (Cart) => {
+  if (!Cart || !Cart.length || Cart.length < 1) return false;
+
+  let total = parseInt(Cart.length);
+
+  total += Cart.reduce((a, b) => a + parseInt(b?.quantity), 0);
+
+  return total;
+};

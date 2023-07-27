@@ -29,7 +29,7 @@ const Search = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const param = searchParam.get("name");
+  const param = searchParam.get("q");
 
   const [Products, setProducts] = useState([]);
 
@@ -37,10 +37,16 @@ const Search = () => {
 
   // function handle fetching data
   const handleDataFetch = async () => {
-    const res = await fetchProducts(param).unwrap();
+    try {
+      const res = await fetchProducts(param).unwrap();
 
-    if (res?.status && res?.status == "Success") {
-      setProducts(res?.Products);
+      console.log({ res });
+
+      if (res?.status && res?.status == "Success") {
+        setProducts(res?.Products);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -71,7 +77,7 @@ const Search = () => {
               <Grid
                 gridTemplateColumns={{
                   base: "repeat(1, 1fr)",
-                  md: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)",
                   xl: "repeat(4, 1fr)",
                 }}
                 gridGap={"1rem"}
