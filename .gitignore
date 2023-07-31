@@ -1,4 +1,8 @@
 /node_modules
 ./frontend
 ./admin
+/yookatale-newsblog
+/yookatale-client-dashboard
+./yookatale-client-dashboard
+./yookatale-newsblog
 .env

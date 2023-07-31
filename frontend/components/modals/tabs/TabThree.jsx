@@ -142,6 +142,8 @@ const TabThree = ({ updateTabIndex, data }) => {
 
       const res = await placeOrder({ ...data }).unwrap();
 
+      console.log(res);
+
       // set loading to be false
       setLoading((prevState) => (prevState ? false : true));
 
@@ -156,6 +158,7 @@ const TabThree = ({ updateTabIndex, data }) => {
         router.push("/");
       }
     } catch (err) {
+      console.log(err);
       // set loading to be false
       setLoading((prevState) => (prevState ? false : true));
 

@@ -299,12 +299,22 @@ const Footer = () => {
                           </Link>
                         </Box> */}
                     <Box margin={"0.3rem 0"}>
-                      <Link href={"/blogs"}>
+                      <Link href={"https://newsblog.yookatale.com"}>
                         <Text
                           color={ThemeColors.lightColor}
                           _hover={{ color: ThemeColors.darkColor }}
                         >
                           News Blog
+                        </Text>
+                      </Link>
+                    </Box>
+                    <Box margin={"0.3rem 0"}>
+                      <Link href={"https://newsblog.yookatale.com/careers"}>
+                        <Text
+                          color={ThemeColors.lightColor}
+                          _hover={{ color: ThemeColors.darkColor }}
+                        >
+                          Careers
                         </Text>
                       </Link>
                     </Box>

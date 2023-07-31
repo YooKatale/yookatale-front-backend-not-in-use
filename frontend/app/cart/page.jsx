@@ -174,8 +174,6 @@ const Cart = () => {
 
   // function to handle increasing and reducing product quantity
   const IncreaseProductQuantity = (id) => {
-    console.log("clicked +");
-
     // find the index of the product in the cart array
     const currentProductIndex = Cart.findIndex((cart) => cart.cartId === id);
 
@@ -199,7 +197,6 @@ const Cart = () => {
   };
 
   const ReduceProductQuantity = (id) => {
-    console.log("clicked -");
     // check if the current product quantity is 1. If true don't reduce else reduce
     // find the index of the product in the cart array
     const currentProductIndex = Cart.findIndex((cart) => cart.cartId === id);

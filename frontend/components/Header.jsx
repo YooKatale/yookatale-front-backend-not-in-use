@@ -330,13 +330,24 @@ fontSize={"lg"}}}
                 </Link>
               </Box> */}
               <Box margin={"0.3rem 0.5rem"}>
-                <Link href={"/blogs"}>
+                <Link href={"https://newsblog.yookatale.com"}>
                   <Text
                     color={"#000"}
                     fontSize={"lg"}
                     _hover={{ color: ThemeColors.darkColor }}
                   >
                     News Blog
+                  </Text>
+                </Link>
+              </Box>
+              <Box margin={"0.3rem 0.5rem"}>
+                <Link href={"https://newsblog.yookatale.com/careers"}>
+                  <Text
+                    color={"#000"}
+                    fontSize={"lg"}
+                    _hover={{ color: ThemeColors.darkColor }}
+                  >
+                    Careers
                   </Text>
                 </Link>
               </Box>
@@ -738,7 +749,7 @@ fontSize={"lg"}}}
               </Box> */}
             <Box margin={"0.5rem 0"}>
               <Link
-                href={"/blogs"}
+                href={"https://newsblog.yookatale.com"}
                 onClick={() =>
                   setMobileNavOpen((prevState) => (prevState ? false : true))
                 }
@@ -749,6 +760,22 @@ fontSize={"lg"}}}
                   _hover={{ color: ThemeColors.darkColor }}
                 >
                   News Blog
+                </Text>
+              </Link>
+            </Box>
+            <Box margin={"0.5rem 0"}>
+              <Link
+                href={"/https://newsblog.yookatale.com/careers"}
+                onClick={() =>
+                  setMobileNavOpen((prevState) => (prevState ? false : true))
+                }
+              >
+                <Text
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  _hover={{ color: ThemeColors.darkColor }}
+                >
+                  Careers
                 </Text>
               </Link>
             </Box>

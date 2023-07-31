@@ -573,7 +573,8 @@ export const createNewOrderPost = TryCatch(async (req, res) => {
 
   const response = await resendEmail({
     template: "order",
-    email: personalInfo?.email,
+    to: personalInfo?.email,
+    from: "info@yookatale.com",
     subject: "Order Successful",
     orderID: NewOrder?._id,
     orderTotal: NewOrder?.total,

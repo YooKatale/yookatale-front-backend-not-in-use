@@ -38,7 +38,9 @@ const whitelist = [
   "http://127.0.0.1:3001",
   "https://www.yookatale.com",
   "https://admin.yookatale.com",
+  "https://newsblog.yookatale.com",
   "admin.yookatale.com",
+  "newsblog.yookatale.com",
 ];
 
 const corsOptions = {
