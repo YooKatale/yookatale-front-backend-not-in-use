@@ -3,7 +3,9 @@ import { Schema, model } from "mongoose";
 const commentSchema = Schema(
   {
     user: String,
-    Comment: String,
+    newsblog: String,
+    comment: String,
+    replies: Array,
   },
   { timestamps: true }
 );

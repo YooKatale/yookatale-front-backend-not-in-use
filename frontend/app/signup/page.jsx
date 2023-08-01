@@ -28,6 +28,7 @@ const SignUp = () => {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
+  const [dob, setDob] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
@@ -62,6 +63,7 @@ const SignUp = () => {
         phone,
         gender,
         vegan,
+        dob,
         password,
       }).unwrap();
 
@@ -191,19 +193,41 @@ const SignUp = () => {
                     </FormControl>
                   </Box>
                 </Grid>
-                <Box padding={"0.5rem 0"}>
-                  <FormControl>
-                    <FormLabel htmlFor="email">Email</FormLabel>
-                    <Input
-                      type="text"
-                      id="email"
-                      placeholder="email is required"
-                      name="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </FormControl>
-                </Box>
+                <Grid
+                  gridTemplateColumns={{
+                    base: "repeat(1, 1fr)",
+                    md: "repeat(1, 1fr)",
+                    xl: "repeat(2, 1fr)",
+                  }}
+                  gridGap={"1rem"}
+                >
+                  <Box padding={"0.5rem 0"}>
+                    <FormControl>
+                      <FormLabel htmlFor="email">Email *</FormLabel>
+                      <Input
+                        type="text"
+                        id="email"
+                        placeholder="email is required"
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box padding={"0.5rem 0"}>
+                    <FormControl>
+                      <FormLabel htmlFor="dob">Date of Birth *</FormLabel>
+                      <Input
+                        type="date"
+                        id="dob"
+                        placeholder=""
+                        name="dob"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                      />
+                    </FormControl>
+                  </Box>
+                </Grid>
                 <Box padding={"0.5rem 0"}>
                   <FormControl>
                     <FormLabel htmlFor="password">Password</FormLabel>

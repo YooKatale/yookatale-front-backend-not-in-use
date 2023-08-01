@@ -25,12 +25,12 @@ const Hero = () => {
                   fontSize={{ base: "3xl", md: "3xl", xl: "4xl" }}
                   margin={"0.3rem 0"}
                 >
-                  Feeding the{" "}
+                  Campaigning {" "}
                   <span
                     style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
                     className="secondary-font"
                   >
-                    soul
+                    Health
                   </span>
                 </Text>
                 <Text

@@ -2,6 +2,7 @@ import express from "express";
 import {
   authUserPost,
   createCartPost,
+  createCommentPost,
   createNewOrderPost,
   createNewsletterPost,
   createSubscriptionPost,
@@ -69,7 +70,7 @@ router
 router.get("/products/search/:data", productSearchGet);
 router.post("/products/order", Protect, createNewOrderPost);
 router.get("/products/order/:data", Protect, fetchOrdersGet);
-router.get("/users/comments", fetchCommentsGet);
+//router.get("/users/comments", fetchCommentsGet);
 router.post("/subscription", createSubscriptionPost);
 router.post("/test/email", testEmailFeature);
 router.post("/message", sendMessagePost);
@@ -78,6 +79,9 @@ router.get("/newsblogs", fetchNewsblogsGet);
 router.get("/newsblog/:data", fetchNewsblogGet);
 router.post("/newsletter", createNewsletterPost);
 router.get("/newsletter", fetchNewslettersGet);
+
+router.get("/newsblogs/comments", fetchCommentsGet);
+router.post("/newsblogs/comments", createCommentPost);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 

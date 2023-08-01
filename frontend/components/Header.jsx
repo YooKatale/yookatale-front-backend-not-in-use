@@ -765,7 +765,7 @@ fontSize={"lg"}}}
             </Box>
             <Box margin={"0.5rem 0"}>
               <Link
-                href={"/https://newsblog.yookatale.com/careers"}
+                href={"https://newsblog.yookatale.com/careers"}
                 onClick={() =>
                   setMobileNavOpen((prevState) => (prevState ? false : true))
                 }

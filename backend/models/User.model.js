@@ -18,6 +18,7 @@ const userSchema = Schema(
     phone: {
       type: String,
     },
+    dob: Date,
     password: {
       type: String,
     },

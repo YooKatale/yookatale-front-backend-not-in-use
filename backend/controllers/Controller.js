@@ -76,7 +76,7 @@ export const authUserPost = TryCatch(async (req, res) => {
 
 // public route to sign up user
 export const registerUserPost = TryCatch(async (req, res) => {
-  const { firstname, lastname, email, phone, gender, vegan, password } =
+  const { firstname, lastname, email, phone, gender, vegan, dob, password } =
     req.body;
 
   if (!firstname || firstname == "") throw new Error("Firstname is required");
@@ -84,6 +84,7 @@ export const registerUserPost = TryCatch(async (req, res) => {
   if (!email || email == "") throw new Error("Email is required");
   if (!phone || phone == "") throw new Error("Phone number is required");
   if (!gender || gender == "") throw new Error("Gender is required");
+  if (!dob || dob == "") throw new Error("Date of birth is required");
   if (!password || password == "") throw new Error("Password is required");
   if (!validator.isEmail(email)) throw new Error("Email is invalid");
 
@@ -99,6 +100,7 @@ export const registerUserPost = TryCatch(async (req, res) => {
     vegan,
     phone,
     password,
+    dob,
   });
 
   generateToken(res, user._id);
@@ -116,6 +118,7 @@ export const registerUserPost = TryCatch(async (req, res) => {
     gender: user.gender,
     vegan: user.vegan,
     phone: user.phone,
+    dob: user.dob,
     expires: addDays(new Date(), 3),
   });
 });
@@ -608,13 +611,30 @@ export const fetchOrdersGet = TryCatch(async (req, res) => {
     .json({ status: "Success", data: { CompletedOrders, AllOrders } });
 });
 
-// public function to add comments
+// private function to fetch comments
 export const fetchCommentsGet = TryCatch(async (req, res) => {
   const Comments = await Comment.find();
 
   res.status(200).json({ status: "Success", data: Comments });
 });
-// public function to fetch comments
+
+// private function to add comments
+export const createCommentPost = TryCatch(async (req, res) => {
+  const { user, comment, newsblog } = req.body;
+
+  if (!user || user == "") throw Error("User id details is required");
+  if (!comment || comment == "") throw Error("Comment is required");
+
+  const NewNewsblog = new Comment({
+    user,
+    comment,
+    newsblog,
+  });
+
+  NewNewsblog.save();
+
+  res.status(200).json({ status: "Success" });
+});
 
 // public function to create subscription
 export const createSubscriptionPost = TryCatch(async (req, res) => {
