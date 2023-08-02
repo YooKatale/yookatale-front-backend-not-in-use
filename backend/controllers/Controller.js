@@ -620,15 +620,16 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
 
 // private function to add comments
 export const createCommentPost = TryCatch(async (req, res) => {
-  const { user, comment, newsblog } = req.body;
+  const { user, comment, newsblogId } = req.body;
 
   if (!user || user == "") throw Error("User id details is required");
   if (!comment || comment == "") throw Error("Comment is required");
+  if (!newsblogId || newsblogId == "") throw Error("Newsblog ID is required");
 
   const NewNewsblog = new Comment({
     user,
     comment,
-    newsblog,
+    newsblog: newsblogId,
   });
 
   NewNewsblog.save();
