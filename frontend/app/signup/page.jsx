@@ -52,9 +52,23 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log(e.target.terms);
+
     try {
       // set loading to be true
       setLoading((prevState) => (prevState ? false : true));
+
+      if (!e.target.terms.checked) {
+        chakraToast({
+          title: "Notice",
+          description: "Please agree to the terms and conditions to proceed",
+          status: "error",
+          duration: 5000,
+          isClosable: false,
+        });
+
+        return setLoading((prevState) => (prevState ? false : true));
+      }
 
       const res = await register({
         firstname,
@@ -255,6 +269,7 @@ const SignUp = () => {
                     </Link>
                   </Text>
                 </Box>
+
                 <Box padding={"0.5rem 0"}>
                   <Checkbox
                     name="vegan"
@@ -264,6 +279,18 @@ const SignUp = () => {
                     Are you vegetarian ?
                   </Checkbox>
                 </Box>
+
+                <Box padding={"0.5rem 0"}>
+                  <Checkbox name="terms">
+                    I agree to the{" "}
+                    <Link href={"/policy"}>
+                      <span style={{ color: ThemeColors.darkColor }}>
+                        terms and conditions
+                      </span>
+                    </Link>
+                  </Checkbox>
+                </Box>
+
                 <Box padding={"0.5rem 0"}>
                   <Button
                     type="submit"

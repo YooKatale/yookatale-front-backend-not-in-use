@@ -118,10 +118,10 @@ const Home = () => {
     <>
       <Hero />
 
-      <Box display={`${Products?.length > 0 && "none"}`}>
+      {/* <Box display={`${Products?.length > 0 && "none"}`} hidden>
         <Loader />
-      </Box>
-      {/* {Products && Products.length && Products.length < 1 && <Loader />} */}
+      </Box> */}
+
       {/* ------------- section 
       ------------------------------- */}
       <Box
@@ -289,14 +289,30 @@ const Home = () => {
                 className="secondary-light-font"
                 color={ThemeColors.lightColor}
               >
+                {" "}
+                While
                 <span
                   style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
                   className="secondary-font"
                 >
-                  YooCard
+                  YooKatale
                 </span>
-                , your home mobile food bank. Feeding a smile to friends &
-                family always
+                is your mobile food market...
+              </Text>
+
+              <Text
+                textAlign={"center"}
+                fontSize={{ base: "2xl", md: "2xl", xl: "3xl" }}
+                className="secondary-light-font"
+                color={ThemeColors.lightColor}
+              >
+                <span
+                  style={{ color: ThemeColors.darkColor, fontWeight: "bold" }}
+                  className="secondary-font"
+                >
+                  Subscribe to YooKatale
+                </span>
+                , rest assured about all our everyday home kitchen needs.
               </Text>
               <Flex justifyContent={"center"} padding={"1rem 0"}>
                 <Link href={"/subscription"}>

@@ -176,7 +176,9 @@ export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
     "vegetables",
     "grains and flour",
     "meats",
-    "fats/oils",
+    "fats&oils",
+    "herbs&spices",
+    "juice&meals",
   ];
 
   // loop through the categories passed and fetch products for each category and store them in the ProductsCategory object

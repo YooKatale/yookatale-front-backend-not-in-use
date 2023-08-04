@@ -82,33 +82,17 @@ const Subscription = () => {
   return (
     <>
       <Box>
-        <Box padding={"2rem 0 3rem 0"}>
-          <Box
-            paddingBottom={"2rem"}
-            display={"flex"}
-            justifyContent={"center"}
-          >
-            <Text textAlign={"center"} fontSize={"4xl"} display={"flex"}>
-              Choose your preferred plan
-              <Text
-                textAlign={"center"}
-                fontWeight={"bold"}
-                color={ThemeColors.darkColor}
-                textTransform={"capitalize"}
-                fontSize={"4xl"}
-              ></Text>
-            </Text>
-          </Box>
+        <Box padding={"3rem 0 5rem 0"}>
           <Box>
             <Flex>
               <Box
                 margin={"auto"}
-                width={{ base: "100%", md: "95%", xl: "90%" }}
+                width={{ base: "90%", md: "100%", xl: "70%" }}
               >
-                <Grid
+                {/* <Grid
                   gridTemplateColumns={{
-                    base: "repeat(2, 1fr)",
-                    md: "repeat(2, 1fr)",
+                    base: "repeat(1, 1fr)",
+                    md: "repeat(1, 1fr)",
                     xl: "repeat(4, 1fr)",
                   }}
                   gridGap={"1rem"}
@@ -121,7 +105,63 @@ const Subscription = () => {
                         selectedCard={handleCardSelect}
                       />
                     ))}
-                </Grid>
+                </Grid> */}
+                <Flex
+                  flexDirection={{
+                    base: "column-reverse",
+                    md: "column-reverse",
+                    xl: "row",
+                  }}
+                >
+                  <Box width={{ base: "100%", md: "80%", xl: "40%" }}>
+                    {subscriptionCards.length > 0 &&
+                      subscriptionCards.map((card, index) => (
+                        <SubscriptionCard
+                          card={card}
+                          key={index}
+                          selectedCard={handleCardSelect}
+                        />
+                      ))}
+                  </Box>
+
+                  <Box width={{ base: "100%", md: "80%", xl: "60%" }}>
+                    <Box
+                      padding={{
+                        base: "1rem 0 2rem 0",
+                        md: "1rem 0",
+                        xl: "1rem 3rem",
+                      }}
+                    >
+                      <Text
+                        textAlign={"center"}
+                        fontSize={"2xl"}
+                        className="secondary-light-font"
+                      >
+                        Subscribe to our payment plan
+                      </Text>
+
+                      <Text
+                        textAlign={"center"}
+                        fontSize={{ base: "2xl", md: "3xl", xl: "4xl" }}
+                      >
+                        Get{" "}
+                        <span
+                          style={{
+                            textAlign: "center",
+                            fontWeight: "bold",
+                            color: ThemeColors.darkColor,
+                            textTransform: "capitalize",
+                            fontSize: "2xl",
+                          }}
+                        >
+                          {" "}
+                          25% discount
+                        </span>{" "}
+                        on every order you make
+                      </Text>
+                    </Box>
+                  </Box>
+                </Flex>
               </Box>
             </Flex>
           </Box>
