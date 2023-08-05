@@ -889,8 +889,10 @@ export const createNewsletterPost = TryCatch(async (req, res) => {
   // check if email already exists
   const CheckEmail = await Newsletter.findOne({ email });
 
-  if (CheckEmail && CheckEmail?.status == "active")
-    throw new Error("Already subscribed");
+  if (CheckEmail && CheckEmail?.status == "active") {
+    res.status(200).json({ status: "Success" });
+    return;
+  }
 
   if (CheckEmail) {
     await Newsletter.findOneAndUpdate({ email }, { status: "active" });
