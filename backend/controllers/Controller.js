@@ -617,7 +617,7 @@ export const fetchOrdersGet = TryCatch(async (req, res) => {
 export const fetchCommentsGet = TryCatch(async (req, res) => {
   const newsblog = req.params.data;
 
-  const Comments = await Comment.find({ newsblog });
+  const Comments = await Comment.find({ newsblog }).lean();
 
   for (const comment of Comments) {
     let user = await User.findOne({ _id: comment.user })
@@ -631,8 +631,6 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
 
     comment.user = user;
   }
-
-  console.log(Comments);
 
   res.status(200).json({ status: "Success", data: Comments });
 });
