@@ -619,6 +619,16 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
 
   const Comments = await Comment.find({ newsblog });
 
+  for (const comment of Comments) {
+    let user = await User.findOne({ _id: comment.user });
+
+    !user && (await Admin.findOne({ _id: comment.user }));
+
+    !user && (user = { firstname: "John", lastname: "Doe" });
+
+    comment.user = user;
+  }
+
   res.status(200).json({ status: "Success", data: Comments });
 });
 
