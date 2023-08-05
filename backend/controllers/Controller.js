@@ -632,6 +632,8 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
     comment.user = user;
   }
 
+  console.log(Comments);
+
   res.status(200).json({ status: "Success", data: Comments });
 });
 
