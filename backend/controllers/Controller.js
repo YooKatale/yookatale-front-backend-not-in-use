@@ -620,9 +620,12 @@ export const fetchCommentsGet = TryCatch(async (req, res) => {
   const Comments = await Comment.find({ newsblog });
 
   for (const comment of Comments) {
-    let user = await User.findOne({ _id: comment.user });
+    let user = await User.findOne({ _id: comment.user })
+      .lean()
+      .select("-password");
 
-    !user && (await Admin.findOne({ _id: comment.user }));
+    !user &&
+      (await Admin.findOne({ _id: comment.user })).lean().select("-password");
 
     !user && (user = { firstname: "John", lastname: "Doe" });
 
