@@ -643,13 +643,13 @@ export const createCommentPost = TryCatch(async (req, res) => {
   if (!comment || comment == "") throw Error("Comment is required");
   if (!newsblogId || newsblogId == "") throw Error("Newsblog ID is required");
 
-  const NewNewsblog = new Comment({
+  const NewComment = new Comment({
     user,
     comment,
     newsblog: newsblogId,
   });
 
-  NewNewsblog.save();
+  NewComment.save();
 
   res.status(200).json({ status: "Success" });
 });
