@@ -80,7 +80,7 @@ router.get("/newsblog/:data", fetchNewsblogGet);
 router.post("/newsletter", createNewsletterPost);
 router.get("/newsletter", fetchNewslettersGet);
 
-router.get("/newsblogs/comments", fetchCommentsGet);
+router.get("/newsblogs/comments/:data", fetchCommentsGet);
 router.post("/newsblogs/comments", createCommentPost);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
