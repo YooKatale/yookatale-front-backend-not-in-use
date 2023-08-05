@@ -615,9 +615,9 @@ export const fetchOrdersGet = TryCatch(async (req, res) => {
 
 // private function to fetch comments
 export const fetchCommentsGet = TryCatch(async (req, res) => {
-  const newsblog = req.param.data || req.params.data;
+  const newsblog = req.params.data;
 
-  const Comments = await Comment.find({ _id: newsblog });
+  const Comments = await Comment.find({ newsblog });
 
   res.status(200).json({ status: "Success", data: Comments });
 });
