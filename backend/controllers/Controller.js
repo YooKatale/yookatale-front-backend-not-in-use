@@ -871,6 +871,18 @@ export const createNewsletterPost = TryCatch(async (req, res) => {
 
   if (!validator.isEmail(email)) throw new Error("Email is invalid");
 
+  // check if email already exists
+  const CheckEmail = await Newsletter.findOne({ email });
+
+  if (CheckEmail && CheckEmail?.status == "active")
+    throw new Error("Already subscribed");
+
+  if (CheckEmail) {
+    await Newsletter.findOneAndUpdate({ email }, { status: "active" });
+
+    return;
+  }
+
   const NewNewsletter = new Newsletter({
     email,
     status: "active",
