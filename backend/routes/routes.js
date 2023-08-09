@@ -1,12 +1,18 @@
 import express from "express";
+import multer from "multer";
+import { v4 as uniqueString } from "uuid";
+import { dirname } from "path";
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import { Protect } from "../middleware/middleware.js";
+
 import {
   authUserPost,
-  createCartPost,
-  createCommentPost,
-  createNewOrderPost,
-  createNewsletterPost,
-  createSubscriptionPost,
-  deleteCart,
+  logoutUserPost,
+  registerUserPost,
+} from "../controllers/Auth.controller.js";
+import {
   fetchCartGet,
   fetchCommentsGet,
   fetchNewsblogGet,
@@ -18,19 +24,17 @@ import {
   fetchProductsFilterGet,
   fetchProductsGet,
   fetchSubscriptionCards,
-  logoutUserPost,
   productSearchGet,
-  registerUserPost,
+} from "../controllers/Get.controller.js";
+import {
+  createCartPost,
+  createCommentPost,
+  createNewOrderPost,
+  createNewsletterPost,
+  createSubscriptionPost,
   sendMessagePost,
-  testEmailFeature,
-} from "../controllers/Controller.js";
-import multer from "multer";
-import { v4 as uniqueString } from "uuid";
-import { dirname } from "path";
-import path from "path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
-import { Protect } from "../middleware/middleware.js";
+} from "../controllers/Post.controller.js";
+import { deleteCart } from "../controllers/Delete.controller.js";
 
 dotenv.config();
 
@@ -72,7 +76,6 @@ router.post("/products/order", Protect, createNewOrderPost);
 router.get("/products/order/:data", Protect, fetchOrdersGet);
 //router.get("/users/comments", fetchCommentsGet);
 router.post("/subscription", createSubscriptionPost);
-router.post("/test/email", testEmailFeature);
 router.post("/message", sendMessagePost);
 router.get("/subscription", fetchSubscriptionCards);
 router.get("/newsblogs", fetchNewsblogsGet);
