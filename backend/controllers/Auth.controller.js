@@ -1,6 +1,7 @@
 import { addDays } from "date-fns";
 import User from "../models/User.model.js";
 import { TryCatch, generateToken, resendEmail } from "../utils/utils.js";
+import validator from "validator";
 
 // public route to sign in user
 export const authUserPost = TryCatch(async (req, res) => {

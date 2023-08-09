@@ -5,6 +5,7 @@ import Order from "../models/Order.model.js";
 import Product from "../models/Product.model.js";
 import Subscription from "../models/Subscription.model.js";
 import { TryCatch, resendEmail } from "../utils/utils.js";
+import validator from "validator";
 
 // private controller to add item to cart
 export const createCartPost = TryCatch(async (req, res) => {
