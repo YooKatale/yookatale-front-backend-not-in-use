@@ -81,7 +81,7 @@ export const fetchProductsCategoriesGet = TryCatch(async (req, res) => {
     if (category == "popular") products = await Product.find().limit(10);
 
     if (products.length > 0 && envConfig.env === "production") {
-      for (const product of Products) {
+      for (const product of products) {
         product.images = await fetchImageUrl(product.images[0]);
       }
     }

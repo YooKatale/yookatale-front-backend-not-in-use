@@ -343,3 +343,7 @@
 2023-08-14	-	16:43:06	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
 2023-08-14	-	16:44:36	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/products/categories
 2023-08-14	-	16:44:37	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-14	-	17:27:50	-	f3057925-05ea-4081-852f-f27b0028fc53	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-14	-	17:27:53	-	f3057925-05ea-4081-852f-f27b0028fc53	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	17:53:18	-	c7ae8469-3a52-413a-a482-d51566abda73	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	17:53:18	-	c7ae8469-3a52-413a-a482-d51566abda73	-	GET	-	http://localhost:3000	-	/api/users/comments
