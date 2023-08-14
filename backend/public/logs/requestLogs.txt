@@ -331,3 +331,15 @@
 2023-08-14	-	15:41:12	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	DELETE	-	http://localhost:3000	-	/api/product/cart/64d5ba3e643e595c28eb6569
 2023-08-14	-	15:41:13	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/product/cart/64919925b589d467ec97a2ee
 2023-08-14	-	15:47:42	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/product/cart/64919925b589d467ec97a2ee
+2023-08-14	-	16:38:31	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	16:38:31	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-14	-	16:38:48	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	16:38:48	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-14	-	16:41:40	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	16:41:40	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-14	-	16:42:35	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	16:42:36	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-14	-	16:43:06	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	16:43:06	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-14	-	16:44:36	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/products/categories
+2023-08-14	-	16:44:37	-	4d2b4901-158b-4244-b57e-3d11a82ad95a	-	GET	-	http://localhost:3000	-	/api/users/comments
