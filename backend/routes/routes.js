@@ -20,6 +20,7 @@ import {
   fetchNewslettersGet,
   fetchOrdersGet,
   fetchProductGet,
+  fetchProductsCategoriesGet,
   fetchProductsCategoryGet,
   fetchProductsFilterGet,
   fetchProductsGet,
@@ -63,6 +64,7 @@ router.post("/users/auth", authUserPost);
 router.post("/users/register", registerUserPost);
 router.post("/users/logout", logoutUserPost);
 router.get("/products", fetchProductsGet);
+router.get("/products/categories", fetchProductsCategoriesGet);
 router.get("/product/:data", fetchProductGet);
 router.get("/products/:data", fetchProductsCategoryGet);
 router.get("/products/filter/:data", fetchProductsFilterGet);

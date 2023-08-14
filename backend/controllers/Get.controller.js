@@ -39,13 +39,26 @@ export const fetchProductGet = TryCatch(async (req, res) => {
   res.status(200).json({ status: "Success", data: ProductFetch });
 });
 
-// public function to fetch all products
+// public function to fetch all products of a particular category
 export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
-  // categories passed shall be an array
-  const data = req.params.data ? JSON.parse(req.params.data) : [];
+  const data = req.params.data;
 
-  // fetch products for each category
-  const CategoriesJson = [
+  if (data == "" || data == null) throw new Error("Unknown error");
+
+  const Products = await Product.find({ category: data });
+
+  if (Products.length > 0 && envConfig.env === "production") {
+    for (const product of Products) {
+      product.images = await fetchImageUrl(product.images[0]);
+    }
+  }
+
+  res.status(200).json({ status: "Success", data: Products });
+});
+
+// public function to fetch all products in their categories
+export const fetchProductsCategoriesGet = TryCatch(async (req, res) => {
+  const Categories = [
     "roughages",
     "fruits",
     "root tubers",
@@ -55,47 +68,25 @@ export const fetchProductsCategoryGet = TryCatch(async (req, res) => {
     "fats&oils",
     "herbs&spices",
     "juice&meals",
+    "popular",
   ];
 
-  // loop through the categories passed and fetch products for each category and store them in the ProductsCategory object
   const Products = [];
 
-  for (const category of CategoriesJson) {
+  for (const category of Categories) {
     let products = await Product.find({ category });
 
+    if (!products) products = await Product.find({ subCategory: category });
+
+    if (category == "popular") products = await Product.find().limit(10);
+
     if (envConfig.env === "production") {
-      for (const product of products) {
+      for (const product of Products) {
         product.images = await fetchImageUrl(product.images[0]);
       }
     }
 
-    Products.push({
-      category,
-      products,
-    });
-  }
-
-  for (const param of data) {
-    let productsFetched = "";
-
-    if (param == "popular") {
-      productsFetched = await Product.find().limit(10);
-    } else {
-      productsFetched = await Product.find({ category: param });
-    }
-
-    // check if products were found in category attribute, if not check in the subCategory attribute
-    if (!productsFetched || productsFetched.length < 1) {
-      productsFetched = await Product.find({ subCategory: param });
-    }
-
-    if (envConfig.env === "production") {
-      for (const product of productsFetched) {
-        product.images = await fetchImageUrl(product.images[0]);
-      }
-    }
-
-    Products.push({ category: param, products: productsFetched });
+    Products.push({ category, products });
   }
 
   res.status(200).json({ status: "Success", data: Products });
