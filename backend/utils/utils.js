@@ -139,50 +139,6 @@ export const sanitizePhoneNumber = (phone) => {
   return response;
 };
 
-export const sendEmail = (param) => {
-  let defaultClient = SibApiV3Sdk.ApiClient.instance;
-
-  // Configure API key authorization: api-key
-  let apiKey = defaultClient.authentications["api-key"];
-  apiKey.apiKey = sinbKey;
-
-  let partnerKey = defaultClient.authentications["partner-key"];
-  partnerKey.apiKey = sinbKey;
-
-  let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-
-  let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
-
-  sendSmtpEmail = {
-    to: [
-      {
-        email: param?.user?.email,
-        name: `${param?.user?.firstname} ${param?.user?.lastname}`,
-      },
-    ],
-    templateId: 1,
-    params: {
-      ORDER_ID: "1234567890",
-      EMAIL: param?.user?.email,
-    },
-    headers: {
-      "X-Mailin-custom":
-        "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
-    },
-  };
-
-  return apiInstance.sendTransacEmail(sendSmtpEmail).then(
-    function (data) {
-      console.log({ data });
-      return "success";
-    },
-    function (error) {
-      console.log({ error });
-      return error;
-    }
-  );
-};
-
 export const resendEmail = async (params) => {
   const resend = new Resend(resendKey);
   let response = "";
@@ -201,7 +157,7 @@ export const resendEmail = async (params) => {
   }
 
   if (params?.template == "welcome") {
-    htmlTemplate = htmlEmails.welcomeTemplate(params?.name);
+    htmlTemplate = htmlEmails.welcomeTemplate2();
   }
 
   if (params?.template == "message") {
