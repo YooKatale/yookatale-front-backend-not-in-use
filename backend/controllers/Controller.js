@@ -590,6 +590,22 @@ export const createNewOrderPost = TryCatch(async (req, res) => {
   }
 });
 
+// function to trackorders
+export const getOrderTracking = TryCatch(async (req, res) => {
+  const orderId = req.params.orderId;
+
+  // Fetch the order by ID
+  const order = await Order.findOne({ _id: orderId });
+
+  if (!order) {
+    return res.status(404).json({ status: "Error", message: "Order not found" });
+  }
+
+  // Return the order tracking information
+  res.status(200).json({ status: "Success", data: order.trackingInfo });
+});
+
+
 // private function to fetch orders
 export const fetchOrdersGet = TryCatch(async (req, res) => {
   const param = req.params.data;

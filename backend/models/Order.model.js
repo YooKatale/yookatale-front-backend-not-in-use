@@ -10,6 +10,12 @@ const orderSchema = Schema(
     deliveryAddress: Object,
     specialRequest: Object,
     status: String,
+    trackingInfo: [
+      {
+        status: String,
+        timestamp: Date,
+      },
+    ],
   },
   { timestamps: true }
 );

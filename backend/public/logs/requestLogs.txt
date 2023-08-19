@@ -981,3 +981,5 @@
 2023-07-28	-	21:43:27	-	abc1fe44-7822-48f6-8b7f-bfb52c785efb	-	POST	-	http://localhost:3000	-	/api/products/order
 2023-07-28	-	21:43:30	-	abc1fe44-7822-48f6-8b7f-bfb52c785efb	-	GET	-	http://localhost:3000	-	/api/users/comments
 2023-07-28	-	21:43:30	-	abc1fe44-7822-48f6-8b7f-bfb52c785efb	-	GET	-	http://localhost:3000	-	/api/products/[%22recommended%22,%22popular%22]
+2023-08-19	-	08:45:37	-	0bcaca82-7bd2-48f2-8b19-f605c5991800	-	GET	-	undefined	-	/
+2023-08-19	-	08:45:38	-	0bcaca82-7bd2-48f2-8b19-f605c5991800	-	GET	-	undefined	-	/favicon.ico
