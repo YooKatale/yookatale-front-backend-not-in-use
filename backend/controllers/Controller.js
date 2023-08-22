@@ -16,6 +16,7 @@ import {
   sumCartQuantity,
 } from "../custom/Custom.js";
 import Order from "../models/Order.model.js";
+import Email from '../models/Email.model.js';
 import dotenv from "dotenv";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uniqueString } from "uuid";
@@ -863,6 +864,35 @@ export const fetchNewslettersGet = TryCatch(async (req, res) => {
 
   res.status(200).json({ status: "Success", data: Newsletters });
 });
+
+export const fetchEmailsGet = TryCatch(async (req, res) => {
+  const emails = await Email.find().populate('user', 'firstname lastname');
+  res.status(200).json(emails);
+});
+
+
+
+export const createEmailPost = TryCatch(async (req, res) => {
+  const { to, subject, message } = req.body;
+  // Assuming you're using user authentication middleware to populate req.user
+  const userId = req.user._id;
+
+  // Create a new email document with the user's ObjectId
+  const newEmail = new Email({
+    to,
+    subject,
+    message,
+    sent: false,
+    user: userId
+  });
+
+  // Save the new email document to the database
+  const savedEmail = await newEmail.save();
+
+  res.status(201).json(savedEmail);
+});
+
+
 
 // export const paymentWebhookGet = TryCatch(async (req, res) => {
 //   console.log(req);
