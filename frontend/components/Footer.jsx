@@ -443,6 +443,40 @@ const Footer = () => {
             </Text>
           </Box>
           <Spacer display={{ base: "none", md: "none", xl: "block" }} />
+          <Box padding={{base: "o.5rem 0", md:"0.5rem 0", xl: "none"}}>
+          <Flex
+          direction={{ base: "column", md: "column", xl: "row" }}
+          justifyContent={{ base: "center", md: "center", xl: "none" }}
+        >
+            <Text
+                color={ThemeColors.primaryColor}
+                margin={"0 0.3rem"}
+                fontSize="lg"
+                textTransform={"uppercase"}
+              >
+                Invite A Friend
+              </Text>
+            <FacebookShareButton url={"https://www.yookatale.com"}>
+              <FacebookIcon size={30}/>
+            </FacebookShareButton >
+            <WhatsappShareButton url={"https://www.yookatale.com"}>
+              <WhatsappIcon size={30}/>
+            </WhatsappShareButton>
+            <InstapaperShareButton url={"https://www.yookatale.com"}>
+              <InstapaperIcon size={30}/>
+            </InstapaperShareButton>
+            <LinkedinShareButton url={"https://www.yookatale.com"}>
+              <LinkedinIcon size={30}/>
+            </LinkedinShareButton>
+            <TwitterShareButton url={"https://www.yookatale.com"}>
+              <TwitterIcon size={30}/>
+            </TwitterShareButton>
+            <TelegramShareButton url={"https://www.yookatale.com"}>
+              <TelegramIcon size={30}/>
+            </TelegramShareButton>
+            </Flex>
+          </Box>
+          <Spacer display={{ base: "none", md: "none", xl: "block" }} />
           <Box padding={{ base: "0", md: "0", xl: "1rem 0" }}>
             <Flex justifyContent={{ base: "center", md: "center", xl: "none" }}>
               <Link href={"/faqs"}>
