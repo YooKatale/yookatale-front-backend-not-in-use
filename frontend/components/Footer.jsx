@@ -471,22 +471,27 @@ const Footer = () => {
                 Invite A Friend
               </Text>
             <FacebookShareButton url={"https://www.yookatale.com"}>
-              <FacebookIcon size={30}/>
+              <FacebookIcon size={35}/>
             </FacebookShareButton >
+            {" "}
             <WhatsappShareButton url={"https://www.yookatale.com"}>
-              <WhatsappIcon size={30}/>
+              <WhatsappIcon size={35}/>
             </WhatsappShareButton>
+            {" "}
             <InstapaperShareButton url={"https://www.yookatale.com"}>
-              <InstapaperIcon size={30}/>
+              <InstapaperIcon size={35}/>
             </InstapaperShareButton>
+            {" "}
             <LinkedinShareButton url={"https://www.yookatale.com"}>
-              <LinkedinIcon size={30}/>
+              <LinkedinIcon size={35}/>
             </LinkedinShareButton>
+            {" "}
             <TwitterShareButton url={"https://www.yookatale.com"}>
-              <TwitterIcon size={30}/>
+              <TwitterIcon size={35}/>
             </TwitterShareButton>
+            {" "}
             <TelegramShareButton url={"https://www.yookatale.com"}>
-              <TelegramIcon size={30}/>
+              <TelegramIcon size={35}/>
             </TelegramShareButton>
             </Flex>
           </Box>
