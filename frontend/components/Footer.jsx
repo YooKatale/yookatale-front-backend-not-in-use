@@ -29,6 +29,20 @@ import {
 import { useSelector } from "react-redux";
 import ButtonComponent from "./Button";
 import { useNewsletterPostMutation } from "@slices/usersApiSlice";
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  InstapaperIcon,
+  WhatsappIcon,
+  WhatsappShareButton,
+  InstapaperShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+  LinkedinIcon,
+  TwitterIcon,
+  TelegramIcon,
+} from "react-share";
 
 const Footer = () => {
   const { userInfo } = useSelector((state) => state.auth);
