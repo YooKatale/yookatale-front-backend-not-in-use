@@ -339,6 +339,17 @@ export const fetchOrdersGet = TryCatch(async (req, res) => {
     .json({ status: "Success", data: { CompletedOrders, AllOrders } });
 });
 
+// private function to fetch orders
+export const fetchOrderGet = TryCatch(async (req, res) => {
+  const param = req.params.data;
+
+  if (!param || param == undefined) throw new Error("Unexpected error");
+
+  const Orders = await Order.findOne({ _id: param });
+
+  res.status(200).json({ status: "Success", data: Orders });
+});
+
 // private function to fetch comments
 export const fetchCommentsGet = TryCatch(async (req, res) => {
   const newsblog = req.params.data;

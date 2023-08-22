@@ -32,8 +32,6 @@ export const registerUserPost = TryCatch(async (req, res) => {
   const { firstname, lastname, email, phone, gender, vegan, dob, password } =
     req.body;
 
-  console.log(req.body);
-
   if (!firstname || firstname == "") throw new Error("Firstname is required");
   if (!lastname || lastname == "") throw new Error("Lastname is required");
   if (!email || email == "") throw new Error("Email is required");
