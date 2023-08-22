@@ -32,7 +32,6 @@ import {
   createCartCheckoutPost,
   createCartPost,
   createCommentPost,
-  createNewOrderPost,
   createNewsletterPost,
   createScheduleDeliveryPost,
   createSubscriptionPost,
