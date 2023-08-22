@@ -1,8 +1,10 @@
+import { calcCartTotal, createOrder } from "../custom/Custom.js";
 import Cart from "../models/Cart.model.js";
 import Comment from "../models/Comments.model.js";
 import Newsletter from "../models/Newsletter.model.js";
 import Order from "../models/Order.model.js";
 import Product from "../models/Product.model.js";
+import Schedule from "../models/Schedule.model.js";
 import Subscription from "../models/Subscription.model.js";
 import { TryCatch, resendEmail } from "../utils/utils.js";
 import validator from "validator";
@@ -35,106 +37,73 @@ export const createCartPost = TryCatch(async (req, res) => {
     .json({ status: "Success", message: `${CartProduct.name} added to cart` });
 });
 
-// public function to save orders
-export const createNewOrderPost = TryCatch(async (req, res) => {
-  const { Carts, Orders, payment, personalInfo, yooCardNumber } = req.body;
+export const createCartCheckoutPost = TryCatch(async (req, res) => {
+  const { user, Carts, order } = req.body;
 
-  if (!Carts || Carts == "" || Carts == {})
-    throw new Error("Unexpected error occured");
+  let Products = [];
 
-  if (!Orders || Orders == "" || Orders == {})
-    throw new Error("Unexpected error occured");
-
-  if (!personalInfo || personalInfo == "" || personalInfo == {})
-    throw new Error("Unexpected error occured");
-
-  if (!payment || payment == "" || payment == {})
-    throw new Error("Unexpected error occured");
-
-  if (payment && payment?.paymentMethod == "yoocard") {
-    if (!yooCardNumber || yooCardNumber == "")
-      throw new Error("Card number is required");
+  // for cart orders
+  for (const cart of Carts) {
+    Products.push({
+      id: cart?._id,
+      name: cart?.name,
+      quantity: cart?.quantity,
+      image: cart?.images[0],
+      price: cart?.price,
+    });
   }
-
-  // verify users yoocard number
-  if (payment?.paymentMethod == "yoocard") {
-    const Subscriptions = await Subscription.find({ status: "active" });
-    const UserCard = [];
-
-    for (const subscription of Subscriptions) {
-      for (const card of subscription.cards) {
-        if (card.cardNumber == yooCardNumber) {
-          if (subscription.userId == personalInfo._id) {
-            UserCard.push(card);
-          }
-        }
-      }
-    }
-
-    if (UserCard.length < 1)
-      throw new Error(
-        "Card Number is either invalid or subscription has expired \n Please verify card and try again"
-      );
-
-    switch (UserCard.card) {
-      case "premium":
-        break;
-
-      default:
-        break;
-    }
-
-    return;
-  }
-
-  const Products = [];
-
-  if (Carts?.length) {
-    for (const cart of Carts) {
-      Products.push({
-        id: cart?._id,
-        name: cart?.name,
-        quantity: cart?.quantity,
-        image: cart?.images[0],
-        price: cart?.price,
-      });
-    }
-  }
-
-  const NewOrder = new Order({
-    user: personalInfo?._id,
-    products: Products,
-    total: await calcCartTotal(Carts),
-    productItems: `${Carts?.length} items`,
-    payment,
-    deliveryAddress: Orders?.deliveryAddress,
-    specialRequest: Orders?.specialRequest,
-    status: payment?.paymentMethod == "cash" ? "pending" : "payed",
-  });
-
-  await NewOrder.save();
 
   for (const cart of Carts) {
     await Cart.findOneAndUpdate({ _id: cart.cartId }, { status: "checkedout" });
   }
 
-  const response = await resendEmail({
-    template: "order",
-    to: personalInfo?.email,
-    from: "info@yookatale.com",
-    subject: "Order Successful",
-    orderID: NewOrder?._id,
-    orderTotal: NewOrder?.total,
-    orderFor: `Food stufss`,
-    deliveryAddress: {
-      address1: Orders.deliveryAddress?.address1,
-      address2: Orders.deliveryAddress?.address2,
-    },
+  const orderId = await createOrder({
+    user,
+    Products,
+    items: Carts.length,
+    ...order,
   });
 
-  if (response === "success") {
-    res.status(200).json({ status: "Success" });
+  res.status(200).json({ status: "Success", data: { Order: orderId } });
+});
+
+// private function to create a new schedule delivery
+export const createScheduleDeliveryPost = TryCatch(async (req, res) => {
+  const { user, products, deliveryDays, deliveryTime, repeatSchedule, order } =
+    req.body;
+
+  const Products = [];
+
+  for (const product of products) {
+    Products.push({
+      id: product?._id,
+      name: product?.name,
+      quantity: product?.quantity,
+      image: product?.images[0],
+      price: product?.price,
+    });
   }
+
+  const orderId = await createOrder({
+    user,
+    Products,
+    items: Products.length,
+    ...order,
+  });
+
+  const NewSchedule = new Schedule({
+    user: user._id,
+    products: Products,
+    deliveryDays: deliveryDays,
+    deliveryTime: deliveryTime,
+    repeatSchedule: repeatSchedule,
+    orderId,
+    status: "pending",
+  });
+
+  await NewSchedule.save();
+
+  res.status(200).json({ status: "Success", data: { Order: orderId } });
 });
 
 // private function to add comments

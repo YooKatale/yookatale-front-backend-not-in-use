@@ -18,6 +18,7 @@ import {
   fetchNewsblogGet,
   fetchNewsblogsGet,
   fetchNewslettersGet,
+  fetchOrderGet,
   fetchOrdersGet,
   fetchProductGet,
   fetchProductsCategoriesGet,
@@ -28,14 +29,17 @@ import {
   productSearchGet,
 } from "../controllers/Get.controller.js";
 import {
+  createCartCheckoutPost,
   createCartPost,
   createCommentPost,
   createNewOrderPost,
   createNewsletterPost,
+  createScheduleDeliveryPost,
   createSubscriptionPost,
   sendMessagePost,
 } from "../controllers/Post.controller.js";
 import { deleteCart } from "../controllers/Delete.controller.js";
+import { updateOrderPut } from "../controllers/Put.controller.js";
 
 dotenv.config();
 
@@ -73,9 +77,12 @@ router
   .route("/product/cart/:data", Protect)
   .get(fetchCartGet)
   .delete(deleteCart);
+router.post("/products/cart/checkout", createCartCheckoutPost);
 router.get("/products/search/:data", productSearchGet);
-router.post("/products/order", Protect, createNewOrderPost);
-router.get("/products/order/:data", Protect, fetchOrdersGet);
+
+router.get("/products/orders/:data", Protect, fetchOrdersGet);
+router.get("/products/order/:data", Protect, fetchOrderGet);
+router.put("/products/order", updateOrderPut);
 //router.get("/users/comments", fetchCommentsGet);
 router.post("/subscription", createSubscriptionPost);
 router.post("/message", sendMessagePost);
@@ -87,6 +94,8 @@ router.get("/newsletter", fetchNewslettersGet);
 
 router.get("/newsblogs/comments/:data", fetchCommentsGet);
 router.post("/newsblogs/comments", createCommentPost);
+
+router.post("/products/schedule", createScheduleDeliveryPost);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 
