@@ -36,7 +36,7 @@ const EmailTemplate = () => {
         <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style={{ maxWidth: '600px', margin: 'auto', backgroundColor: '#ffffff' }}>
           <tr>
             <td style={{ padding: '20px' }}>
-                <img src='' alt="Avert Poster" style={{maxWidth: '100%'}}/>
+                <img src="../WhatsApp12.jpg" alt="Avert Poster" style={{maxWidth: '100%'}}/>
             </td>
           </tr>
         </table>
