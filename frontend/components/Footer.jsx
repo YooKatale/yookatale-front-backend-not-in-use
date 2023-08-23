@@ -53,42 +53,96 @@ const Footer = () => {
   const chakraToast = useToast();
 
   // submit email for newsletter
+  // const handleNewsletterSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   setLoading((prevState) => (prevState ? false : true));
+
+  //   try {
+  //     const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
+
+  //     if (res.status == "Success") {
+  //       // set loading to be false
+  //       setLoading((prevState) => (prevState ? false : true));
+
+  //       // clear email value
+  //       setNewsletterEmail("");
+
+  //       chakraToast({
+  //         title: "Success",
+  //         description: "Successfully subscribed to newsletter",
+  //         status: "success",
+  //         duration: 5000,
+  //         isClosable: false,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     // set loading to be false
+  //     setLoading((prevState) => (prevState ? false : true));
+
+  //     chakraToast({
+  //       title: "Error has occured",
+  //       description: err.data?.message
+  //         : err.data || err.error,
+  //       status: "error",
+  //       duration: 5000,
+  //       isClosable: false,
+  //     });
+  //   }
+  // };
+
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "ikootepreim@gmail.com",
+      pass: "rasulinegatron",
+    },
+  });
+  
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-
-    setLoading((prevState) => (prevState ? false : true));
-
+  
+    setLoading(true); // Start loading
+  
     try {
       const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
-
-      if (res.status == "Success") {
-        // set loading to be false
-        setLoading((prevState) => (prevState ? false : true));
-
-        // clear email value
+  
+      if (res.status === "Success") {
+        // Clear email value
         setNewsletterEmail("");
-
+  
+        // Send the welcome email
+        const mailOptions = {
+          from: "ikootepreim@gmail.com",
+          to: NewsletterEmail,
+          subject: "Welcome to our Food Market!",
+          html: <EmailTemplate />
+        };
+  
+        await transporter.sendMail(mailOptions);
+  
+        // Display success message
         chakraToast({
           title: "Success",
-          description: "Successfully subscribed to newsletter",
+          description: "Successfully subscribed to the newsletter",
           status: "success",
           duration: 5000,
           isClosable: false,
         });
       }
     } catch (err) {
-      // set loading to be false
-      setLoading((prevState) => (prevState ? false : true));
-
+      // Display error message
       chakraToast({
-        title: "Error has occured",
+        title: "Error",
         description: err.data?.message
-          ? err.data?.message
+          ? err.data.message
           : err.data || err.error,
         status: "error",
         duration: 5000,
         isClosable: false,
       });
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
