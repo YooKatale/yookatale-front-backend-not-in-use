@@ -36,10 +36,7 @@ const EmailTemplate = () => {
         <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style={{ maxWidth: '600px', margin: 'auto', backgroundColor: '#ffffff' }}>
           <tr>
             <td style={{ padding: '20px' }}>
-              {/* Insert images and content for WhatsApp, transparent logo, and advert poster */}
-              {/* Example: <img src="[WhatsApp Image URL]" alt="WhatsApp Image" style={{ maxWidth: '100%' }} /> */}
-              {/* Example: <img src="[Transparent Logo URL]" alt="Transparent Logo" style={{ maxWidth: '100%' }} /> */}
-              {/* Example: <img src="[Advert Poster URL]" alt="Advert Poster" style={{ maxWidth: '100%' }} /> */}
+                <img src='' alt="Avert Poster" style={{maxWidth: '100%'}}/>
             </td>
           </tr>
         </table>

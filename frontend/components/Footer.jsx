@@ -43,6 +43,8 @@ import {
   TwitterIcon,
   TelegramIcon,
 } from "react-share";
+import nodemailer from "nodemailer";
+import EmailTemplate from "./newSubsriberEmail";
 
 const Footer = () => {
   const { userInfo } = useSelector((state) => state.auth);
