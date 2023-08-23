@@ -96,8 +96,8 @@ const Footer = () => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "ikootepreim@gmail.com",
-      pass: "rasulinegatron",
+      user: "Info@yookatale.com",
+      pass: "info@y00k@Ta13-Pas5",
     },
   });
   
@@ -115,7 +115,7 @@ const Footer = () => {
   
         // Send the welcome email
         const mailOptions = {
-          from: "ikootepreim@gmail.com",
+          from: "Info@yookatale.com",
           to: NewsletterEmail,
           subject: "Welcome to our Food Market!",
           html: <EmailTemplate />
