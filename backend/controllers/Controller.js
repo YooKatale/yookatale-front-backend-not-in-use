@@ -26,6 +26,8 @@ import Subscription from "../models/Subscription.model.js";
 import { addDays } from "date-fns";
 import Newsblog from "../models/Newsblog.model.js";
 import Newsletter from "../models/Newsletter.model.js";
+import Discount from "../models/Discount.model.js";
+import Promotion from "../models/Promotion.model.js";
 
 dotenv.config();
 
@@ -867,3 +869,93 @@ export const fetchNewslettersGet = TryCatch(async (req, res) => {
 // export const paymentWebhookGet = TryCatch(async (req, res) => {
 //   console.log(req);
 // });
+
+//DISCOUNT CONTROLLERS BELOW
+
+export const getDiscountedProducts = TryCatch(async (req, res) => {
+  const dicountProduct = await Discount.find();
+  //TODO:
+  // - Need to populate individual produts
+
+  res.status(200).json({ status: "Success", data: dicountProduct });
+});
+
+export const createDiscountedProducts = TryCatch(async (req, res) => {
+  const { discountedProduct } = req.body;
+  //TODO:
+  // - Need to get the individual prouct ID for discountedProduct array
+  // - populate the individual product and get the price
+  // - discount the price with the discount percentage from the discountedProduct array
+
+  const createDiscount = await Discount.create();
+
+  res.status(200).json({ status: "Success", data: createDiscount });
+});
+
+export const updatediscountProduct = TryCatch(async (req, res) => {
+  const { id } = req.params;
+  //TODO:
+  // - complete full update mongoose code and test
+
+  await Discount.findOneAndUpdate({ _id: id });
+
+  res
+    .status(200)
+    .json({ status: "Success", message: "Discounted product updated" });
+});
+
+export const deleteDiscountedProduct = TryCatch(async (req, res) => {
+  const { id } = req.params;
+  //TODO:
+  // - Test
+
+  await Discount.findOneAndRemove(id);
+
+  res
+    .status(200)
+    .json({ status: "Success", message: "Discounted product deleted" });
+});
+
+// PROMOTION CONTROLLERS BELOW
+
+export const promotionProducts = TryCatch(async (req, res) => {
+  const promotionProduct = await Promotion.find();
+  //TODO:
+  // - Need to populate individual produts
+
+  res.status(200).json({ status: "Success", data: promotionProduct });
+});
+
+export const createpromotionProducts = TryCatch(async (req, res) => {
+  const { promotionProduct } = req.body;
+  //TODO:
+  // - create and test
+
+  const createPromotion = await Promotion.create({ promotionProduct });
+
+  res.status(200).json({ status: "Success", data: createPromotion });
+});
+
+export const updatepromotionProduct = TryCatch(async (req, res) => {
+  const { id } = req.params;
+  //TODO:
+  // - complete full update mongoose code and test
+
+  await Promotion.findOneAndUpdate({ _id: id });
+
+  res
+    .status(200)
+    .json({ status: "Success", message: "Promotion product updated" });
+});
+
+export const deletepromotionProduct = TryCatch(async (req, res) => {
+  const { id } = req.params;
+  //TODO:
+  // - Test
+
+  await Promotion.findOneAndRemove(id);
+
+  res
+    .status(200)
+    .json({ status: "Success", message: "Promotion product deleted" });
+});

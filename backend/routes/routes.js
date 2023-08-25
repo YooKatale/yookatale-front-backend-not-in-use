@@ -2,10 +2,14 @@ import express from "express";
 import {
   authUserPost,
   createCartPost,
+  createDiscountedProducts,
   createNewOrderPost,
   createNewsletterPost,
   createSubscriptionPost,
+  createpromotionProducts,
   deleteCart,
+  deleteDiscountedProduct,
+  deletepromotionProduct,
   fetchCartGet,
   fetchCommentsGet,
   fetchNewsblogGet,
@@ -17,11 +21,15 @@ import {
   fetchProductsFilterGet,
   fetchProductsGet,
   fetchSubscriptionCards,
+  getDiscountedProducts,
   logoutUserPost,
   productSearchGet,
+  promotionProducts,
   registerUserPost,
   sendMessagePost,
   testEmailFeature,
+  updatediscountProduct,
+  updatepromotionProduct,
 } from "../controllers/Controller.js";
 import multer from "multer";
 import { v4 as uniqueString } from "uuid";
@@ -78,6 +86,14 @@ router.get("/newsblogs", fetchNewsblogsGet);
 router.get("/newsblog/:data", fetchNewsblogGet);
 router.post("/newsletter", createNewsletterPost);
 router.get("/newsletter", fetchNewslettersGet);
+router.get("/discountproducts", getDiscountedProducts);
+router.post("/creatediscount", createDiscountedProducts);
+router.patch("/updatediscount/:id", updatediscountProduct);
+router.delete("/deletediscount/:id", deleteDiscountedProduct);
+router.get("/promotionproducts", promotionProducts);
+router.post("/createpromotion", createpromotionProducts);
+router.delete("/deletepromotion/:id", deletepromotionProduct);
+router.patch("/updatepromotion/:id", updatepromotionProduct);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 
