@@ -44,6 +44,7 @@ import { redirect, useRouter } from "next/navigation";
 import { useToast } from "@chakra-ui/react";
 import { IsAccountValid } from "@middleware/middleware";
 import { HiChevronLeft } from "react-icons/hi";
+import MenuLink from "./MenuLink";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -454,16 +455,15 @@ fontSize={"lg"}}}
                       }
                     />
                     <Stack paddingTop={"1rem"}>
-                      <Box margin={"0.3rem 0"}>
-                        <Link href={"/account"}>
-                          <Text
-                            fontSize={"md"}
-                            _hover={{ color: ThemeColors.darkColor }}
-                          >
-                            Account
-                          </Text>
-                        </Link>
-                      </Box>
+                      <MenuLink title="Account" href="/account" fontSize={"md"}  />
+                      <MenuLink title="Schedule a meal" href="/" fontSize={"md"}  />
+                      <MenuLink title="Loyalty Points" href="/" fontSize={"md"}  />
+                      <MenuLink title="Subscription" href="/" fontSize={"md"}  />
+                      <MenuLink title="Support" href="/" fontSize={"md"}  />
+                      <MenuLink title="Invoices & Receipts" href="/" fontSize={"md"}  />
+                      <MenuLink title="Refer a friend" href="/" fontSize={"md"}  />
+                      <MenuLink title="Invite feature" href="/" fontSize={"md"}  />
+
                       <Box
                         margin={"0.3rem 0"}
                         display={"flex"}
@@ -608,18 +608,78 @@ fontSize={"lg"}}}
                 }
               />
               <Stack paddingTop={"1rem"}>
-                <Box
-                  margin={"0.3rem 0"}
+                <MenuLink
+                  title="Account" 
+                  href="/account" 
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  } 
+                />
+                <MenuLink
+                  title="Schedule a meal" 
+                  href="/" 
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  } 
+                />
+                <MenuLink
+                  title="Loyalty Points"
+                  href="/"
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  } 
+                />
+                <MenuLink
+                  title="Subscription"
+                  href="/"
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"} 
                   onClick={() =>
                     setMobileNavOpen((prevState) => (prevState ? false : true))
                   }
-                >
-                  <Link href={"/account"}>
-                    <Text fontSize={"lg"} color={ThemeColors.lightColor}>
-                      Account
-                    </Text>
-                  </Link>
-                </Box>
+                />
+                <MenuLink
+                  title="Support"
+                  href="/"
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  } 
+                />
+                <MenuLink
+                  title="Invoices & Receipts"
+                  href="/"
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  } 
+                />
+                <MenuLink
+                  title="Refer a friend"
+                  href="/"
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  } 
+                />
+                <MenuLink
+                  title="Invite feature"
+                  href="/"
+                  color={ThemeColors.lightColor}
+                  fontSize={"lg"}
+                  onClick={() =>
+                    setMobileNavOpen((prevState) => (prevState ? false : true))
+                  } 
+                />
                 <Box
                   margin={"0.3rem 0"}
                   display={"flex"}

@@ -143,6 +143,20 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
               {UGX(product.price).format()}
             </Heading>
             <Box padding={"0.3rem 0"}>
+            {product.priceTiers && product.priceTiers.length > 0 && (
+              <Box textAlign="center">
+                {product.priceTiers.map((tier, index) => (
+                  <Text
+                    key={index}
+                    className="secondary-extra-bold"
+                    fontSize={{ base: "sm", md: "md", xl: "md" }}
+                    color={ThemeColors.darkColor}
+                  >
+                     {`UGX ${UGX(tier.price)} - ${tier.quantity}`}
+                  </Text>
+                ))}
+              </Box>
+            )}
               <Flex justifyContent={"center"}>
                 <Button
                   color={ThemeColors.lightColor}
