@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import SibApiV3Sdk from "sib-api-v3-sdk";
 import { Resend } from "resend";
 import { htmlEmails } from "../constants/constant.js";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -181,6 +182,36 @@ export const sendEmail = (param) => {
       return error;
     }
   );
+};
+
+export const sendEmailMessage = async (emailOptions, emailTemplate) => {
+  try {
+    // Initialize nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: "YourEmailService",
+      auth: {
+        user: "YourEmailAddress",
+        pass: "YourEmailPassword",
+      },
+    });
+
+    // Construct the email message
+    const mailOptions = {
+      from: "YourEmailAddress",
+      to: emailOptions.user.email,
+      subject: "Welcome to YooKatale",
+      html: emailTemplate(emailOptions.user.firstname), // Use the template with user's firstname
+    };
+
+    // Send the email
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: ", info.response);
+
+    return "success";
+  } catch (error) {
+    console.error("Error sending email: ", error);
+    return "error";
+  }
 };
 
 export const resendEmail = async (params) => {

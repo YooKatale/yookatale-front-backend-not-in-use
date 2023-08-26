@@ -27,6 +27,7 @@ import Subscription from "../models/Subscription.model.js";
 import { addDays } from "date-fns";
 import Newsblog from "../models/Newsblog.model.js";
 import Newsletter from "../models/Newsletter.model.js";
+import { htmlEmails } from "../constants/constant.js";
 
 dotenv.config();
 
@@ -84,15 +85,14 @@ export const authUserPost = TryCatch(async (req, res) => {
 
 // public route to sign up user
 export const registerUserPost = TryCatch(async (req, res) => {
-  const { firstname, lastname, email, phone, gender, vegan, password } =
-    req.body;
+  const { firstname, lastname, email, phone, gender, vegan, password } = req.body;
 
-  if (!firstname || firstname == "") throw new Error("Firstname is required");
-  if (!lastname || lastname == "") throw new Error("Lastname is required");
-  if (!email || email == "") throw new Error("Email is required");
-  if (!phone || phone == "") throw new Error("Phone number is required");
-  if (!gender || gender == "") throw new Error("Gender is required");
-  if (!password || password == "") throw new Error("Password is required");
+  if (!firstname || firstname === "") throw new Error("Firstname is required");
+  if (!lastname || lastname === "") throw new Error("Lastname is required");
+  if (!email || email === "") throw new Error("Email is required");
+  if (!phone || phone === "") throw new Error("Phone number is required");
+  if (!gender || gender === "") throw new Error("Gender is required");
+  if (!password || password === "") throw new Error("Password is required");
   if (!validator.isEmail(email)) throw new Error("Email is invalid");
 
   const findUser = await User.findOne({ email });
@@ -110,6 +110,21 @@ export const registerUserPost = TryCatch(async (req, res) => {
   });
 
   generateToken(res, user._id);
+
+  const welcomeMessage = welcomeEmailTemplate(user.firstname); // Populate the template with user's firstname
+
+  const emailOptions = {
+    to: user.email,
+    subject: "Welcome to Your App!",
+    html: welcomeMessage,
+  };
+
+  try {
+    await sendEmailMessage(emailOptions); // Use the sendEmailMessage function from utils.js
+    console.log("Welcome email sent successfully");
+  } catch (error) {
+    console.error("Error sending welcome email:", error);
+  }
 
   const response = await resendEmail({
     template: "welcome",
