@@ -8,6 +8,7 @@ import {
   resendEmail,
   sanitizePhoneNumber,
   sendEmail,
+  sendEmailMessage
 } from "../utils/utils.js";
 import Product from "../models/Product.model.js";
 import Cart from "../models/Cart.model.js";
@@ -28,6 +29,7 @@ import { addDays } from "date-fns";
 import Newsblog from "../models/Newsblog.model.js";
 import Newsletter from "../models/Newsletter.model.js";
 import { htmlEmails } from "../constants/constant.js";
+
 
 dotenv.config();
 
@@ -111,7 +113,7 @@ export const registerUserPost = TryCatch(async (req, res) => {
 
   generateToken(res, user._id);
 
-  const welcomeMessage = welcomeEmailTemplate(user.firstname); // Populate the template with user's firstname
+  const welcomeMessage = htmlEmails.welcomeEmailTemplate(user.firstname); // Populate the template with user's firstname
 
   const emailOptions = {
     to: user.email,

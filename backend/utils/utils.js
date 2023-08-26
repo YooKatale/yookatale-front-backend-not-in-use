@@ -188,9 +188,9 @@ export const sendEmailMessage = async (emailOptions, emailTemplate) => {
   try {
     // Initialize nodemailer transporter
     const transporter = nodemailer.createTransport({
-      service: "YourEmailService",
+      service: "Gmail",
       auth: {
-        user: "YourEmailAddress",
+        user: "info@yookatale.com",
         pass: "YourEmailPassword",
       },
     });
