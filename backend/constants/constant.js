@@ -285,6 +285,94 @@ export const htmlEmails = {
       
         `;
   },
+  welcomeEmailTemplate: (name) => {
+    `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="YooKatale Uganda | Online Food Shopping, Organic and Fresh Foods Mobile Market, Affordable, Reliable and Convenient.">
+  <title>Welcome to YooKatale</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#f4f4f4">
+        <tbody>
+          <tr>
+            <td style="padding: 20px 0; text-align: center;">
+              <h1 style="color: #333;">Welcome to YooKatale</h1>
+              <p style="color: #666; font-size: 25px;">Hi, ${name}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td style="padding: 20px;text-align: center;">
+                    <p style="color: #888; font-size: 20px;">Thank you for signing up with YooKatale! We're thrilled to have you on board.</p>
+                    <p style="color: #888; font-size: 20px;">Are you excited to derive through your source for delicious meals?</p>
+                    <p style="color: #888; font-size: 20px;">Get started today and explore our mouthwatering selection.</p>
+                    <a href="https://www.yookatale.com" style="display: inline-block;margin-top: 20px;padding: 10px 20px;background-color: #3d5ca3;color: #fff;text-decoration: none;border-radius: 5px;">Explore Now</a>
+                </td>
+            </tr>
+        </tbody>
+      </table>
+    <div class="footer">
+        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tbody>
+              <tr>
+                <td style="padding: 20px; text-align: center;">
+                  <p style="color: #888; font-size: 12px;">&copy; YooKatale</p>
+                  <p style="color: #888; font-size: 12px;">P.o Box 74940, Clock-Tower</p>
+                  <p style="color: #888; font-size: 12px;">Kampala, Uganda</p>
+                  <p style="color: #888; font-size: 12px;">Plot 6, 27 Naguru, Entebbe</p>
+              </td>
+              </tr>
+              <tr>
+                <td style="padding: 20px; text-align: center;"><a style="color: #3d5ca3; font-size: 14px; text-decoration: none; margin-right: 20px;" href="https://www.yookatale.com/about">About us</a> <a style="color: #3d5ca3; font-size: 14px; text-decoration: none; margin-right: 20px;" href="https://www.yookatale.com/privacy">Privacy Policy</a> <a style="color: #3d5ca3; font-size: 14px; text-decoration: none;" href="https://www.yookatale.com/usage">Terms &amp; Conditions</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <table border="0" width="100%" cellspacing="0" cellpadding="0">
+            <tbody>
+              <tr>
+                <td style="padding: 20px; text-align: center;"><a style="text-decoration: none; margin-right: 10px;" href="https://www.facebook.com/profile.php?id=100094194942669"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/circle-colored/facebook-circle-colored.png" alt="Facebook" width="32" height="32" /></a> <a style="text-decoration: none; margin-right: 10px;" href="https://twitter.com/YooKatale"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/rounded-gray/twitter-rounded-gray.png" alt="Twitter" width="32" height="32" /></a> <a style="text-decoration: none; margin-right: 10px;" href="https://www.instagram.com/p/CuHdaksN5UW"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/circle-colored/instagram-circle-colored.png" alt="Instagram" width="32" height="32" /></a> <a style="text-decoration: none;" href="https://www.linkedin.com/company/yookatale"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/circle-colored/linkedin-circle-colored.png" alt="LinkedIn" width="32" height="32" /></a></td>
+              </tr>
+              <tr>
+                <td style="padding: 20px; text-align: center;"><img id="e7948cb7-1107-4048-8093-95cde751cc2e" class="aspect-ratio" style="max-width: 60%;" src="https://yookatale-server-app.onrender.com/logo1.png" alt="" /></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+  </div>
+</body>
+</html>
+`;
+  },
   welcomeTemplate: (name) => {
     `
     <!DOCTYPE html>
