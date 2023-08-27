@@ -285,15 +285,14 @@ export const htmlEmails = {
       
         `;
   },
-  welcomeEmailTemplate: (name) => {
+  welcomeTemplate: (name) => {
     `
     <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="YooKatale Uganda | Online Food Shopping, Organic and Fresh Foods Mobile Market, Affordable, Reliable and Convenient.">
-  <title>Welcome to YooKatale</title>
+ c<title>Welcome to YooKatale</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -305,7 +304,7 @@ export const htmlEmails = {
       max-width: 600px;
       margin: 0 auto;
       padding: 20px;
-      background-color: #fff;
+      background-color: #333; /* Dark Background Color */
       border-radius: 10px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -319,12 +318,12 @@ export const htmlEmails = {
 </head>
 <body>
   <div class="container">
-    <table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#f4f4f4">
+    <table border="0" width="100%" cellspacing="0" cellpadding="0" >
         <tbody>
           <tr>
             <td style="padding: 20px 0; text-align: center;">
-              <h1 style="color: #333;">Welcome to YooKatale</h1>
-              <p style="color: #666; font-size: 25px;">Hi, ${name}</p>
+              <h1 style="color: #ffffff;">Welcome to YooKatale</h1>
+              <p style="color: #ffff; font-size: 25px;">Hi, ${name}</p>
             </td>
           </tr>
         </tbody>
@@ -332,10 +331,10 @@ export const htmlEmails = {
     <table border="0" width="100%" cellspacing="0" cellpadding="0">
         <tbody>
             <tr>
-                <td style="padding: 20px;text-align: center;">
-                    <p style="color: #888; font-size: 20px;">Thank you for signing up with YooKatale! We're thrilled to have you on board.</p>
-                    <p style="color: #888; font-size: 20px;">Are you excited to derive through your source for delicious meals?</p>
-                    <p style="color: #888; font-size: 20px;">Get started today and explore our mouthwatering selection.</p>
+                <td style="padding: 20px;text-align:center;">
+                    <p style="color: #fff; font-size: 20px;margin-bottom:40px">Thank you for signing up with YooKatale!</p>
+                    <p style="color: #fff; font-size: 20px;margin-bottom:40px">Are you excited to derive through your source for delicious meals?</p>
+                    <p style="color: #fff; font-size: 20px;margin-bottom:40px">Get started today and explore@</p>
                     <a href="https://www.yookatale.com" style="display: inline-block;margin-top: 20px;padding: 10px 20px;background-color: #3d5ca3;color: #fff;text-decoration: none;border-radius: 5px;">Explore Now</a>
                 </td>
             </tr>
@@ -346,11 +345,11 @@ export const htmlEmails = {
             <tbody>
               <tr>
                 <td style="padding: 20px; text-align: center;">
-                  <p style="color: #888; font-size: 12px;">&copy; YooKatale</p>
-                  <p style="color: #888; font-size: 12px;">P.o Box 74940, Clock-Tower</p>
-                  <p style="color: #888; font-size: 12px;">Kampala, Uganda</p>
-                  <p style="color: #888; font-size: 12px;">Plot 6, 27 Naguru, Entebbe</p>
-              </td>
+                    <p style="color: #fff; font-size: 12px;">&copy; YooKatale</p>
+                    <p style="color: #fff; font-size: 12px;">P.o Box 74940, Clock-Tower</p>
+                    <p style="color: #fff; font-size: 12px;">Kampala, Uganda</p>
+                    <p style="color: #fff; font-size: 12px;">Plot 6, 27 Naguru, Entebbe</p>
+                </td>
               </tr>
               <tr>
                 <td style="padding: 20px; text-align: center;"><a style="color: #3d5ca3; font-size: 14px; text-decoration: none; margin-right: 20px;" href="https://www.yookatale.com/about">About us</a> <a style="color: #3d5ca3; font-size: 14px; text-decoration: none; margin-right: 20px;" href="https://www.yookatale.com/privacy">Privacy Policy</a> <a style="color: #3d5ca3; font-size: 14px; text-decoration: none;" href="https://www.yookatale.com/usage">Terms &amp; Conditions</a></td>
@@ -363,242 +362,10 @@ export const htmlEmails = {
                 <td style="padding: 20px; text-align: center;"><a style="text-decoration: none; margin-right: 10px;" href="https://www.facebook.com/profile.php?id=100094194942669"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/circle-colored/facebook-circle-colored.png" alt="Facebook" width="32" height="32" /></a> <a style="text-decoration: none; margin-right: 10px;" href="https://twitter.com/YooKatale"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/rounded-gray/twitter-rounded-gray.png" alt="Twitter" width="32" height="32" /></a> <a style="text-decoration: none; margin-right: 10px;" href="https://www.instagram.com/p/CuHdaksN5UW"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/circle-colored/instagram-circle-colored.png" alt="Instagram" width="32" height="32" /></a> <a style="text-decoration: none;" href="https://www.linkedin.com/company/yookatale"><img src="https://xvgncv.stripocdn.email/content/assets/img/social-icons/circle-colored/linkedin-circle-colored.png" alt="LinkedIn" width="32" height="32" /></a></td>
               </tr>
               <tr>
-                <td style="padding: 20px; text-align: center;"><img id="e7948cb7-1107-4048-8093-95cde751cc2e" class="aspect-ratio" style="max-width: 60%;" src="https://yookatale-server-app.onrender.com/logo1.png" alt="" /></td>
+                <td style="padding: 20px; text-align: center;"><img id="e7948cb7-1107-4048-8093-95cde751cc2e" class="aspect-ratio" style="max-width: 100%;" src="./Whit DMM.png" alt="" /></td>
               </tr>
             </tbody>
-          </table>
-    </div>
-  </div>
-</body>
-</html>
-`;
-  },
-  welcomeTemplate: (name) => {
-    `
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cabin&display=swap"
-          rel="stylesheet"
-        />
-        <style>
-          * {
-            padding: 0;
-            margin: 0;
-            font-family: "Cabin", sans-serif;
-          }
-          a {
-            text-decoration: none;
-          }
-          .light-color {
-            color: #fff;
-          }
-          body {
-            background: #cecece;
-          }
-          main {
-            display: flex;
-          }
-          main .content {
-            margin: auto;
-            width: 65%;
-            padding: 1rem 0;
-          }
-          main .content header {
-            height: 130px;
-            padding: 2rem 0;
-            background: #222020;
-          }
-          main .content header div.center {
-            display: flex;
-            justify-content: center;
-            height: 100%;
-          }
-    
-          main .content header .center .center-image {
-            width: 70%;
-            height: 100%;
-            margin: auto;
-            text-align: center;
-          }
-    
-          main .content header .center .center-image img {
-            height: 100%;
-          }
-    
-          main .content .main {
-            background: #fff;
-            padding: 2rem;
-          }
-    
-          .p-2-0 {
-            padding: 2rem 0;
-          }
-    
-          .p-1-0 {
-            padding: 1rem 0;
-          }
-    
-          .p-0-5 {
-            padding: 0.5rem 0;
-          }
-    
-          .f-size-1-5 {
-            font-size: 1.5rem;
-          }
-          .f-size-2 {
-            font-size: 2rem;
-          }
-    
-          .f-size-1 {
-            font-size: 1rem;
-          }
-    
-          .center-align {
-            text-align: center;
-          }
-    
-          .grid {
-            display: grid !important;
-            grid-gap: "1rem";
-          }
-    
-          .grid.cl-3 {
-            grid-template-columns: "repeat(3, 1fr)" !important;
-          }
-    
-          .flx {
-            display: flex;
-          }
-    
-          .jc-btn {
-            justify-content: space-between;
-          }
-    
-          .m-0-1 {
-            margin: 0 1rem;
-          }
-    
-          .p-0-2 {
-            padding: 0 2rem;
-          }
-    
-          .p-0-1 {
-            padding: 0 1rem;
-          }
-    
-          .w-50 {
-            width: 50%;
-          }
-    
-          footer {
-            background: #525050;
-            padding: 1rem;
-          }
-    
-          .jc-center {
-            justify-content: center;
-          }
-    
-          @media screen and (max-width: 500px) {
-            .f-size-2 {
-              font-size: 1.5rem;
-            }
-            .f-size-1-5 {
-              font-size: 1rem;
-            }
-            main .content {
-              margin: auto;
-              width: 80%;
-              padding: 1rem 0;
-            }
-            main .content header {
-              height: 100px;
-              padding: 1rem 0;
-            }
-    
-            main .content header .center .center-image img {
-              height: auto;
-              width: 50%;
-            }
-    
-            .m-column {
-              flex-direction: column;
-            }
-    
-            main .content .main {
-              padding: 2rem 0;
-            }
-    
-            .w-50 {
-              width: 100%;
-            }
-          }
-        </style>
-      </head>
-      <body>
-        <main>
-          <div class="content">
-            <header>
-              <div class="center">
-                <div class="center-image">
-                <img src="https://yookatale-server-app.onrender.com/logo1.png" alt="logo" srcset="" />
-                </div>
-              </div>
-            </header>
-            <div class="main">
-              <div class="p-2-0">
-                <div class="p-1-0">
-                  <p class="f-size-2 center-align">Welcome to YooKatale, ${name}.</p>
-                </div>
-                <div class="p-1-0">
-                  <p class="center-align f-size-1-5">
-                    Welcome to your Reliable market partner that Conveniently
-                    delivers 24/7 with Quality assured.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <footer>
-              <div class="p-0-5">
-                <h4 class="center-align">
-                  <a href="https://yookatale.com" class="light-color">yookatale</a>
-                </h4>
-              </div>
-              <div class="p-0-5">
-                <div class="p-0-1">
-                  <p class="center-align f-size-1 light-color">
-                    &copy; Copyright yokatale. All rights reserved
-                  </p>
-                </div>
-              </div>
-              <div class="p-1-0">
-                <div class="flx jc-center">
-                  <a
-                    target="_blank"
-                    href="https://www.linkedin.com/company/yookatale/"
-                  >
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/3536/3536505.png?filename=linkedin_3536505.png&fd=1"
-                      alt=""
-                      srcset=""
-                      width="30"
-                    />
-                  </a>
-                </div>
-              </div>
-            </footer>
-          </div>
-        </main>
-      </body>
-    </html>
-    
+
     `;
   },
   messageTemplate: (param) => `
