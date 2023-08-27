@@ -1,7 +1,9 @@
+import { addDays } from "date-fns";
 import { verifyTransaction } from "../custom/Custom.js";
 import Cart from "../models/Cart.model.js";
 import Order from "../models/Order.model.js";
 import Schedule from "../models/Schedule.model.js";
+import Subscription from "../models/Subscription.model.js";
 import { TryCatch, resendEmail } from "../utils/utils.js";
 
 export const updateOrderPut = TryCatch(async (req, res) => {
@@ -27,7 +29,7 @@ export const updateOrderPut = TryCatch(async (req, res) => {
   let orderFor = "";
 
   // fetch schema to update status
-  switch (data?.schema) {
+  switch (order?.paymentFor) {
     case "schedule":
       await Schedule.findOneAndUpdate(
         { orderId: data?.order },
@@ -39,6 +41,16 @@ export const updateOrderPut = TryCatch(async (req, res) => {
 
     case "cart":
       orderFor = "Products";
+      break;
+
+    case "subscription":
+      await Subscription.findOneAndUpdate(
+        { orderId: order._id },
+        { status: "active" },
+        { expiresOn: addDays(new Date(), 30) }
+      );
+
+      orderFor = "Subscription";
       break;
 
     default:

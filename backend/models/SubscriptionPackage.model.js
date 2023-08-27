@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const subscriptionCardSchema = Schema(
+const subscriptionPackageSchema = Schema(
   {
     type: String,
     price: Number,
@@ -11,6 +11,9 @@ const subscriptionCardSchema = Schema(
   { timestamps: true }
 );
 
-const SubscriptionCard = model("SubscriptionCard", subscriptionCardSchema);
+const SubscriptionPackage = model(
+  "SubscriptionPackage",
+  subscriptionPackageSchema
+);
 
-export default SubscriptionCard;
+export default SubscriptionPackage;

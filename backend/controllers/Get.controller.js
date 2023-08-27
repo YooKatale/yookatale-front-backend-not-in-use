@@ -5,7 +5,7 @@ import Newsblog from "../models/Newsblog.model.js";
 import Newsletter from "../models/Newsletter.model.js";
 import Order from "../models/Order.model.js";
 import Product from "../models/Product.model.js";
-import SubscriptionCard from "../models/SubscriptionCard.model.js";
+import SubscriptionPackage from "../models/SubscriptionPackage.model.js";
 import User from "../models/User.model.js";
 import { TryCatch, fetchImageUrl } from "../utils/utils.js";
 
@@ -401,10 +401,10 @@ export const fetchNewsblogGet = TryCatch(async (req, res) => {
 export const fetchBlogPostsGet = TryCatch(async (req, res) => {});
 
 // private function to fetch subscription card plans
-export const fetchSubscriptionCards = TryCatch(async (req, res) => {
-  const Cards = await SubscriptionCard.find();
+export const fetchSubscriptionPackages = TryCatch(async (req, res) => {
+  const Packages = await SubscriptionPackage.find();
 
-  res.status(200).json({ status: "Success", data: Cards });
+  res.status(200).json({ status: "Success", data: Packages });
 });
 
 export const fetchNewslettersGet = TryCatch(async (req, res) => {

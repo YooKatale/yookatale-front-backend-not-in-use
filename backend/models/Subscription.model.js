@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const subscriptionSchema = Schema(
   {
-    userId: String,
-    user: Object,
-    cards: Array,
+    userId: Types.ObjectId,
+    packageId: Types.ObjectId,
+    orderId: Types.ObjectId,
     status: String,
     expiresOn: Date,
   },

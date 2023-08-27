@@ -11,7 +11,7 @@ import {
   authAdminPost,
   createNewProductPost,
   createNewsblogPost,
-  createSubscriptionCard,
+  createSubscriptionPackage,
   deleteNewsblog,
   deleteProductDelete,
   editProductPost,
@@ -54,7 +54,7 @@ router.put("/product/edit", upload.array("images", 10), editProductPost);
 router.get("/accounts", fetchAccountsGet);
 router.delete("/product/:data", deleteProductDelete);
 router.put("/account", updateUserPut);
-router.post("/subscription/card", createSubscriptionCard);
+router.post("/subscription/card", createSubscriptionPackage);
 router.get("/dashboard", fetchDashboardGet);
 router.get("/subscriptions/:data", fetchSubscriptionsGet);
 router.put("/subscriptions/:data", approveSubscriptionsPut);

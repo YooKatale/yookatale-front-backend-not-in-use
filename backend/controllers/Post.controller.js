@@ -1,3 +1,4 @@
+import { addDays } from "date-fns";
 import { calcCartTotal, createOrder } from "../custom/Custom.js";
 import Cart from "../models/Cart.model.js";
 import Comment from "../models/Comments.model.js";
@@ -8,6 +9,7 @@ import Schedule from "../models/Schedule.model.js";
 import Subscription from "../models/Subscription.model.js";
 import { TryCatch, resendEmail } from "../utils/utils.js";
 import validator from "validator";
+import SubscriptionPackage from "../models/SubscriptionPackage.model.js";
 
 // private controller to add item to cart
 export const createCartPost = TryCatch(async (req, res) => {
@@ -61,6 +63,7 @@ export const createCartCheckoutPost = TryCatch(async (req, res) => {
     user,
     Products,
     items: Carts.length,
+    paymentFor: "cart",
     ...order,
   });
 
@@ -88,6 +91,7 @@ export const createScheduleDeliveryPost = TryCatch(async (req, res) => {
     user,
     Products,
     items: Products.length,
+    paymentFor: "schedule",
     ...order,
   });
 
@@ -127,155 +131,46 @@ export const createCommentPost = TryCatch(async (req, res) => {
 
 // public function to create subscription
 export const createSubscriptionPost = TryCatch(async (req, res) => {
-  const { data } = req.body;
+  const { user, packageId } = req.body;
 
-  if (!data) throw new Error("Unexpected error occured. Please try again");
+  if (!user) throw new Error("Unexpected error occured. Please try again");
 
-  // if user has purchased only one card
-  if (data?.card?.quantity == 1) {
-    let NewCardNo = new Array(14)
-      .fill(0)
-      .map(() => Math.floor(Math.random() * 10).toString())
-      .join("");
+  if (!packageId) throw new Error("Unexpected error occured. Please try again");
 
-    const NewSubscription = new Subscription({
-      userId: data?._id ? data?._id : "",
-      user: {
-        firstname: data?.firstname,
-        lastname: data?.lastname,
-        email: data?.email,
-        phone: data?.phone,
-        gender: data?.gender,
-      },
-      cards: [
-        {
-          cardNumber: NewCardNo,
-          card: data?.selectedCard?.type,
-        },
-      ],
-      status: "pending",
-      expiresOn: new Date(),
-    });
+  const subscriptionPackage = await SubscriptionPackage.findOne({
+    _id: packageId,
+  });
 
-    await NewSubscription.save();
-
-    const NewOrder = await Order.create({
-      user: data?._id ? data?._id : `${data?.firstname} ${data?.lastname}`,
-      products: [
-        {
-          type: data?.selectedCard?.name,
-          name: `YooCard ${data?.selectedCard?.type}`,
-        },
-      ],
-      total:
-        data?.selectedCard?.price == "Contact for price"
-          ? 0
-          : parseInt(data?.selectedCard?.price * parseInt(data?.quantity)),
-      productItems: data?.quantity,
+  const orderId = await createOrder({
+    user,
+    Products: [{ user, package: packageId }],
+    items: "1 item",
+    paymentFor: "subscription",
+    orderTotal: subscriptionPackage.price,
+    ...{
+      deliveryAddress: { address1: "NA", address2: "NA" },
+      specialRequest: {},
       payment: {
-        paymentMethod: data?.paymentMethod,
-        paymentId: data?.paymentId,
+        paymentMethod: "",
+        paymentId: "",
       },
-      deliveryAddress: { address1: data?.address1, address2: data?.address2 },
-      specialRequest: {
-        moreInfo: data?.moreInfo,
-      },
-      status: "pending",
-    });
-
-    const response = await resendEmail({
-      template: "order",
-      from: "info@yookatale.com",
-      to: data?.email,
-      subject: "Order Successful",
-      orderID: NewOrder?._id,
-      orderTotal: NewOrder?.total,
-      orderFor: `YooCard ${data?.selectedCard?.type}`,
-      deliveryAddress: {
-        address1: data?.address1,
-        address2: data?.address2,
-      },
-    });
-
-    if (response === "success") {
-      res.status(200).json({
-        status: "Success",
-        data: { message: "Order successfully placed" },
-      });
-    }
-
-    return;
-  }
-
-  // if user has purchased more than one card
-  const Cards = [];
-  for (let i = 0; i < parseInt(data?.quantity); i++) {
-    let NewCardNo = new Array(14)
-      .fill(0)
-      .map(() => Math.floor(Math.random() * 10).toString())
-      .join("");
-
-    Cards.push({
-      cardNumber: NewCardNo,
-      card: data?.selectedCard?.type,
-    });
-  }
+    },
+  });
 
   const NewSubscription = new Subscription({
-    userId: data?._id ? data?._id : "",
-    user: {
-      firstname: data?.firstname,
-      lastname: data?.lastname,
-      email: data?.email,
-      phone: data?.phone,
-      gender: data?.gender,
-    },
-    cards: Cards,
+    userId: user,
+    packageId,
+    orderId,
     status: "pending",
     expiresOn: new Date(),
   });
 
   await NewSubscription.save();
 
-  const NewOrder = await Order.create({
-    user: data?._id ? data?._id : `${data?.firstname} ${data?.lastname}`,
-    products: [
-      {
-        type: data?.selectedCard?.type,
-        name: `YooCard ${data?.selectedCard?.type}`,
-      },
-    ],
-    total:
-      data?.selectedCard?.price == "Contact for price"
-        ? 0
-        : parseInt(data?.selectedCard?.price * parseInt(data?.quantity)),
-    productItems: data?.quantity,
-    payment: { paymentMethod: data?.paymentMethod, paymentId: data?.paymentId },
-    deliveryAddress: { address1: data?.address1, address2: data?.address2 },
-    specialRequest: { moreInfo: data?.moreInfo },
-    status: "pending",
+  res.status(200).json({
+    status: "Success",
+    data: { Order: orderId },
   });
-
-  const response = await resendEmail({
-    template: "order",
-    from: "info@yookatale.com",
-    to: data?.email,
-    subject: "Order Successful",
-    orderID: NewOrder?._id,
-    orderTotal: NewOrder?.total,
-    orderFor: `YooCard ${data?.selectedCard?.type}`,
-    deliveryAddress: {
-      address1: data?.address1,
-      address2: data?.address2,
-    },
-  });
-
-  if (response === "success") {
-    res.status(200).json({
-      status: "Success",
-      data: { message: "Order successfully placed" },
-    });
-  }
 });
 
 export const sendMessagePost = TryCatch(async (req, res) => {

@@ -14,7 +14,7 @@ import { v4 as uniqueString } from "uuid";
 import bcrypt from "bcryptjs";
 import PasswordGen from "password-npm";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import SubscriptionCard from "../../models/SubscriptionCard.model.js";
+import SubscriptionPackage from "../../models/SubscriptionPackage.model.js";
 import Order from "../../models/Order.model.js";
 import User from "../../models/User.model.js";
 import Subscription from "../../models/Subscription.model.js";
@@ -321,7 +321,7 @@ export const fetchAccountsGet = TryCatch(async (req, res) => {
 });
 
 // private function to create subscription cards
-export const createSubscriptionCard = TryCatch(async (req, res) => {
+export const createSubscriptionPackage = TryCatch(async (req, res) => {
   const { type, price, name, details, previousPrice } = req.body;
 
   if (!type || type == "") throw new Error("Card type is required");
@@ -331,7 +331,7 @@ export const createSubscriptionCard = TryCatch(async (req, res) => {
   // if (!previousPrice || previousPrice == 0)
   //   throw new Error("Card previousPrice is required");
 
-  const NewSubscriptionCard = new SubscriptionCard({
+  const NewSubscriptionPackage = new SubscriptionPackage({
     type,
     price,
     name,
@@ -339,7 +339,7 @@ export const createSubscriptionCard = TryCatch(async (req, res) => {
     previousPrice,
   });
 
-  await NewSubscriptionCard.save();
+  await NewSubscriptionPackage.save();
 
   res.status(200).json({ status: "Success" });
 });

@@ -42,6 +42,7 @@ export const createOrder = async (data) => {
     total: data.orderTotal,
     productItems: `${data.items} items`,
     payment: data?.payment,
+    paymentFor: data?.paymentFor,
     deliveryAddress: data?.deliveryAddress,
     specialRequest: data?.specialRequest,
     status:

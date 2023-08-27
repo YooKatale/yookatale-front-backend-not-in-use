@@ -25,7 +25,7 @@ import {
   fetchProductsCategoryGet,
   fetchProductsFilterGet,
   fetchProductsGet,
-  fetchSubscriptionCards,
+  fetchSubscriptionPackages,
   productSearchGet,
 } from "../controllers/Get.controller.js";
 import {
@@ -85,7 +85,7 @@ router.put("/products/order", updateOrderPut);
 //router.get("/users/comments", fetchCommentsGet);
 router.post("/subscription", createSubscriptionPost);
 router.post("/message", sendMessagePost);
-router.get("/subscription", fetchSubscriptionCards);
+router.get("/subscription/package", fetchSubscriptionPackages);
 router.get("/newsblogs", fetchNewsblogsGet);
 router.get("/newsblog/:data", fetchNewsblogGet);
 router.post("/newsletter", createNewsletterPost);
