@@ -236,3 +236,104 @@ export const createNewsletterPost = TryCatch(async (req, res) => {
 // export const paymentWebhookGet = TryCatch(async (req, res) => {
 //   console.log(req);
 // });
+
+// temp function to add quantity unit for each product
+export const TempFunc = TryCatch(async (req, res) => {
+  const Products = await Product.find().lean();
+
+  const CategoriesJson = [
+    "roughages",
+    "fruits",
+    "root tubers",
+    "vegetables",
+    "grains and flour",
+    "meats",
+    "fats&oils",
+    "herbs&spices",
+    "juice&meals",
+  ];
+
+  for (const product of Products) {
+    // product.unit = handleUnitFetch(product.category);
+    switch (product.category) {
+      case "roughages":
+        await Product.findOneAndUpdate({ _id: product._id }, { unit: "kg" });
+        break;
+      case "fruits":
+        await Product.findOneAndUpdate({ _id: product._id }, { unit: "kg" });
+        break;
+      case "root tubers":
+        await Product.findOneAndUpdate({ _id: product._id }, { unit: "kg" });
+        break;
+      case "vegetables":
+        await Product.findOneAndUpdate({ _id: product._id }, { unit: "kg" });
+        break;
+      case "grains and flour":
+        await Product.findOneAndUpdate({ _id: product._id }, { unit: "kg" });
+        break;
+      case "meats":
+        await Product.findOneAndUpdate({ _id: product._id }, { unit: "kg" });
+        break;
+      case "fats&oils":
+        await Product.findOneAndUpdate(
+          { _id: product._id },
+          { unit: "litres" }
+        );
+        break;
+      case "herbs&spices":
+        await Product.findOneAndUpdate({ _id: product._id }, { unit: "kg" });
+        break;
+      case "juice&meals":
+        await Product.findOneAndUpdate(
+          { _id: product._id },
+          { unit: "litres" }
+        );
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  function handleUnitFetch(category) {
+    let result = "";
+    switch (category) {
+      case "roughages":
+        result = "kg";
+        break;
+      case "fruits":
+        result = "kg";
+        break;
+      case "root tubers":
+        result = "kg";
+        break;
+      case "vegetables":
+        result = "kg";
+        break;
+      case "grains and flour":
+        console.log({ grainsFlour: category });
+        result = "kg";
+        break;
+      case "meats":
+        console.log({ meat: category });
+        result = "kg";
+        break;
+      case "fats&oils":
+        result = "kg";
+        break;
+      case "herbs&spices":
+        result = "kg";
+        break;
+      case "juice&meals":
+        result = "kg";
+        break;
+
+      default:
+        break;
+    }
+
+    return result;
+  }
+
+  res.status(200).json({ result: "Success" });
+});

@@ -913,3 +913,17 @@
 2023-08-24	-	17:56:45	-	31688cbb-a91a-448d-b2fb-089f0a227c5d	-	PUT	-	http://localhost:3000	-	/api/products/order
 2023-08-24	-	17:57:03	-	31688cbb-a91a-448d-b2fb-089f0a227c5d	-	GET	-	http://localhost:3000	-	/api/products/categories
 2023-08-24	-	17:57:03	-	31688cbb-a91a-448d-b2fb-089f0a227c5d	-	GET	-	http://localhost:3000	-	/api/users/comments
+2023-08-28	-	14:50:54	-	0edc1b31-e950-4067-a389-44f976395a14	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	14:55:16	-	cdd4f43b-1954-421b-b9e0-3709f18868e0	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	15:05:13	-	0cba4e70-d69e-4bb9-bb21-913112d4e608	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	15:14:08	-	b82cf826-f437-4655-8d45-4576fc9121e6	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	15:42:05	-	1124ceb8-a8d9-4af0-af61-4bbd0f969b44	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	15:52:12	-	75565c9f-cab9-4ab2-bd54-6f4d6dac9281	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	15:54:18	-	b6f9f3ed-6487-48fe-b532-9f18e51e5fee	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	16:38:00	-	f284801f-acf8-4468-975e-76f92e3da46c	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	16:40:09	-	acb26379-3cd9-40a4-8577-ecb95bd50f54	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	16:51:59	-	8960c72f-ee91-47e0-abb0-3ec5579a9ca3	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	16:53:09	-	279d59a5-e074-404c-8839-b387f0029167	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	16:55:13	-	24f73b88-7ec9-4c17-a334-46b7b90ddea2	-	POST	-	undefined	-	/api/test/product
+2023-08-28	-	19:11:12	-	a947e766-72ab-4d3c-a405-8ca2f4a46b35	-	GET	-	http://localhost:3000	-	/api/subscription/package
+2023-08-28	-	19:40:55	-	a947e766-72ab-4d3c-a405-8ca2f4a46b35	-	GET	-	http://localhost:3000	-	/api/subscription/package

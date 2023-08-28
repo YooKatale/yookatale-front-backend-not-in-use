@@ -8,6 +8,7 @@ const productSchema = Schema(
     subCategory: String,
     images: Array,
     price: Number,
+    unit: String
   },
   {
     timestamps: true,

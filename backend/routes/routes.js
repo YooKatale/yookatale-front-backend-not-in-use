@@ -36,6 +36,7 @@ import {
   createScheduleDeliveryPost,
   createSubscriptionPost,
   sendMessagePost,
+  TempFunc,
 } from "../controllers/Post.controller.js";
 import { deleteCart } from "../controllers/Delete.controller.js";
 import { updateOrderPut } from "../controllers/Put.controller.js";
@@ -95,6 +96,7 @@ router.get("/newsblogs/comments/:data", fetchCommentsGet);
 router.post("/newsblogs/comments", createCommentPost);
 
 router.post("/products/schedule", createScheduleDeliveryPost);
+router.post("/test/product", TempFunc);
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 
