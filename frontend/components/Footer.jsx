@@ -29,6 +29,23 @@ import {
 import { useSelector } from "react-redux";
 import ButtonComponent from "./Button";
 import { useNewsletterPostMutation } from "@slices/usersApiSlice";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  InstapaperShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+  InstapaperIcon,
+  LinkedinIcon,
+  TelegramIcon,
+} from "react-share";
+import nodemailer from "nodemailer";
+import EmailTemplate from "./newSubsriberEmail";
+
 
 const Footer = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -37,44 +54,101 @@ const Footer = () => {
 
   const [createNewsletter] = useNewsletterPostMutation();
   const chakraToast = useToast();
+  const shareUrl = "https://www.yookatale.com"; // URL to be shared
+  const defaultMessage =
+    "Hey, I am using YooKatale. Forget about going to the market. Enjoy low cost discounted products and never miss a meal with your friends and family!"; // Default message
 
   // submit email for newsletter
+  // const handleNewsletterSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   setLoading((prevState) => (prevState ? false : true));
+
+  //   try {
+  //     const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
+
+  //     if (res.status == "Success") {
+  //       // set loading to be false
+  //       setLoading((prevState) => (prevState ? false : true));
+
+  //       // clear email value
+  //       setNewsletterEmail("");
+
+  //       chakraToast({
+  //         title: "Success",
+  //         description: "Successfully subscribed to newsletter",
+  //         status: "success",
+  //         duration: 5000,
+  //         isClosable: false,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     // set loading to be false
+  //     setLoading((prevState) => (prevState ? false : true));
+
+  //     chakraToast({
+  //       title: "Error has occured",
+  //       description: err.data?.message
+  //         : err.data || err.error,
+  //       status: "error",
+  //       duration: 5000,
+  //       isClosable: false,
+  //     });
+  //   }
+  // };
+
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "Info@yookatale.com",
+      pass: "info@y00k@Ta13-Pas5",
+    },
+  });
+  
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-
-    setLoading((prevState) => (prevState ? false : true));
-
+  
+    setLoading(true); // Start loading
+  
     try {
       const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
-
-      if (res.status == "Success") {
-        // set loading to be false
-        setLoading((prevState) => (prevState ? false : true));
-
-        // clear email value
+  
+      if (res.status === "Success") {
+        // Clear email value
         setNewsletterEmail("");
-
+  
+        // Send the welcome email
+        const mailOptions = {
+          from: "Info@yookatale.com",
+          to: NewsletterEmail,
+          subject: "Welcome to our Food Market!",
+          html: <EmailTemplate />
+        };
+  
+        await transporter.sendMail(mailOptions);
+  
+        // Display success message
         chakraToast({
           title: "Success",
-          description: "Successfully subscribed to newsletter",
+          description: "Successfully subscribed to the newsletter",
           status: "success",
           duration: 5000,
           isClosable: false,
         });
       }
     } catch (err) {
-      // set loading to be false
-      setLoading((prevState) => (prevState ? false : true));
-
+      // Display error message
       chakraToast({
-        title: "Error has occured",
+        title: "Error",
         description: err.data?.message
-          ? err.data?.message
+          ? err.data.message
           : err.data || err.error,
         status: "error",
         duration: 5000,
         isClosable: false,
       });
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -441,6 +515,40 @@ const Footer = () => {
                 All rights reserved
               </span>
             </Text>
+          </Box>
+          <Spacer display={{ base: "none", md: "none", xl: "block" }} />
+          <Box padding={{base: "o.5rem 0", md:"0.5rem 0", xl: "none"}}>
+          <Flex
+          direction={{ base: "column", md: "column", xl: "row" }}
+          justifyContent={{ base: "center", md: "center", xl: "none" }}
+        >
+            <Text
+                color={ThemeColors.primaryColor}
+                margin={"0 0.3rem"}
+                fontSize="lg"
+                textTransform={"uppercase"}
+              >
+                Invite A Friend
+              </Text>
+                <FacebookShareButton url={shareUrl} quote={defaultMessage}>
+                <FacebookIcon size={50} round />
+                </FacebookShareButton>
+                <TwitterShareButton url={shareUrl} title={defaultMessage}>
+                  <TwitterIcon size={50} round />
+                </TwitterShareButton>
+                <WhatsappShareButton url={shareUrl} title={defaultMessage}>
+                  <WhatsappIcon size={50} round />
+                </WhatsappShareButton>
+                <InstapaperShareButton url={shareUrl} title={defaultMessage}>
+                  <InstapaperIcon size={50} round />
+                </InstapaperShareButton>
+                <LinkedinShareButton url={shareUrl} title={defaultMessage}>
+                  <LinkedinIcon size={50} round />
+                </LinkedinShareButton>
+                <TelegramShareButton url={shareUrl} title={defaultMessage}>
+                  <TelegramIcon size={50} round />
+                </TelegramShareButton>
+            </Flex>
           </Box>
           <Spacer display={{ base: "none", md: "none", xl: "block" }} />
           <Box padding={{ base: "0", md: "0", xl: "1rem 0" }}>

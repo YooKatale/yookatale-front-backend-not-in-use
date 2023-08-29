@@ -24,6 +24,7 @@ import {
   testEmailFeature,
   fetchEmailsGet,
   createEmailPost,
+  createProductPost
 } from "../controllers/Controller.js";
 import multer from "multer";
 import { v4 as uniqueString } from "uuid";
@@ -38,12 +39,13 @@ dotenv.config();
 const env = process.env.NODE_ENV;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootDirectory = path.dirname(__dirname);
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/uploads"));
+    cb(null, path.join(rootDirectory, "/public/uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, uniqueString() + file.originalname);
@@ -82,6 +84,7 @@ router.post("/newsletter", createNewsletterPost);
 router.get("/newsletter", fetchNewslettersGet);
 router.get("/emails", fetchEmailsGet);
 router.post("/emails", createEmailPost); 
+router.post("/product/new", upload.array("images", 10), createProductPost);
 
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);

@@ -1,4 +1,5 @@
 import validator from "validator";
+import {v2 as cloudinary} from 'cloudinary';
 import User from "../models/User.model.js";
 import {
   TryCatch,
@@ -42,6 +43,13 @@ const env = process.env.NODE_ENV;
 // const flwSecretKey = process.env.FLW_SECRET_KEY;
 
 // const FLW = new Flutterwave(flwPublicKey, flwSecretKey);
+       
+// add cloudinary config
+cloudinary.config({ 
+  cloud_name: "", 
+  api_key: "", 
+  api_secret: "" 
+});
 
 const S3 = new S3Client({
   credentials: {
@@ -106,6 +114,9 @@ export const registerUserPost = TryCatch(async (req, res) => {
 
   const response = await resendEmail({
     template: "welcome",
+    to: user.email,
+    from: "info@yookatale.com",
+    subject: "Welcome to  Yookatale",
     name: user.firstname,
   });
 
@@ -119,6 +130,10 @@ export const registerUserPost = TryCatch(async (req, res) => {
     phone: user.phone,
     expires: addDays(new Date(), 3),
   });
+
+  if (response === "success") {
+    res.status(200).json({ status: "Success" });
+  }
 });
 
 // public route to logout user and remove token
@@ -897,3 +912,51 @@ export const createEmailPost = TryCatch(async (req, res) => {
 // export const paymentWebhookGet = TryCatch(async (req, res) => {
 //   console.log(req);
 // });
+
+export const createProductPost = TryCatch(async (req, res) => {
+  const {
+    name,
+    category,
+    subCategory,
+    price,
+    description,
+    priceTiers,
+  } = req.body;
+
+  if (!name || name === "") throw new Error("Product name is required");
+  if (!category || category === "") throw new Error("Category is required");
+  if (!price || isNaN(parseFloat(price))) throw new Error("Invalid price");
+  if (!description || description === "") throw new Error("Description is required");
+
+  if (!req.files || !req.files.length) {
+    throw new Error("At least one image is required");
+  }
+
+
+  const imageUrls = await Promise.all(
+    req.files.map(async (file) => {
+      const result = await cloudinary.uploader.upload(file.path);
+      return result.secure_url;
+    })
+  );
+
+  const parsedPriceTiers = JSON.parse(priceTiers).map(p => ({
+    quantity: p.quantity,
+    price: parseFloat(p.price)
+  }));
+  
+  const newProduct = await Product.create({
+    name,
+    category,
+    subCategory,
+    price: parseFloat(price),
+    description,
+    images: imageUrls,
+    priceTiers: parsedPriceTiers,
+  });
+
+  res.status(201).json({
+    status: "Success",
+    data: newProduct,
+  });
+});
