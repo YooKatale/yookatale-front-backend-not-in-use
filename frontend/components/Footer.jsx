@@ -30,21 +30,22 @@ import { useSelector } from "react-redux";
 import ButtonComponent from "./Button";
 import { useNewsletterPostMutation } from "@slices/usersApiSlice";
 import {
-  FacebookIcon,
   FacebookShareButton,
-  InstapaperIcon,
-  WhatsappIcon,
+  TwitterShareButton,
   WhatsappShareButton,
   InstapaperShareButton,
   LinkedinShareButton,
   TelegramShareButton,
-  TwitterShareButton,
-  LinkedinIcon,
+  FacebookIcon,
   TwitterIcon,
+  WhatsappIcon,
+  InstapaperIcon,
+  LinkedinIcon,
   TelegramIcon,
 } from "react-share";
 import nodemailer from "nodemailer";
 import EmailTemplate from "./newSubsriberEmail";
+
 
 const Footer = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -53,6 +54,9 @@ const Footer = () => {
 
   const [createNewsletter] = useNewsletterPostMutation();
   const chakraToast = useToast();
+  const shareUrl = "https://www.yookatale.com"; // URL to be shared
+  const defaultMessage =
+    "Hey, I am using YooKatale. Forget about going to the market. Enjoy low cost discounted products and never miss a meal with your friends and family!"; // Default message
 
   // submit email for newsletter
   // const handleNewsletterSubmit = async (e) => {
@@ -526,29 +530,24 @@ const Footer = () => {
               >
                 Invite A Friend
               </Text>
-            <FacebookShareButton url={"https://www.yookatale.com"}>
-              <FacebookIcon size={35}/>
-            </FacebookShareButton >
-            {" "}
-            <WhatsappShareButton url={"https://www.yookatale.com"}>
-              <WhatsappIcon size={35}/>
-            </WhatsappShareButton>
-            {" "}
-            <InstapaperShareButton url={"https://www.yookatale.com"}>
-              <InstapaperIcon size={35}/>
-            </InstapaperShareButton>
-            {" "}
-            <LinkedinShareButton url={"https://www.yookatale.com"}>
-              <LinkedinIcon size={35}/>
-            </LinkedinShareButton>
-            {" "}
-            <TwitterShareButton url={"https://www.yookatale.com"}>
-              <TwitterIcon size={35}/>
-            </TwitterShareButton>
-            {" "}
-            <TelegramShareButton url={"https://www.yookatale.com"}>
-              <TelegramIcon size={35}/>
-            </TelegramShareButton>
+                <FacebookShareButton url={shareUrl} quote={defaultMessage}>
+                <FacebookIcon size={50} round />
+                </FacebookShareButton>
+                <TwitterShareButton url={shareUrl} title={defaultMessage}>
+                  <TwitterIcon size={50} round />
+                </TwitterShareButton>
+                <WhatsappShareButton url={shareUrl} title={defaultMessage}>
+                  <WhatsappIcon size={50} round />
+                </WhatsappShareButton>
+                <InstapaperShareButton url={shareUrl} title={defaultMessage}>
+                  <InstapaperIcon size={50} round />
+                </InstapaperShareButton>
+                <LinkedinShareButton url={shareUrl} title={defaultMessage}>
+                  <LinkedinIcon size={50} round />
+                </LinkedinShareButton>
+                <TelegramShareButton url={shareUrl} title={defaultMessage}>
+                  <TelegramIcon size={50} round />
+                </TelegramShareButton>
             </Flex>
           </Box>
           <Spacer display={{ base: "none", md: "none", xl: "block" }} />
