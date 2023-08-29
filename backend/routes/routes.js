@@ -22,6 +22,8 @@ import {
   registerUserPost,
   sendMessagePost,
   testEmailFeature,
+  fetchEmailsGet,
+  createEmailPost,
   createProductPost
 } from "../controllers/Controller.js";
 import multer from "multer";
@@ -80,7 +82,10 @@ router.get("/newsblogs", fetchNewsblogsGet);
 router.get("/newsblog/:data", fetchNewsblogGet);
 router.post("/newsletter", createNewsletterPost);
 router.get("/newsletter", fetchNewslettersGet);
+router.get("/emails", fetchEmailsGet);
+router.post("/emails", createEmailPost); 
 router.post("/product/new", upload.array("images", 10), createProductPost);
+
 // router.get("/blogs")
 // router.get("/payment/webhook", paymentWebhookGet);
 
