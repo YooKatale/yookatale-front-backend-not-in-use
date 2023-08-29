@@ -113,6 +113,9 @@ export const registerUserPost = TryCatch(async (req, res) => {
 
   const response = await resendEmail({
     template: "welcome",
+    to: user.email,
+    from: "info@yookatale.com",
+    subject: "Welcome to  Yookatale",
     name: user.firstname,
   });
 
@@ -126,6 +129,10 @@ export const registerUserPost = TryCatch(async (req, res) => {
     phone: user.phone,
     expires: addDays(new Date(), 3),
   });
+
+  if (response === "success") {
+    res.status(200).json({ status: "Success" });
+  }
 });
 
 // public route to logout user and remove token
