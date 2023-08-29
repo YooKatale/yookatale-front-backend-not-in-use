@@ -153,7 +153,7 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
                     color={ThemeColors.darkColor}
                   >
                      {`UGX ${UGX(tier.price)} - ${tier.quantity}`}
-                  </Text>
+                  {/* </Text> */}
                 ))}
               </Box>
             )}
