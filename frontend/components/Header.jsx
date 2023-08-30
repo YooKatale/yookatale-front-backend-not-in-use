@@ -45,6 +45,7 @@ import { useToast } from "@chakra-ui/react";
 import { IsAccountValid } from "@middleware/middleware";
 import { HiChevronLeft } from "react-icons/hi";
 import MenuLink from "./MenuLink";
+import { Link as ScrollLink } from "react-scroll";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
