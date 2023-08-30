@@ -472,7 +472,18 @@ fontSize={"lg"}}}
                       <MenuLink title="Subscription" href="/" fontSize={"md"}  />
                       <MenuLink title="Support" href="contact" fontSize={"md"}  />
                       <MenuLink title="Invoices & Receipts" href="/" fontSize={"md"}  />
-                      <MenuLink title="Refer a friend" href="/" fontSize={"md"}  />
+                      <ScrollLink
+                            to="footer"
+                            smooth={true}
+                            offset={-100}
+                            duration={500}
+                          >
+                            <Text
+                              fontSize={"md"}
+                            >
+                              Refer a friend
+                            </Text>
+                          </ScrollLink>
                       <MenuLink title="Invite feature" href="/" fontSize={"md"}  />
 
                       <Box
