@@ -33,13 +33,11 @@ import {
   FacebookShareButton,
   TwitterShareButton,
   WhatsappShareButton,
-  InstapaperShareButton,
   LinkedinShareButton,
   TelegramShareButton,
   FacebookIcon,
   TwitterIcon,
   WhatsappIcon,
-  InstapaperIcon,
   LinkedinIcon,
   TelegramIcon,
 } from "react-share";
@@ -58,6 +56,12 @@ const Footer = () => {
   const defaultMessage =
     "Hey, I am using YooKatale. Forget about going to the market. Enjoy low cost discounted products and never miss a meal with your friends and family!"; // Default message
 
+    const handleInstagramShare = () => {
+      const instagramUrl = `https://www.instagram.com/create/batch/?caption=${encodeURIComponent(
+        defaultMessage + ' ' + shareUrl
+      )}`;
+      window.open(instagramUrl, '_blank');
+    };
   // submit email for newsletter
   // const handleNewsletterSubmit = async (e) => {
   //   e.preventDefault();

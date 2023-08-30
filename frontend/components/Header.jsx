@@ -304,7 +304,18 @@ const Header = () => {
                     fontSize={"lg"}
                     _hover={{ color: ThemeColors.darkColor }}
                   >
-                    Contact
+                    Support
+                  </Text>
+                </Link>
+              </Box>
+              <Box margin={"0.3rem 0.5rem"}>
+                <Link href={"/contact"}>
+                  <Text
+                    color={"#000"}
+                    fontSize={"lg"}
+                    _hover={{ color: ThemeColors.darkColor }}
+                  >
+                    Refer a friend
                   </Text>
                 </Link>
               </Box>
@@ -459,7 +470,7 @@ fontSize={"lg"}}}
                       <MenuLink title="Schedule a meal" href="/" fontSize={"md"}  />
                       <MenuLink title="Loyalty Points" href="/" fontSize={"md"}  />
                       <MenuLink title="Subscription" href="/" fontSize={"md"}  />
-                      <MenuLink title="Support" href="/" fontSize={"md"}  />
+                      <MenuLink title="Support" href="contact" fontSize={"md"}  />
                       <MenuLink title="Invoices & Receipts" href="/" fontSize={"md"}  />
                       <MenuLink title="Refer a friend" href="/" fontSize={"md"}  />
                       <MenuLink title="Invite feature" href="/" fontSize={"md"}  />
