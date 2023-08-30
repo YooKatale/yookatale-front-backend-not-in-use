@@ -543,9 +543,9 @@ const Footer = () => {
                 <WhatsappShareButton url={shareUrl} title={defaultMessage}>
                   <WhatsappIcon size={50} round />
                 </WhatsappShareButton>
-                <InstapaperShareButton url={shareUrl} title={defaultMessage}>
-                  <InstapaperIcon size={50} round />
-                </InstapaperShareButton>
+                <button onClick={handleInstagramShare}>
+                  <FaInstagram size={50} round />
+                </button>
                 <LinkedinShareButton url={shareUrl} title={defaultMessage}>
                   <LinkedinIcon size={50} round />
                 </LinkedinShareButton>
