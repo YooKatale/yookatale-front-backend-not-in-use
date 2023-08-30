@@ -673,15 +673,22 @@ fontSize={"lg"}}}
                     setMobileNavOpen((prevState) => (prevState ? false : true))
                   } 
                 />
-                <MenuLink
-                  title="Refer a friend"
-                  href="/"
-                  color={ThemeColors.lightColor}
-                  fontSize={"lg"}
-                  onClick={() =>
-                    setMobileNavOpen((prevState) => (prevState ? false : true))
-                  } 
-                />
+                <ScrollLink
+                  to="footer"
+                  smooth={true}
+                  offset={-100}
+                  duration={500}
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  <Text
+                    color={ThemeColors.lightColor}
+                    fontSize={"lg"}
+                    _hover={{ color: ThemeColors.darkColor }}
+                    margin="0.5rem" 
+                  >
+                    Refer a friend
+                  </Text>
+                </ScrollLink>
                 <MenuLink
                   title="Invite feature"
                   href="/"
