@@ -104,8 +104,8 @@ const Footer = () => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "Info@yookatale.com",
-      pass: "info@y00k@Ta13-Pas5",
+      user: "yookatale256@gmail.com",
+      pass: "yomarket256!",
     },
   });
   
