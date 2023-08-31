@@ -45,6 +45,7 @@ import { useToast } from "@chakra-ui/react";
 import { IsAccountValid } from "@middleware/middleware";
 import { HiChevronLeft } from "react-icons/hi";
 import MenuLink from "./MenuLink";
+import { Link as ScrollLink } from "react-scroll";
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -304,7 +305,18 @@ const Header = () => {
                     fontSize={"lg"}
                     _hover={{ color: ThemeColors.darkColor }}
                   >
-                    Contact
+                    Support
+                  </Text>
+                </Link>
+              </Box>
+              <Box margin={"0.3rem 0.5rem"}>
+                <Link href={"/contact"}>
+                  <Text
+                    color={"#000"}
+                    fontSize={"lg"}
+                    _hover={{ color: ThemeColors.darkColor }}
+                  >
+                    Refer a friend
                   </Text>
                 </Link>
               </Box>
@@ -459,9 +471,20 @@ fontSize={"lg"}}}
                       <MenuLink title="Schedule a meal" href="/" fontSize={"md"}  />
                       <MenuLink title="Loyalty Points" href="/" fontSize={"md"}  />
                       <MenuLink title="Subscription" href="/" fontSize={"md"}  />
-                      <MenuLink title="Support" href="/" fontSize={"md"}  />
+                      <MenuLink title="Support" href="contact" fontSize={"md"}  />
                       <MenuLink title="Invoices & Receipts" href="/" fontSize={"md"}  />
-                      <MenuLink title="Refer a friend" href="/" fontSize={"md"}  />
+                      <ScrollLink
+                            to="footer"
+                            smooth={true}
+                            offset={-100}
+                            duration={500}
+                          >
+                            <Text
+                              fontSize={"md"}
+                            >
+                              Refer a friend
+                            </Text>
+                          </ScrollLink>
                       <MenuLink title="Invite feature" href="/" fontSize={"md"}  />
 
                       <Box
@@ -662,15 +685,22 @@ fontSize={"lg"}}}
                     setMobileNavOpen((prevState) => (prevState ? false : true))
                   } 
                 />
-                <MenuLink
-                  title="Refer a friend"
-                  href="/"
-                  color={ThemeColors.lightColor}
-                  fontSize={"lg"}
-                  onClick={() =>
-                    setMobileNavOpen((prevState) => (prevState ? false : true))
-                  } 
-                />
+                <ScrollLink
+                  to="footer"
+                  smooth={true}
+                  offset={-100}
+                  duration={500}
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  <Text
+                    color={ThemeColors.lightColor}
+                    fontSize={"lg"}
+                    _hover={{ color: ThemeColors.darkColor }}
+                    margin="0.5rem" 
+                  >
+                    Refer a friend
+                  </Text>
+                </ScrollLink>
                 <MenuLink
                   title="Invite feature"
                   href="/"

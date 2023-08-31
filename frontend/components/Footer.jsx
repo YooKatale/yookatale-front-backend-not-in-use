@@ -33,13 +33,11 @@ import {
   FacebookShareButton,
   TwitterShareButton,
   WhatsappShareButton,
-  InstapaperShareButton,
   LinkedinShareButton,
   TelegramShareButton,
   FacebookIcon,
   TwitterIcon,
   WhatsappIcon,
-  InstapaperIcon,
   LinkedinIcon,
   TelegramIcon,
 } from "react-share";
@@ -58,6 +56,12 @@ const Footer = () => {
   const defaultMessage =
     "Hey, I am using YooKatale. Forget about going to the market. Enjoy low cost discounted products and never miss a meal with your friends and family!"; // Default message
 
+    const handleInstagramShare = () => {
+      const instagramUrl = `https://www.instagram.com/create/batch/?caption=${encodeURIComponent(
+        defaultMessage + ' ' + shareUrl
+      )}`;
+      window.open(instagramUrl, '_blank');
+    };
   // submit email for newsletter
   // const handleNewsletterSubmit = async (e) => {
   //   e.preventDefault();
@@ -154,7 +158,7 @@ const Footer = () => {
 
   return (
     <>
-      <Box borderTop={"1.7px solid " + ThemeColors.lightColor}>
+      <Box borderTop={"1.7px solid " + ThemeColors.lightColor} id="footer">
         <Box padding={"1rem 0 2rem 0"} background={"#0c0c0c"}>
           <Flex>
             <Box width={"95%"} margin={"auto"}>
@@ -539,9 +543,9 @@ const Footer = () => {
                 <WhatsappShareButton url={shareUrl} title={defaultMessage}>
                   <WhatsappIcon size={50} round />
                 </WhatsappShareButton>
-                <InstapaperShareButton url={shareUrl} title={defaultMessage}>
-                  <InstapaperIcon size={50} round />
-                </InstapaperShareButton>
+                <button onClick={handleInstagramShare}>
+                  <FaInstagram size={50} round />
+                </button>
                 <LinkedinShareButton url={shareUrl} title={defaultMessage}>
                   <LinkedinIcon size={50} round />
                 </LinkedinShareButton>
