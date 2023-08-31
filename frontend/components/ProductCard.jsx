@@ -142,8 +142,41 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
             >
               {UGX(product.price).format()}
             </Heading>
+            {product.category === "grains and flour" ||
+      product.category === "meats" ||
+      product.category === "root tubers" ||
+      product.category === "roughages" ? (
+        <h3 className={`font-bold text-center text-base my-2`} color={ThemeColors.darkColor}>
+          per kg
+        </h3>
+      ) : null}
+      {product.category === "vegetables" ? (
+        <h3 className={`font-bold text-center text-base my-2`} color={ThemeColors.darkColor}>
+          per Bag
+        </h3>
+      ) : null}
+      {product.category === "fruits" ? (
+        <h3 className={`font-bold text-center text-base my-2`} color={ThemeColors.darkColor}>
+          per Packet or Bunch
+        </h3>
+      ) : null}
+       {product.category === "fats&oils" ? (
+        <h3 className={`font-bold text-center text-base my-2`} color={ThemeColors.darkColor}>
+          per Cup
+        </h3>
+      ) : null}
+      {product.category === "juice&&meals" ? (
+        <h3 className={`font-bold text-center text-base my-2`} color={ThemeColors.darkColor}>
+          per Cup or Pack
+        </h3>
+      ) : null}
+      {product.category === "herbs&spices" ? (
+        <h3 className={`font-bold text-center text-base my-2`} color={ThemeColors.darkColor}>
+          per Ounce or Kg
+        </h3>
+      ) : null}
             <Box padding={"0.3rem 0"}>
-            {product.priceTiers && product.priceTiers.length > 0 && (
+            {/* {product.priceTiers && product.priceTiers.length > 0 && (
               <Box textAlign="center">
                 {product.priceTiers.map((tier, index) => (
                   <Text
@@ -154,9 +187,9 @@ const ProductCard = ({ product, UGX, userInfo, width, height }) => {
                   >
                      {`UGX ${UGX(tier.price)} - ${tier.quantity}`}
                   </Text>
-                ))}
+                ))} 
               </Box>
-            )}
+            )} */}
               <Flex justifyContent={"center"}>
                 <Button
                   color={ThemeColors.lightColor}
