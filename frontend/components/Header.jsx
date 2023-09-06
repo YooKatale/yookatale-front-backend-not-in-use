@@ -176,7 +176,7 @@ const Header = () => {
           }}
         >
           <Flex>
-            <Box margin={"auto"} width={{ base: "80%", md: "60%", xl: "40%" }}>
+            <Box margin={"auto"} width={{ base: "70%", md: "50%", xl: "40%" }}>
               <Box>
                 <form onSubmit={handleSearchFormSubmit}>
                   {isLoading.status && isLoading.operation === "search" && (
