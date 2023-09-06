@@ -207,7 +207,7 @@ const Header = () => {
                 </form>
               </Box>
             </Box>
-            <Box display={{ base: "block", md: "block", xl: "none" }}>
+            <Box display={{ base: "block", md: "block", xl: "none" }} marginBottom={"1.5rem"}>
             <Box
               padding={"2rem 2rem 0 0"}
               onClick={() =>
