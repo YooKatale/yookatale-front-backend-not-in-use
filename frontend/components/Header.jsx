@@ -207,6 +207,16 @@ const Header = () => {
                 </form>
               </Box>
             </Box>
+            <Box display={{ base: "block", md: "block", xl: "none" }}>
+            <Box
+              padding={"2rem 2rem 0 0"}
+              onClick={() =>
+                setMobileNavOpen((prevState) => (prevState ? false : true))
+              }
+            >
+              <CgMenu size={30} />
+            </Box>
+          </Box>
           </Flex>
         </Box>
         <Flex
