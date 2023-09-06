@@ -175,7 +175,7 @@ const Header = () => {
               : "translate3d(0, -100%, 0)",
           }}
         >
-          <Flex>
+          <Flex justifyContent={"space-evenly"} flexDirection={"row"} alignItems={"center"}>
             <Box margin={"auto"} width={{ base: "70%", md: "50%", xl: "40%" }}>
               <Box>
                 <form onSubmit={handleSearchFormSubmit}>
