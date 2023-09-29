@@ -41,8 +41,8 @@ import {
   LinkedinIcon,
   TelegramIcon,
 } from "react-share";
-import nodemailer from "nodemailer";
 import EmailTemplate from "./newSubsriberEmail";
+
 
 
 const Footer = () => {
@@ -101,37 +101,26 @@ const Footer = () => {
   //   }
   // };
 
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: "Info@yookatale.com",
-      pass: "info@y00k@Ta13-Pas5",
-    },
-  });
-  
+
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
   
-    setLoading(true); // Start loading
+    setLoading(true);
   
     try {
-      const res = await createNewsletter({ email: NewsletterEmail }).unwrap();
+      const res = await fetch("/api/sendEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: NewsletterEmail }),
+      });
   
-      if (res.status === "Success") {
-        // Clear email value
+      const data = await res.json();
+  
+      if (res.status === 200 && data.success) {
         setNewsletterEmail("");
   
-        // Send the welcome email
-        const mailOptions = {
-          from: "Info@yookatale.com",
-          to: NewsletterEmail,
-          subject: "Welcome to our Food Market!",
-          html: <EmailTemplate />
-        };
-  
-        await transporter.sendMail(mailOptions);
-  
-        // Display success message
         chakraToast({
           title: "Success",
           description: "Successfully subscribed to the newsletter",
@@ -139,20 +128,27 @@ const Footer = () => {
           duration: 5000,
           isClosable: false,
         });
+      } else {
+        chakraToast({
+          title: "Error",
+          description: data.error || "An error occurred while sending the email",
+          status: "error",
+          duration: 5000,
+          isClosable: false,
+        });
       }
     } catch (err) {
-      // Display error message
+      console.error(err);
+  
       chakraToast({
         title: "Error",
-        description: err.data?.message
-          ? err.data.message
-          : err.data || err.error,
+        description: "An error occurred while sending the email",
         status: "error",
         duration: 5000,
         isClosable: false,
       });
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -557,6 +553,11 @@ const Footer = () => {
           <Spacer display={{ base: "none", md: "none", xl: "block" }} />
           <Box padding={{ base: "0", md: "0", xl: "1rem 0" }}>
             <Flex justifyContent={{ base: "center", md: "center", xl: "none" }}>
+            <Link href={"/partner"}>
+                <Box padding={{ base: "1rem", md: "1rem", xl: "0 1rem" }}>
+                  <Text fontSize={"md"}>Partner</Text>
+                </Box>
+              </Link>
               <Link href={"/faqs"}>
                 <Box padding={{ base: "1rem", md: "1rem", xl: "0 1rem" }}>
                   <Text fontSize={"md"}>Faqs</Text>
