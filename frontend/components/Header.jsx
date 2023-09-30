@@ -175,8 +175,8 @@ const Header = () => {
               : "translate3d(0, -100%, 0)",
           }}
         >
-          <Flex>
-            <Box margin={"auto"} width={{ base: "80%", md: "60%", xl: "40%" }}>
+          <Flex justifyContent={"space-evenly"} flexDirection={"row"} alignItems={"center"}>
+            <Box margin={"auto"} width={{ base: "70%", md: "50%", xl: "40%" }}>
               <Box>
                 <form onSubmit={handleSearchFormSubmit}>
                   {isLoading.status && isLoading.operation === "search" && (
@@ -207,6 +207,16 @@ const Header = () => {
                 </form>
               </Box>
             </Box>
+            <Box marginBottom={"1.5rem"}>
+            <Box
+              padding={"2rem 2rem 0 0"}
+              onClick={() =>
+                setMobileNavOpen((prevState) => (prevState ? false : true))
+              }
+            >
+              <CgMenu size={30} />
+            </Box>
+          </Box>
           </Flex>
         </Box>
         <Flex
@@ -534,16 +544,6 @@ fontSize={"lg"}}}
                 </Box>
               )}
             </Flex>
-          </Box>
-          <Box display={{ base: "block", md: "block", xl: "none" }}>
-            <Box
-              padding={"2rem 2rem 0 0"}
-              onClick={() =>
-                setMobileNavOpen((prevState) => (prevState ? false : true))
-              }
-            >
-              <CgMenu size={30} />
-            </Box>
           </Box>
         </Flex>
       </Box>
